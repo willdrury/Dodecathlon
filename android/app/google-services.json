@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "365380606260",
+    "project_id": "dodecathlon12",
+    "storage_bucket": "dodecathlon12.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365380606260:android:39b111099a03db818f6d61",
+        "android_client_info": {
+          "package_name": "com.example.dodecathlon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpH2cEKFVc7O35CFIIOu6soiuuraxenWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365380606260:android:ed18143a026dac9c8f6d61",
+        "android_client_info": {
+          "package_name": "org.dodecathlon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpH2cEKFVc7O35CFIIOu6soiuuraxenWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
