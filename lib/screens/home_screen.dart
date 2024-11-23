@@ -38,9 +38,6 @@ class _MyHomePageState extends State<HomeScreen> with SingleTickerProviderStateM
         competition2025.events[widget.eventIndex].hasMultipleDifficulties && widget.user.currentEventDifficulty.isEmpty;
 
     return Container(
-      decoration: BoxDecoration(
-        color: customColors.primaryDim.withAlpha(100),
-      ),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
