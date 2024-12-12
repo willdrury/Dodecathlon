@@ -10,7 +10,8 @@ Event trivia = Event(
   themeColor: Colors.green,
   icon: Icons.quiz,
   startDate: DateTime(2025, 3),
-  endDate: DateTime(2025, 4)
+  endDate: DateTime(2025, 4),
+  displayImageUrl: ''
 );
 
 List<Challenge> triviaChallenges = [];

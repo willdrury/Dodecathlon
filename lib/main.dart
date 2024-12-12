@@ -11,8 +11,23 @@ import 'package:dodecathlon/utilities/color_utility.dart';
 
 import 'firebase_options.dart';
 
-final kColorScheme = ColorScheme.fromSeed(seedColor: Colors.red).copyWith(
+// final kColorScheme = ColorScheme.fromSeed(seedColor: Color(0xFF00A87F)).copyWith(
+//   surface: Colors.white,
+//   primary: Color(0xFF00A87F),
+//   secondary: Color(0xFF00DEA8),
+//   tertiary: Color(0xFF00533F),
+// );
+// final kColorScheme = ColorScheme.fromSeed(seedColor: Color(0xFFFFCA3A)).copyWith(
+//   surface: Colors.white,
+//   primary: Color(0xFFFFCA3A),
+//   secondary: Color(0xFFFED871),
+//   tertiary: Color(0xFFE6AD12),
+// );
+final kColorScheme = ColorScheme.fromSeed(seedColor: Color(0xFF6A4C93)).copyWith(
   surface: Colors.white,
+  primary: Color(0xFF6A4C93),
+  secondary: Color(0xFFA580D7),
+  tertiary: Color(0xFF4D3370),
 );
 final kColorSchemeDark = ColorScheme.fromSeed(seedColor: Colors.pink, brightness: Brightness.dark);
 

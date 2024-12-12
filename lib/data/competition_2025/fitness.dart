@@ -13,7 +13,8 @@ Event fitness = Event(
   themeColor: Colors.blue,
   icon: Icons.directions_walk,
   startDate: DateTime(2025, 2),
-  endDate: DateTime(2025, 3)
+  endDate: DateTime(2025, 3),
+    displayImageUrl: ''
 );
 
 List<Challenge> fitnessChallenges = [];

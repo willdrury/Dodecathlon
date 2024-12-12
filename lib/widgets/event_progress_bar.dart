@@ -19,47 +19,29 @@ class _EventProgressBarState extends State<EventProgressBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      width: 300,
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.black26
-      ),
-      child: Stack(
-          children: [
-            Container(
-              height: 40,
-              width: 300 * (widget.mainPoints + widget.bonusPoints) / 100,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      ColorUtility().lighten(Colors.blue, .2),
-                      Colors.blue,
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter
-                  )
-              ),
-            ),
-            Container(
-              height: 40,
-              width: 300 * widget.mainPoints / 100,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.horizontal(left: Radius.circular(20)),
-                  gradient: LinearGradient(
-                      colors: [
-                        ColorUtility().lighten(Theme.of(context).colorScheme.primary, .2),
-                        Theme.of(context).colorScheme.primary,
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter
-                  )
-              ),
-            ),
-          ],
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          height: 280,
+          width: 280,
+          child:  CircularProgressIndicator(
+            value: .5,
+            strokeWidth: 8,
+            strokeCap: StrokeCap.round,
+            color: Theme.of(context).colorScheme.tertiary,
+          ),
         ),
+        Container(
+          height: 250,
+          width: 250,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white
+          ),
+        ),
+        Text('35 of 80'),
+      ],
     );
   }
 }

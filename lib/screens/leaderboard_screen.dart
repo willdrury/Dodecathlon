@@ -12,7 +12,7 @@ class LeaderboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      initialIndex: 1,
+      initialIndex: 0,
       length: 2,
       child: Scaffold(
         body: Column(
@@ -21,22 +21,20 @@ class LeaderboardScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primaryContainer,
               ),
-              child: SafeArea(
-                child: TabBar(
-                  indicatorColor: Theme.of(context).colorScheme.tertiary,
-                  labelColor: Theme.of(context).colorScheme.tertiary,
-                  unselectedLabelColor: Theme.of(context).colorScheme.tertiary.withAlpha(100),
-                  tabs: <Widget>[
-                    Tab(
-                      text: 'Global',
-                      icon: Icon(Icons.language),
-                    ),
-                    Tab(
-                      text: 'Friends',
-                      icon: Icon(Icons.group),
-                    ),
-                  ],
-                ),
+              child: TabBar(
+                indicatorColor: Theme.of(context).colorScheme.tertiary,
+                labelColor: Theme.of(context).colorScheme.tertiary,
+                unselectedLabelColor: Theme.of(context).colorScheme.tertiary.withAlpha(100),
+                tabs: <Widget>[
+                  Tab(
+                    text: 'Global',
+                    icon: Icon(Icons.language),
+                  ),
+                  Tab(
+                    text: 'Friends',
+                    icon: Icon(Icons.group),
+                  ),
+                ],
               ),
             ),
             Expanded(

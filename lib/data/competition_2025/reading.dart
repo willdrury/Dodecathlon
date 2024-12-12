@@ -9,11 +9,12 @@ Event reading = Event(
   beginnerDescription: 'I just want to read more',
   intermediateDescription: 'I have a reading goal for the year, but nothing too serious',
   advancedDescription: 'I have a goal of reading 20+ books this year',
-  themeColor: Colors.red,
+  themeColor: Color(0xFF00A87F),
   prize: 'Book Ends',
   icon: Icons.auto_stories,
   startDate: DateTime(2025, 1),
-  endDate: DateTime(2025, 2)
+  endDate: DateTime(2025, 2),
+  displayImageUrl: 'https://www.thepublicdiscourse.com/wp-content/uploads/2023/09/BOOKS-1024x523.jpg'
 );
 
 Challenge beginnerPageCount = Challenge(

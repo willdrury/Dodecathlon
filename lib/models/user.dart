@@ -19,6 +19,7 @@ class User {
   List<String>? competitions;
   final String? id;
   List<Submission>? submissionData;
+  List<String> likedPostIds;
 
   User({
     required this.userName,
@@ -28,6 +29,7 @@ class User {
     required this.submissions,
     required this.friends,
     required this.currentEventDifficulty,
+    required this.likedPostIds,
     this.profileImageUrl,
     this.competitions,
     this.id,
@@ -44,6 +46,7 @@ class User {
     'submissions': submissions,
     'competitions': competitions,
     'id': id,
+    'likedPostIds': likedPostIds,
   };
 
   factory User.fromMap(Map data) {
@@ -58,6 +61,7 @@ class User {
         submissions: List<String>.from(data['submissions'] as List<dynamic>),
         competitions: List<String>.from(data['competitions'] as List<dynamic>),
         id: data['id'],
+        likedPostIds: List<String>.from(data['likedPostIds'] as List<dynamic>),
     );
   }
 
@@ -67,6 +71,10 @@ class User {
 
   int get competitionRank {
     return 1;
+  }
+
+  Future<String?> update() async {
+    await FirebaseFirestore.instance.collection('users').doc(id).update(toJson());
   }
 
   Future<String?> updateProfileImage (File profileImage, String path) async {

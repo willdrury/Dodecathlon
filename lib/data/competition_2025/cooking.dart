@@ -12,7 +12,8 @@ Event cooking = Event(
     themeColor: Colors.brown,
     icon: Icons.local_fire_department,
     startDate: DateTime(2025, 9),
-    endDate: DateTime(2025, 10)
+    endDate: DateTime(2025, 10),
+    displayImageUrl: ''
 );
 
 List<Challenge> cookingChallenges = [];

@@ -1,68 +1,69 @@
 import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/utilities/color_utility.dart';
 import 'package:dodecathlon/widgets/podium_column.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Podium extends StatelessWidget {
-  Podium({super.key, required this.users, required this.byEvent});
+  Podium({super.key, required this.currentUser, required this.users, required this.byEvent});
 
+  final User currentUser;
   final List<User> users;
   final bool byEvent;
 
   @override
   Widget build(BuildContext context) {
-    int e1 = users[0].currentEventPoints[0];
+    List<User> usersByEvent = List.from(users);
+    usersByEvent.sort((a,b) => b.currentEventPoints[0] - a.currentEventPoints[0]);
+
+    List<User> usersByCompetition = List.from(users);
+    usersByCompetition.sort((a,b) => b.currentCompetitionPoints[0] - a.currentCompetitionPoints[0]);
+
+    int e1 = usersByEvent[0].currentEventPoints[0];
     int e2 = 0;
     int e3 = 0;
 
-    int c1 = users[0].currentCompetitionPoints[0];
+    int c1 = usersByCompetition[0].currentCompetitionPoints[0];
     int c2 = 0;
     int c3 = 0;
 
     if(users.length >= 2) {
-      e2 = users[1].currentEventPoints[0];
-      c2 = users[1].currentCompetitionPoints[0];
+      e2 = usersByEvent[1].currentEventPoints[0];
+      c2 = usersByCompetition[1].currentCompetitionPoints[0];
     }
 
     if(users.length >= 3) {
-      e3 = users[2].currentEventPoints[0];
-      c3 = users[2].currentCompetitionPoints[0];
+      e3 = usersByEvent[2].currentEventPoints[0];
+      c3 = usersByCompetition[2].currentCompetitionPoints[0];
     }
 
-    return Expanded(
+    return Padding(
+      padding: const EdgeInsets.all(10),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(
-            child: Row(
-              children: [
-                if (users.length > 2)
-                  PodiumColumn(heightFactor:
-                    byEvent
-                        ? (e1==0 || e3==0) ? 0 : e3/e1
-                        : (c1==0 || c3==0) ? 0 : c3/c1,
-                    barColor: byEvent ? Theme.of(context).colorScheme.primaryContainer : Colors.lightGreenAccent,
-                    user: users[2],
-                    isEvent: byEvent,
-                  ), // 3rd
-                PodiumColumn(
-                  heightFactor: 1.0,
-                  barColor: byEvent ? ColorUtility().darken(Theme.of(context).colorScheme.primaryContainer, .2) : Colors.green,
-                  user: users[0],
-                  isEvent: byEvent,),
-                if (users.length > 1)// 1st
-                  PodiumColumn(heightFactor:
-                    byEvent
-                        ? (e1==0 || e2==0) ? 0 : e2/e1
-                        : (c1==0 || c2==0) ? 0 : c2/c1,
-                    barColor: byEvent ? ColorUtility().darken(Theme.of(context).colorScheme.primaryContainer) : ColorUtility().darken(Colors.lightGreenAccent),
-                    user: users[1],
-                    isEvent: byEvent,
-                  ), // 2nd
-              ],
+          PodiumColumn(
+            heightFactor: 1.0,
+            barColor: byEvent ? Theme.of(context).colorScheme.secondary : Color(0xFFFF6BDC),
+            user: byEvent? usersByEvent[0] : usersByCompetition[0],
+            isEvent: byEvent,),
+          if (users.length > 1)// 1st
+            PodiumColumn(
+              heightFactor: byEvent
+                ? (e1==0 || e2==0) ? 0 : e2/e1
+                : (c1==0 || c2==0) ? 0 : c2/c1,
+              barColor: byEvent ? Theme.of(context).colorScheme.primary : Color(0xFFFF5858),
+              user: byEvent? usersByEvent[1] : usersByCompetition[1],
+              isEvent: byEvent,
             ),
-          )
+          if (users.length > 2)
+            PodiumColumn(
+              heightFactor: byEvent
+                ? (e1==0 || e3==0) ? 0 : e3/e1
+                : (c1==0 || c3==0) ? 0 : c3/c1,
+              barColor: byEvent ? Theme.of(context).colorScheme.tertiary : Color(0xFFFFC170),
+              user: byEvent? usersByEvent[2] : usersByCompetition[2],
+              isEvent: byEvent,
+            ), // 3rd// 2nd
         ],
       ),
     );

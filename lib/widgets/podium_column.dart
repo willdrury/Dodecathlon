@@ -21,41 +21,53 @@ class PodiumColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => UserDetailsScreen(user: user))
-                );
-              },
-              child: CircleAvatar(backgroundImage: NetworkImage(
-                  user.profileImageUrl != null
-                    ? user.profileImageUrl !
-                    : kDefaultIcon
-              ),),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 5),
-              child: Text(
-                isEvent ? user.currentEventPoints[0].toString() : user.currentCompetitionPoints[0].toString(),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Container(
-              height: 80 * heightFactor,
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 3),
-              padding: EdgeInsets.only(top: 5),
-              decoration: BoxDecoration(
-                color: barColor,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(10))
-              )
-            )
-          ],
-        )
+
+    Widget profileContainer = GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (ctx) => UserDetailsScreen(user: user))
+        );
+      },
+      child: CircleAvatar(backgroundImage: NetworkImage(
+          user.profileImageUrl != null
+              ? user.profileImageUrl !
+              : kDefaultIcon
+      ),),
     );
+
+    return
+      Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: isEvent? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          if (isEvent)
+            profileContainer,
+          Container(
+            width: 200 * heightFactor,
+            height: 40,
+            alignment: isEvent ? Alignment.centerLeft : Alignment.centerRight,
+            margin: isEvent ? EdgeInsets.only(left: 10, bottom: 5, top: 5) : EdgeInsets.only(right: 10, bottom: 5, top: 5),
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: barColor,
+              borderRadius: isEvent ? BorderRadius.horizontal(left: Radius.circular(30)) : BorderRadius.horizontal(right: Radius.circular(30)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black38,
+                  offset: Offset(0, 3),
+                  spreadRadius: 1,
+                  blurRadius: 3
+                )
+              ]
+            ),
+            child: Text(
+              isEvent ? user.currentEventPoints[0].toString() : user.currentCompetitionPoints[0].toString(),
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+          if (!isEvent)
+            profileContainer
+        ],
+      );
   }
 }
