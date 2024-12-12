@@ -10,7 +10,8 @@ Event volunteering = Event(
   themeColor: Colors.indigo,
   icon: Icons.volunteer_activism,
   startDate: DateTime(2025, 5),
-  endDate: DateTime(2025, 6)
+  endDate: DateTime(2025, 6),
+    displayImageUrl: ''
 );
 
 List<Challenge> volunteeringChallenges = [];

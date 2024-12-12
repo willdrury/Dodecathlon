@@ -13,7 +13,8 @@ Event yoga = Event(
   themeColor: Colors.pink,
   icon: Icons.self_improvement,
   startDate: DateTime(2025, 8),
-  endDate: DateTime(2025, 9)
+  endDate: DateTime(2025, 9),
+  displayImageUrl: ''
 );
 
 List<Challenge> yogaChallenges = [];

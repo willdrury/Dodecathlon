@@ -52,6 +52,7 @@ class _AuthScreenState extends State<AuthScreen> {
           submissions: [],
           competitions: [],
           currentEventDifficulty: [],
+          likedPostIds: [],
         );
 
         await FirebaseFirestore.instance.collection('users').doc(userCredentials.user!.uid).set(user.toJson());

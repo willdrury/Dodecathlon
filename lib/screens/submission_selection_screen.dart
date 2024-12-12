@@ -3,6 +3,7 @@ import 'package:dodecathlon/data/competition_2025/reading.dart';
 import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/competition.dart';
 import 'package:dodecathlon/models/submission.dart';
+import 'package:dodecathlon/providers/submission_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,9 +12,7 @@ import '../models/user.dart';
 import '../widgets/select_difficulty_container.dart';
 
 class SubmissionSelectionScreen extends ConsumerStatefulWidget {
-  SubmissionSelectionScreen({super.key, required this.userSubmissions});
-
-  List<Submission> userSubmissions;
+  SubmissionSelectionScreen({super.key});
 
   @override
   ConsumerState<SubmissionSelectionScreen> createState() => _SubmissionSelectionScreenState();
@@ -45,7 +44,8 @@ class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionS
   Widget build(BuildContext context) {
 
     User currentUser = ref.watch(userProvider)!;
-    List<String> completedChallengeIds = widget.userSubmissions.map((s) => s.challengeId).toList();
+    List<Submission> userSubmissions = ref.watch(submissionsProvider);
+    List<String> completedChallengeIds = userSubmissions.map((s) => s.challengeId).toList();
     final now = DateTime.now();
 
     if (currentUser.currentEventDifficulty.isEmpty) {

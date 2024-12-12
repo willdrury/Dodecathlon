@@ -9,7 +9,8 @@ Event chess = Event(
     themeColor: Colors.cyan,
     icon: Icons.psychology,
     startDate: DateTime(2025, 6),
-    endDate: DateTime(2025, 7)
+    endDate: DateTime(2025, 7),
+    displayImageUrl: ''
 );
 
 List<Challenge> chessChallenges = [];

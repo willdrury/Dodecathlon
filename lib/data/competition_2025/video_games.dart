@@ -13,7 +13,8 @@ Event videoGames = Event(
   themeColor: Colors.blueGrey,
   icon: Icons.sports_esports,
   startDate: DateTime(2025, 10),
-  endDate: DateTime(2025, 11)
+  endDate: DateTime(2025, 11),
+    displayImageUrl: ''
 );
 
 List<Challenge> videoGameChallenges = [];

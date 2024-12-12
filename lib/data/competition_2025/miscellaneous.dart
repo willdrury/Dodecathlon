@@ -10,7 +10,8 @@ Event miscellaneous = Event(
   themeColor: Colors.orange,
   icon: Icons.auto_awesome,
   startDate: DateTime(2025, 7),
-  endDate: DateTime(2025, 8)
+  endDate: DateTime(2025, 8),
+    displayImageUrl: ''
 );
 
 List<Challenge> miscellaneousChallenges = [];

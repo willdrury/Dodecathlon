@@ -10,6 +10,7 @@ class Event {
   final IconData icon;
   final DateTime startDate;
   final DateTime endDate;
+  final String displayImageUrl;
   final String? beginnerDescription;
   final String? intermediateDescription;
   final String? advancedDescription;
@@ -25,6 +26,7 @@ class Event {
     required this.icon,
     required this.startDate,
     required this.endDate,
+    required this.displayImageUrl,
     this.beginnerDescription,
     this.intermediateDescription,
     this.advancedDescription,

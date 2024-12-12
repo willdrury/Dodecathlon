@@ -13,7 +13,8 @@ Event running = Event(
   themeColor: Colors.lightGreen,
   icon: Icons.directions_run,
   startDate: DateTime(2025, 11),
-  endDate: DateTime(2025, 12)
+  endDate: DateTime(2025, 12),
+  displayImageUrl: ''
 );
 
 List<Challenge> runningChallenges = [];

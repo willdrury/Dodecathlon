@@ -2,10 +2,17 @@ import 'package:dodecathlon/screens/notifications_screen.dart';
 import 'package:flutter/material.dart';
 
 class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
-  DefaultAppBar({super.key, required this.label, required this.useShadow, required this.backgroundColor});
+  DefaultAppBar({
+    super.key,
+    required this.label,
+    required this.useShadow,
+    required this.backgroundColor,
+    required this.textColor,
+  });
 
   final String label;
   final Color backgroundColor;
+  final Color textColor;
   bool useShadow;
 
   @override
@@ -14,7 +21,8 @@ class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      title: Text(label, style: TextStyle(fontWeight: FontWeight.bold),),
+      title: Text(label, style: TextStyle(color: textColor),),
+      iconTheme: IconThemeData(color: textColor),
       floating: true,
       backgroundColor: backgroundColor,
       surfaceTintColor: Colors.transparent,

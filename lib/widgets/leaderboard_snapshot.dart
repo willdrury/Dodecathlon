@@ -66,7 +66,7 @@ class _LeaderboardSnapshotState extends State<LeaderboardSnapshop> {
           Expanded(
             child: Row(
               children: [
-                Podium(users: _isEvent ? usersByEvent : usersByCompetition, byEvent: _isEvent,),
+                Podium(currentUser: widget.currentUser, users: _isEvent ? usersByEvent : usersByCompetition, byEvent: _isEvent,),
                 SizedBox(width: 20,),
                 Expanded(
                   child: Column(

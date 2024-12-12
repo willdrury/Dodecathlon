@@ -13,7 +13,8 @@ Event puzzles = Event(
   themeColor: Colors.teal,
   icon: Icons.extension,
   startDate: DateTime(2025, 12),
-  endDate: DateTime(2026, 1)
+  endDate: DateTime(2026, 1),
+  displayImageUrl: ''
 );
 
 List<Challenge> puzzleChallenges = [];

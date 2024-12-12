@@ -3,6 +3,7 @@ import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/providers/users_provider.dart';
 import 'package:dodecathlon/screens/loading_screen.dart';
+import 'package:dodecathlon/screens/post_creation_screen.dart';
 import 'package:dodecathlon/utilities/custom_color_extension.dart';
 import 'package:dodecathlon/widgets/default_app_bar.dart';
 import 'package:dodecathlon/widgets/default_drawer.dart';
@@ -27,52 +28,44 @@ class MainScreen extends ConsumerStatefulWidget {
 
 class _MainScreenState extends ConsumerState<MainScreen> {
 
-  late Widget _currentScreen;
+  late Widget _currentScreen = HomeScreen();
   int _currentPageIndex = 0;
   bool _showAppBar = true;
-  bool _useAppBarShadow = true;
+  bool _useAppBarShadow = false;
   Color? _appBarColor;
-  late String _appBarLabel = 'Home';
+  String _appBarLabel = '';
+  Color _appBarTextColor = Colors.black;
+  Color _scaffoldBackgroundColor = Colors.white;
+  Widget? _floatingActionButton;
   late User? currentUser;
   late List<User> users;
 
-  @override
-  void initState() {
-    super.initState();
-    currentUser = ref.read(userProvider);
-    users = ref.read(usersProvider);
-    if (currentUser == null) {
-      _currentScreen = LoadingScreen();
-    } else  {
-      _currentScreen = HomeScreen(user: currentUser!, users: users,);
-      print('users: $users');
-    }
-  }
-
-  void _onDestinationSelected(int index) async {
-    List<Submission>? userSubmissions = currentUser!.submissionData;
-    if (currentUser!.submissionData == null){
-      userSubmissions = await currentUser!.getSubmissions();
-    }
+  void _onDestinationSelected(int index, BuildContext ctx) async {
     setState(() {
       switch (index) {
         case 0:
           _currentPageIndex = index;
-          _currentScreen = HomeScreen(user: currentUser!, users: users,);
-          _showAppBar = true;
-          _appBarLabel = 'Home';
-          _useAppBarShadow = true;
-          _appBarColor = null;
-        case 1:
-          _currentPageIndex = index;
-          _currentScreen = EventsScreen(submissions: userSubmissions!,);
+          _currentScreen = HomeScreen();
           _showAppBar = true;
           _appBarLabel = '';
           _useAppBarShadow = false;
-          _appBarColor = Colors.white;
+          _appBarColor = Colors.transparent;
+          _appBarTextColor = Colors.black;
+          _scaffoldBackgroundColor = Colors.white;
+          _floatingActionButton = null;
+        case 1:
+          _currentPageIndex = index;
+          _currentScreen = EventsScreen();
+          _showAppBar = true;
+          _appBarLabel = '';
+          _useAppBarShadow = false;
+          _appBarColor = Colors.transparent;
+          _appBarTextColor = Colors.black;
+          _scaffoldBackgroundColor = Colors.white;
+          _floatingActionButton = null;
         case 2:
           Navigator.of(context).push(
-              MaterialPageRoute(builder: (ctx) => SubmissionSelectionScreen(userSubmissions: userSubmissions!,))
+              MaterialPageRoute(builder: (ctx) => SubmissionSelectionScreen())
           );
         case 3:
           _currentPageIndex = index;
@@ -80,10 +73,29 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           _showAppBar = true;
           _appBarLabel = 'Social';
           _useAppBarShadow = true;
+          _appBarColor = Colors.white;
+          _appBarTextColor = Colors.black;
+          _scaffoldBackgroundColor = Colors.white;
+          _floatingActionButton = FloatingActionButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => PostCreationScreen())
+              );
+            },
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.black,
+            child: const Icon(Icons.add),
+          );
         case 4:
           _currentPageIndex = index;
           _currentScreen = LeaderboardScreen(currentUser: currentUser!, users: users,);
-          _showAppBar = false;
+          _showAppBar = true;
+          _useAppBarShadow = false;
+          _appBarColor = Theme.of(context).colorScheme.primaryContainer;
+          _appBarLabel = 'Leaderboard';
+          _appBarTextColor = Theme.of(context).colorScheme.tertiary;
+          _scaffoldBackgroundColor = Colors.white;
+          _floatingActionButton = null;
       }
     });
   }
@@ -92,27 +104,33 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Widget build(BuildContext context) {
     currentUser = ref.watch(userProvider);
     users = ref.watch(usersProvider);
-
-
-    if(currentUser != null) {
-      _onDestinationSelected(_currentPageIndex);
+    if (currentUser == null) {
+      setState(() {
+        _currentScreen = LoadingScreen();
+      });
     }
 
     CustomColorsExtension customColors = Theme.of(context).extension<CustomColorsExtension>()!;
 
     Color appBarColor = _appBarColor != null
         ? _appBarColor!
-        // : customColors.primaryDim;
         : Colors.transparent;
 
     return Scaffold(
+      backgroundColor: _scaffoldBackgroundColor,
       endDrawer: DefaultDrawer(),
+      floatingActionButton: _floatingActionButton,
       body: NestedScrollView(
         floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               if (_showAppBar)
-                DefaultAppBar(label: _appBarLabel, useShadow: _useAppBarShadow, backgroundColor: appBarColor,),
+                DefaultAppBar(
+                  label: _appBarLabel,
+                  useShadow: _useAppBarShadow,
+                  backgroundColor: appBarColor,
+                  textColor: _appBarTextColor,
+                ),
             ];
           },
           body: _currentScreen
@@ -127,7 +145,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           ]
         ),
         child: NavigationBar(
-          onDestinationSelected: _onDestinationSelected,
+          onDestinationSelected: (int index) {
+            _onDestinationSelected(index, context);
+          },
           indicatorColor: Theme.of(context).colorScheme.primaryContainer,
           backgroundColor: Colors.white,
           shadowColor: Colors.black,

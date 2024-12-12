@@ -9,7 +9,7 @@ User biw = User(
     friends: ['Kamala Harris', 'Bill Nye'],
     submissions: [],
     currentEventDifficulty: [Difficulty.beginner],
-    // profileImageUrl: 'https://www.easychickpeasy.com/wp-content/uploads/2023/02/parsnip-substitutes-1.jpg'
+    likedPostIds: []
 );
 
 User kamala = User(
@@ -20,7 +20,7 @@ User kamala = User(
     friends: ['Biw'],
     submissions: [],
     currentEventDifficulty: [Difficulty.beginner],
-    // profileImageUrl: 'https://www.rollingstone.com/wp-content/uploads/2024/07/kamala-harris-memes.jpg?crop=0px%2C86px%2C1798px%2C1014px&resize=1600%2C900'
+    likedPostIds: []
 );
 
 User trump = User(
@@ -31,7 +31,7 @@ User trump = User(
     friends: [],
     submissions: [],
     currentEventDifficulty: [Difficulty.beginner],
-    // profileImageUrl: 'https://m.media-amazon.com/images/I/71H9VKgKCXL._AC_UF894,1000_QL80_.jpg'
+    likedPostIds: []
 );
 
 User bill = User(
@@ -42,7 +42,7 @@ User bill = User(
     friends: ['Biw', 'Kamala Harris'],
     submissions: [],
     currentEventDifficulty: [Difficulty.beginner],
-    // profileImageUrl: 'https://i.ytimg.com/vi/iubpN72D6AI/maxresdefault.jpg'
+    likedPostIds: []
 );
 
 List<User> demoUsers = [

@@ -24,5 +24,8 @@ class UsersProvider extends StateNotifier<List<dd.User>> {
 final usersProvider = StateNotifierProvider<UsersProvider, List<dd.User>>((ref) {
   final provider = UsersProvider();
   provider.loadUsers();
+  FirebaseFirestore.instance.collection('users').snapshots().listen((event) {
+    provider.loadUsers();
+  });
   return provider;
 });

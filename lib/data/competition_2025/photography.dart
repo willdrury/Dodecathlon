@@ -13,7 +13,8 @@ Event photography = Event(
   themeColor: Colors.purple,
   icon: Icons.photo_camera,
   startDate: DateTime(2025, 4),
-  endDate: DateTime(2025, 5)
+  endDate: DateTime(2025, 5),
+    displayImageUrl: ''
 );
 
 List<Challenge> photographyChallenges = [];
