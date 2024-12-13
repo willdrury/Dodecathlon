@@ -81,11 +81,11 @@ class Challenge {
       case SubmissionScreen.quiz:
         return QuizSubmissionScreen(challenge: args['challenge']);
       case SubmissionScreen.writtenReview:
-        return WrittenReviewSubmissionScreen();
+        return WrittenReviewSubmissionScreen(challenge: args['challenge']);
       case SubmissionScreen.inPersonEventAttendance:
         return EventAttendanceSubmissionScreen(challenge: args['challenge'],);
       case SubmissionScreen.pageCount:
-        return PageCountSubmissionScreen();
+        return PageCountSubmissionScreen(challenge: args['challenge'],);
       case SubmissionScreen.bookCompletion:
         return BookCompletionScreen(challenge: args['challenge'],);
     }

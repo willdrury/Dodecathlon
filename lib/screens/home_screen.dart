@@ -1,12 +1,14 @@
+import 'package:dodecathlon/data/FAQs.dart';
 import 'package:dodecathlon/data/competition_2025/competition.dart';
-import 'package:dodecathlon/data/demo_data/demo_in_person_events.dart';
 import 'package:dodecathlon/models/competition.dart';
 import 'package:dodecathlon/models/in_person_event.dart';
 import 'package:dodecathlon/providers/posts_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/difficulty_selection_screen.dart';
+import 'package:dodecathlon/screens/faq_details_screen.dart';
 import 'package:dodecathlon/utilities/color_utility.dart';
 import 'package:dodecathlon/utilities/custom_color_extension.dart';
+import 'package:dodecathlon/widgets/announcements_carousel.dart';
 import 'package:dodecathlon/widgets/event_progress_container.dart';
 import 'package:dodecathlon/widgets/home_page_shortcuts.dart';
 import 'package:dodecathlon/widgets/in_person_event_card.dart';
@@ -16,6 +18,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/post.dart';
 import '../models/user.dart';
+import '../providers/in_person_event_provider.dart';
 import '../providers/users_provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -23,7 +26,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 
   int eventIndex = 0;
   Competition competition = competition2025;
-  List<InPersonEvent> inPersonEvents = demoInPersonEvents.sublist(0,1);
 
   @override
   ConsumerState<HomeScreen> createState() => _MyHomePageState();
@@ -41,6 +43,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
 
     User user = ref.watch(userProvider)!;
     List<User> users = ref.watch(usersProvider);
+    List<InPersonEvent> inPersonEvents = ref.watch(inPersonEventProvider);
 
     // Only show posts within the last week that have been highlighted
     List<Post> _postHighlights = ref.watch(postsProvider).where((p) =>
@@ -64,35 +67,52 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Welcome back ${user.userName}!', style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold
-              ),),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Welcome back ${user.userName}!', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
+                  Text('Current Points', style: TextStyle(fontSize: 25,),),
+                ],
+              ),
             ),
           ),
           if (_showDifficultySelectionButton)
-            Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (ctx) => DifficultySelectionScreen(event: widget.competition.events[widget.eventIndex],))
-                    );
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.white, ColorUtility().lighten(Theme.of(context).colorScheme.primary, .4)],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter
-                        )
-                    ),
-                    child: Text('Click here to get started this month!'),
+            Container(
+              height: 400,
+              alignment: Alignment.center,
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [Colors.white, ColorUtility().lighten(Theme.of(context).colorScheme.primary, .4)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter
+                  )
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 80,),
+                  Text('Select a difficulty to get started!', style: TextStyle(fontSize: 20),),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (ctx) => FaqDetailsScreen(faq: eventDifficulties))
+                      );
+                    },
+                    child: Text('How do difficulties work?', style: TextStyle(color: Theme.of(context).colorScheme.tertiary),),
                   ),
-                )
-              ],
+                  IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (ctx) => DifficultySelectionScreen(event: widget.competition.events[widget.eventIndex],))
+                        );
+                      },
+                      icon: Icon(Icons.add_circle_outline, size: 50,)
+                  ),
+                  SizedBox(height: 80,),
+                ],
+              ),
             ),
           if (!_showDifficultySelectionButton)
             EventProgressContainer(),
@@ -128,25 +148,27 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
                         ),
                       ),
                       SizedBox(height: 10,),
-                      Text('Upcoming Events Near you', style:
+                      Text('News', style:
                         TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       SizedBox(height: 10,),
-                      for (InPersonEvent event in widget.inPersonEvents)
+                      AnnouncementsCarousel(),
+                      SizedBox(height: 10,),
+                      if (inPersonEvents.isNotEmpty)
+                        Text('Upcoming Events Near you', style:
+                          TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      SizedBox(height: 10,),
+                      for (InPersonEvent event in inPersonEvents)
                         InPersonEventCard(event: event),
                       SizedBox(height: 20,),
-                      // Text('News', style:
-                      //   TextStyle(
-                      //     fontSize: 15,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
-                      // Text('Nothing here right now...'),
-                      SizedBox(height: 20,),
-                      Text('Highlights', style:
+                      Text('Featured Posts', style:
                         TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -158,7 +180,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
                       SizedBox(height: 20,),
                       Text('Jump to', style:
                         TextStyle(
-                          fontSize: 15,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

@@ -18,11 +18,11 @@ class EventProgressContainer extends ConsumerWidget {
     User user = ref.read(userProvider)!;
     List<Submission> submissions = ref.watch(submissionsProvider);
 
-    int _maxMainPoints = 90;
-    if (user.currentEventDifficulty == Difficulty.beginner) {
-      _maxMainPoints = 50;
-    } else if (user.currentEventDifficulty == Difficulty.intermediate) {
-      _maxMainPoints = 70;
+    int _maxMainPoints = 80;
+    if (user.currentEventDifficulty == Difficulty.intermediate) {
+      _maxMainPoints = 60;
+    } else if (user.currentEventDifficulty == Difficulty.beginner) {
+      _maxMainPoints = 40;
     }
 
     int _mainPoints = 0;
@@ -49,12 +49,6 @@ class EventProgressContainer extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text('Current Points', style: TextStyle(
-                fontSize: 25,
-            ),),
-          ),
           SizedBox(height: 40,),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,

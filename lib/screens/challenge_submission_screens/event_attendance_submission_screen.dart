@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/submission.dart';
 import '../../models/user.dart';
 import '../../providers/user_provider.dart';
+import '../post_creation_screen.dart';
 
 class EventAttendanceSubmissionScreen extends ConsumerStatefulWidget {
   EventAttendanceSubmissionScreen({super.key, required this.challenge});
@@ -24,7 +25,7 @@ class _EventAttendanceSubmissionScreenState extends ConsumerState<EventAttendanc
   void uploadSubmission(BuildContext ctx) async {
     Submission submission = Submission(
       userId: currentUser!.id!,
-      points: widget.challenge.maxPoints,
+      points: 0,
       challengeId: widget.challenge.id,
       isVerified: true,
       isBonus: widget.challenge.isBonus,
@@ -36,12 +37,11 @@ class _EventAttendanceSubmissionScreenState extends ConsumerState<EventAttendanc
     currentUser!.submissions.add(submission.id);
     UserProvider().setUser(currentUser!);
 
-    if(ctx.mounted) {
-      Navigator.of(ctx).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (ctx) => MainScreen()),
-            (Route<dynamic> route) => false,
-      );
-    }
+    Navigator.of(ctx).push(
+      MaterialPageRoute(builder: (ctx) => PostCreationScreen(
+        title: 'Tell us about the event!',
+      )),
+    );
   }
 
   @override
@@ -70,24 +70,18 @@ class _EventAttendanceSubmissionScreenState extends ConsumerState<EventAttendanc
                         uploadSubmission(context);
                       },
                       child: Text(
-                          'Upload', style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.primary)),
+                          'Next', style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.primary)),
                     ),
                   ],
                 ),
-                SizedBox(height: 30,),
-                Text('Prove it', style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
-                ListTile(
-                  leading: const Icon(Icons.groups),
-                  title: const Text('Share With Friends'),
-                  trailing: Switch(
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _shareEnabled = value!;
-                      });
-                    },
-                    value: _shareEnabled,
-                  ),
-                )
+                SizedBox(height: 60,),
+                Text(
+                  'To get credit for this challenge, submit a post with evidence of yourself attending the event. '
+                  'This can be a photo, description of what happened, or anything else which can be used as proof. \n\n'
+                  'Once submitted, it will need to be approved by another user in order to receive full points.\n\n'
+                  'Click "Next" to submit your evidence!',
+                  style: TextStyle(fontSize: 20),
+                ),
               ],
             ),
           ),

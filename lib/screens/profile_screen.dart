@@ -27,6 +27,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       p.userId == currentUser.id
     ).toList();
 
+    posts.sort((p1, p2) {
+      if (p1.createdAt.isBefore(p2.createdAt)) {
+        return 1;
+      }
+      return -1;
+    });
+
+    for (Post p in posts) {
+      p.user = currentUser;
+    }
+
     return DefaultTabController(
       initialIndex: 0,
       length: 2,

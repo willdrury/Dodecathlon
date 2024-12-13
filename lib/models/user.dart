@@ -20,6 +20,7 @@ class User {
   final String? id;
   List<Submission>? submissionData;
   List<String> likedPostIds;
+  DateTime createdDate;
 
   User({
     required this.userName,
@@ -30,6 +31,7 @@ class User {
     required this.friends,
     required this.currentEventDifficulty,
     required this.likedPostIds,
+    required this.createdDate,
     this.profileImageUrl,
     this.competitions,
     this.id,
@@ -47,21 +49,23 @@ class User {
     'competitions': competitions,
     'id': id,
     'likedPostIds': likedPostIds,
+    'createdDate': createdDate,
   };
 
   factory User.fromMap(Map data) {
     return User(
-        userName: data['userName'],
-        email: data['email'],
-        currentEventPoints: List<int>.from(data['currentEventPoints'] as List<dynamic>),
-        currentCompetitionPoints: List<int>.from(data['currentCompetitionPoints'] as List<dynamic>),
-        friends: List<String>.from(data['friends'] as List<dynamic>),
-        currentEventDifficulty: (List<String>.from(data['currentEventDifficulty'] as List<dynamic>)).map((e) => getDifficultyEnumFromString(e)).toList(),
-        profileImageUrl: data['profileImageUrl'],
-        submissions: List<String>.from(data['submissions'] as List<dynamic>),
-        competitions: List<String>.from(data['competitions'] as List<dynamic>),
-        id: data['id'],
-        likedPostIds: List<String>.from(data['likedPostIds'] as List<dynamic>),
+      userName: data['userName'],
+      email: data['email'],
+      currentEventPoints: List<int>.from(data['currentEventPoints'] as List<dynamic>),
+      currentCompetitionPoints: List<int>.from(data['currentCompetitionPoints'] as List<dynamic>),
+      friends: List<String>.from(data['friends'] as List<dynamic>),
+      currentEventDifficulty: (List<String>.from(data['currentEventDifficulty'] as List<dynamic>)).map((e) => getDifficultyEnumFromString(e)).toList(),
+      profileImageUrl: data['profileImageUrl'],
+      submissions: List<String>.from(data['submissions'] as List<dynamic>),
+      competitions: List<String>.from(data['competitions'] as List<dynamic>),
+      id: data['id'],
+      likedPostIds: List<String>.from(data['likedPostIds'] as List<dynamic>),
+      createdDate: DateTime.fromMicrosecondsSinceEpoch((data['createdDate'] as Timestamp).microsecondsSinceEpoch),
     );
   }
 

@@ -25,7 +25,6 @@ class EventDetailsScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: ColorUtility().lighten(event.themeColor, .4),
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(event.name, style: TextStyle(color: Colors.white),),

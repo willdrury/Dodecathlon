@@ -1,4 +1,3 @@
-import 'package:dodecathlon/models/submission.dart';
 import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/providers/users_provider.dart';
@@ -15,7 +14,6 @@ import 'package:dodecathlon/screens/events_screen.dart';
 import 'package:dodecathlon/screens/leaderboard_screen.dart';
 import 'package:dodecathlon/screens/social_screen.dart';
 import 'package:dodecathlon/screens/home_screen.dart';
-import 'package:dodecathlon/data/demo_data/demo_users.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   MainScreen({super.key});

@@ -1,4 +1,3 @@
-import 'package:dodecathlon/data/demo_data/demo_users.dart';
 import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/widgets/leaderboard_sub_tab.dart';
 import 'package:flutter/material.dart';

@@ -107,7 +107,7 @@ class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionS
                         Divider(),
                         Text('Bonus'),
                         if (bonusChallenges.isEmpty)
-                          ListTile(title: Text('Check back later!', style: TextStyle(color: Colors.grey),),),                          // Text('None', style: TextStyle(color: Colors.grey),),
+                          ListTile(title: Text('All Done!', style: TextStyle(color: Colors.grey),),),                          // Text('None', style: TextStyle(color: Colors.grey),),
                         for (Challenge challenge in bonusChallenges)
                           ListTile(
                             leading: Radio<Challenge>(

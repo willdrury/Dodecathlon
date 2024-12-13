@@ -102,7 +102,8 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                       title: Text('Delete', style: TextStyle(color: Colors.red),),
                       leading: Icon(Icons.delete, color: Colors.red,),)
                     ),
-                  PopupMenuItem(value: 'Report', child: ListTile(title: Text('Report'), leading: Icon(Icons.flag),))
+                  PopupMenuItem(value: 'Report', child: ListTile(title: Text('Report'), leading: Icon(Icons.flag),)),
+                  PopupMenuItem(value: 'Approve', child: ListTile(title: Text('Approve'), leading: Icon(Icons.thumbs_up_down),))
                 ];
               },
             ),

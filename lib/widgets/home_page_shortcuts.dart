@@ -34,18 +34,11 @@ class HomePageShortcuts extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
+                // color: Theme.of(context).colorScheme.primary,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black38,
-                      offset: Offset(0, 5),
-                      spreadRadius: 1,
-                      blurRadius: 5
-                  )
-                ]
+                border: Border.all(color: Theme.of(context).colorScheme.primary)
             ),
-            child: Text('Current Event', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+            child: Text('Current Event', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 20, fontWeight: FontWeight.bold),),
           ),
         ),
         InkWell(
@@ -57,18 +50,11 @@ class HomePageShortcuts extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                color: nextEvent.themeColor,
+                // color: nextEvent.themeColor,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black38,
-                      offset: Offset(0, 5),
-                      spreadRadius: 1,
-                      blurRadius: 5
-                  )
-                ]
+                border: Border.all(color: nextEvent.themeColor)
             ),
-            child: Text('Upcoming Event', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+            child: Text('Upcoming Event', style: TextStyle(color: nextEvent.themeColor, fontSize: 20, fontWeight: FontWeight.bold),),
           ),
         ),
         InkWell(
@@ -80,18 +66,11 @@ class HomePageShortcuts extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.tertiary,
+                // color: Theme.of(context).colorScheme.tertiary,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black38,
-                      offset: Offset(0, 5),
-                      spreadRadius: 1,
-                      blurRadius: 5
-                  )
-                ]
+                border: Border.all(color: Theme.of(context).colorScheme.tertiary)
             ),
-            child: Text('Event Schedule', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+            child: Text('Event Schedule', style: TextStyle(color: Theme.of(context).colorScheme.tertiary, fontSize: 20, fontWeight: FontWeight.bold),),
           ),
         ),
         InkWell(
@@ -103,18 +82,11 @@ class HomePageShortcuts extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
+                // color: Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black38,
-                      offset: Offset(0, 5),
-                      spreadRadius: 1,
-                      blurRadius: 5
-                  )
-                ]
+                border: Border.all(color: Theme.of(context).colorScheme.secondary)
             ),
-            child: Text('FAQ', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+            child: Text('FAQ', style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 20, fontWeight: FontWeight.bold),),
           ),
         ),
       ],

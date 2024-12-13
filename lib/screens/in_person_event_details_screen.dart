@@ -1,19 +1,19 @@
-import 'package:dodecathlon/data/competition_2025/competition.dart';
-import 'package:dodecathlon/models/challenge.dart';
-import 'package:dodecathlon/models/event.dart';
 import 'package:dodecathlon/models/in_person_event.dart';
-import 'package:dodecathlon/utilities/color_utility.dart';
+import 'package:dodecathlon/providers/users_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/user.dart';
 
-class InPersonEventDetailsScreen extends StatelessWidget {
+class InPersonEventDetailsScreen extends ConsumerWidget {
   const InPersonEventDetailsScreen({super.key, required this.event});
 
   final InPersonEvent event;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    List<User> users = ref.read(usersProvider);
 
     String _statusText = '';
 
@@ -81,8 +81,8 @@ class InPersonEventDetailsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Attending:', style: TextStyle(fontWeight: FontWeight.bold),),
-                    for(User u in event.attending)
-                      Text(u.userName),
+                    for(String userId in event.attending)
+                      Text(users.where((u) => u.id == userId).first.userName),
                   ],
                 ),
               ),

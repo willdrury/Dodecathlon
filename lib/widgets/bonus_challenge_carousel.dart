@@ -1,6 +1,5 @@
 import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/screens/challenge_details_screen.dart';
-import 'package:dodecathlon/screens/events_screen.dart';
 import 'package:dodecathlon/widgets/bonus_challenge_card.dart';
 import 'package:flutter/material.dart';
 

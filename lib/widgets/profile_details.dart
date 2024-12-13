@@ -1,3 +1,8 @@
+import 'package:dodecathlon/screens/account_management_screen.dart';
+import 'package:dodecathlon/screens/notification_management_screen.dart';
+import 'package:dodecathlon/screens/notifications_screen.dart';
+import 'package:dodecathlon/screens/theme_selection_screen.dart';
+import 'package:dodecathlon/screens/user_stats_screen.dart';
 import 'package:dodecathlon/widgets/profile_picture_input.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -114,28 +119,44 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
                 title: Text('Statistics'),
                 subtitle: Text('Joined Nov 1, 2024'),
                 trailing: Icon(Icons.arrow_right),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => UserStatsScreen())
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(Icons.light_mode_outlined),
                 title: Text('Theme'),
                 subtitle: Text('System Default'),
                 trailing: Icon(Icons.arrow_right),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => ThemeSelectionScreen())
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(Icons.notifications_outlined),
                 title: Text('Notification Settings'),
                 subtitle: Text('All Allowed'),
                 trailing: Icon(Icons.arrow_right),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => NotificationManagementScreen())
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(Icons.person_outline),
                 title: Text('Manage Account'),
                 subtitle: Text('Email'),
                 trailing: Icon(Icons.arrow_right),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => AccountManagementScreen())
+                  );
+                },
               ),
             ],
           ),

@@ -73,7 +73,6 @@ class _BookCompletionScreenState extends ConsumerState<BookCompletionScreen> {
             (Route<dynamic> route) => false,
       );
     }
-
   }
 
   @override
@@ -142,21 +141,21 @@ class _BookCompletionScreenState extends ConsumerState<BookCompletionScreen> {
                           TextField(
                             controller: _titleController,
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
+                            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                             maxLines: 2,
                             decoration: InputDecoration(
                               hintText: 'Title',
-                              hintStyle: TextStyle(fontSize: 30, color: Theme.of(context).colorScheme.primary.withAlpha(100)),
+                              hintStyle: TextStyle(fontSize: 30, color: Colors.black26),
                               border: InputBorder.none,
                             ),
                           ),
                           TextField(
                             controller: _authorController,
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 30, color: Theme.of(context).colorScheme.primary),
+                            style: TextStyle(fontSize: 30),
                             decoration: InputDecoration(
                               hintText: 'Author',
-                              hintStyle: TextStyle(fontSize: 30, color: Theme.of(context).colorScheme.primary.withAlpha(100)),
+                              hintStyle: TextStyle(fontSize: 30, color: Colors.black26),
                               border: InputBorder.none,
                             ),
                           ),
@@ -164,10 +163,9 @@ class _BookCompletionScreenState extends ConsumerState<BookCompletionScreen> {
                           TextField(
                             controller: _reviewController,
                             maxLines: 7,
-                            style: TextStyle(color: Theme.of(context).colorScheme.primary),
                             decoration: InputDecoration(
                                 hintText: 'Review (optional)',
-                                hintStyle: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.primary.withAlpha(100)),
+                                hintStyle: TextStyle(fontSize: 20, color: Colors.black26),
                                 border: InputBorder.none
                             ),
                           ),
@@ -179,7 +177,7 @@ class _BookCompletionScreenState extends ConsumerState<BookCompletionScreen> {
                 SizedBox(height: 30,),
                 ListTile(
                   leading: const Icon(Icons.groups),
-                  title: const Text('Share With Friends'),
+                  title: const Text('Share to feed'),
                   trailing: Switch(
                     onChanged: (bool? value) {
                       setState(() {

@@ -5,6 +5,11 @@ FaqItem scoring = FaqItem(
     body: 'Uh, it\'s complicated...'
 );
 
+FaqItem eventDifficulties = FaqItem(
+    title: 'Event Difficulties',
+    body: 'You see...'
+);
+
 FaqItem rankings = FaqItem(
     title: 'How do the rankings work?',
     body: 'Uh, it\'s complicated...'

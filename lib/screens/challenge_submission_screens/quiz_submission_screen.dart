@@ -78,7 +78,7 @@ class _QuizSubmissionScreenState extends ConsumerState<QuizSubmissionScreen> {
                 Text('Answer the following questions', style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
                 ListTile(
                   leading: const Icon(Icons.groups),
-                  title: const Text('Share With Friends'),
+                  title: const Text('Share to feed'),
                   trailing: Switch(
                     onChanged: (bool? value) {
                       setState(() {

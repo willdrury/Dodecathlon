@@ -1,7 +1,6 @@
 import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/widgets/leaderboard_list_item.dart';
 import 'package:flutter/material.dart';
-import 'package:dodecathlon/data/demo_data/demo_users.dart';
 
 class LeaderboardSubTab extends StatefulWidget {
   LeaderboardSubTab({super.key, required this.users});

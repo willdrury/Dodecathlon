@@ -66,11 +66,11 @@ class _BookSubmissionFormState extends State<BookSubmissionForm> {
               TextField(
                 controller: _titleController,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 maxLines: 2,
                 decoration: InputDecoration(
                   hintText: 'Title',
-                  hintStyle: TextStyle(fontSize: 30, color: Theme.of(context).colorScheme.primary.withAlpha(100)),
+                  hintStyle: TextStyle(fontSize: 30, color: Colors.black26),
                   border: InputBorder.none,
                 ),
               ),

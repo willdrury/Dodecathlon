@@ -39,16 +39,18 @@ class CircularProgressContainer extends StatefulWidget {
 
 class _CircularProgressContainerState extends State<CircularProgressContainer> with TickerProviderStateMixin {
   late AnimationController controller;
+  late CurvedAnimation animation;
 
   @override
   void initState() {
     controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 2),
     )..addListener(() {
       setState(() {});
     });
     controller.forward();
+    animation = CurvedAnimation(parent: controller, curve: Curves.ease);
     super.initState();
   }
 
@@ -79,7 +81,7 @@ class _CircularProgressContainerState extends State<CircularProgressContainer> w
             height: widget.indicatorDiameter,
             width: widget.indicatorDiameter,
             child:  CircularProgressIndicator(
-              value: controller.value * widget.indicatorProgress,
+              value: animation.value * widget.indicatorProgress,
               strokeWidth: widget.indicatorWidth,
               strokeCap: StrokeCap.round,
               color: widget.indicatorColor,

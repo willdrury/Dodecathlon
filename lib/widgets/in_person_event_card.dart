@@ -1,19 +1,29 @@
 import 'package:dodecathlon/models/in_person_event.dart';
+import 'package:dodecathlon/models/user.dart';
+import 'package:dodecathlon/providers/users_provider.dart';
 import 'package:dodecathlon/screens/in_person_event_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 final formatter = DateFormat('MMM d');
 
-class InPersonEventCard extends StatelessWidget {
+class InPersonEventCard extends ConsumerWidget {
   InPersonEventCard({super.key, required this.event});
 
   InPersonEvent event;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    List<User> users = ref.read(usersProvider);
+    List<User> hosts = users.where((u) => u.userName == event.host).toList();
+    if (hosts.isEmpty) {
+      return Text('unable to locate host');
+    }
+    User host = hosts[0];
+
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 20),
+      margin: EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.black12)
@@ -25,19 +35,13 @@ class InPersonEventCard extends StatelessWidget {
           ListTile(
             leading: CircleAvatar(
               backgroundImage: NetworkImage(
-                  event.host.profileImageUrl != null
-                      ? event.host.profileImageUrl!
+                  host.profileImageUrl != null
+                      ? host.profileImageUrl!
                       : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
               ),
             ),
-            title: Text(event.host.userName),
+            title: Text(host.userName),
             subtitle: Text('Starts: ${formatter.format(event.startTime)}, ${event.startTime.hour}:${event.startTime.minute}',),
-            // trailing: IconButton(
-            //     onPressed: () {
-            //
-            //     },
-            //     icon: Icon(Icons.more_vert)
-            // ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
