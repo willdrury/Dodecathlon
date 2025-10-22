@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-
-import '../data/competition_2025/competition.dart';
+import '../models/event.dart';
 import '../screens/difficulty_selection_screen.dart';
 
 class SelectDifficultyContainer extends StatelessWidget {
-  SelectDifficultyContainer({super.key, required this.eventIndex});
+  const SelectDifficultyContainer({super.key, required this.event});
 
-  final int eventIndex;
+  final Event event;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
-            MaterialPageRoute(builder: (ctx) => DifficultySelectionScreen(event: competition2025.events[eventIndex]))
+            MaterialPageRoute(builder: (ctx) => DifficultySelectionScreen(event: event))
         );
       },
       child: Container(

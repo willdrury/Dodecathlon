@@ -3,10 +3,14 @@ import 'package:dodecathlon/screens/challenge_details_screen.dart';
 import 'package:dodecathlon/widgets/bonus_challenge_card.dart';
 import 'package:flutter/material.dart';
 
-class BonusChallengeCarousel extends StatefulWidget {
-  BonusChallengeCarousel({super.key, required this.challenges});
+import '../models/event.dart';
+import 'challenge_card.dart';
 
-  List<Challenge> challenges;
+class BonusChallengeCarousel extends StatefulWidget {
+  const BonusChallengeCarousel({super.key, required this.challenges, required this.event});
+
+  final List<Challenge> challenges;
+  final Event event;
 
   @override
   State<StatefulWidget> createState() {
@@ -14,34 +18,61 @@ class BonusChallengeCarousel extends StatefulWidget {
   }
 }
 
-class _BonusChallengeCarouselState extends State<BonusChallengeCarousel> {
+class _BonusChallengeCarouselState extends State<BonusChallengeCarousel> with SingleTickerProviderStateMixin {
+
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+      lowerBound: 0,
+      upperBound: 1,
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _animationController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 120,
-          child: CarouselView(
-              elevation: 5,
-              padding: EdgeInsets.all(10),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              itemExtent: 150,
-              shrinkExtent: 150,
-              onTap: (int valueChanged) {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(challenge: widget.challenges[valueChanged]))
-                );
-              },
-              children: [
-                for (Challenge challenge in widget.challenges)
-                  BonusChallengeCard(challenge: challenge,)
-              ]
-          ),
-        )
-      ],
+    return AnimatedBuilder(
+      animation: _animationController,
+      child: SizedBox(
+        height: 180,
+        child: CarouselView(
+            elevation: 5,
+            padding: EdgeInsets.all(10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            itemExtent: 180,
+            shrinkExtent: 180,
+            onTap: (int valueChanged) {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(challenge: widget.challenges[valueChanged]))
+              );
+            },
+            children: [
+              for (Challenge challenge in widget.challenges)
+                BonusChallengeCard(challenge: challenge, event: widget.event,)
+            ]
+        ),
+      ),
+      builder: (context, child) => SlideTransition(
+        position: Tween(
+          begin: const Offset(1, 0),
+          end: const Offset(0, 0),
+        ).animate(CurvedAnimation(
+            parent: _animationController, curve: Curves.easeInOut)),
+        child: child,
+      ),
     );
   }
 }

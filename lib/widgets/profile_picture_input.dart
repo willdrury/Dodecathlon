@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePictureInput extends StatefulWidget {
-  ProfilePictureInput({super.key, required this.user});
+  const ProfilePictureInput({super.key, required this.user});
 
-  User user;
+  final User user;
 
   @override
   State<StatefulWidget> createState() {

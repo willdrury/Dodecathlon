@@ -1,182 +1,199 @@
 import 'package:dodecathlon/models/event.dart';
 import 'package:dodecathlon/models/in_person_event.dart';
 import 'package:dodecathlon/models/submission.dart';
+import 'package:dodecathlon/providers/events_provider.dart';
 import 'package:dodecathlon/providers/submission_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
-import 'package:dodecathlon/screens/difficulty_selection_screen.dart';
 import 'package:dodecathlon/screens/event_details_screen.dart';
-import 'package:dodecathlon/screens/in_person_event_creation_screen.dart';
-import 'package:dodecathlon/widgets/in_person_event_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../data/competition_2025/reading.dart';
 import '../models/challenge.dart';
 import '../models/user.dart';
+import '../providers/challenges_provider.dart';
 import '../providers/in_person_event_provider.dart';
-import '../widgets/bonus_challenge_carousel.dart';
-import '../widgets/upcoming_challenges_carousel.dart';
+import '../widgets/current_event_details.dart';
 
-class EventsScreen extends ConsumerWidget {
-  EventsScreen({super.key});
-
-  Event currentEvent = reading;
-  List<Challenge> challenges = readingChallenges;
-  final DateTime now = DateTime.now();
+class EventsScreen extends ConsumerStatefulWidget {
+  const EventsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EventsScreen> createState() {
+    return _EventsScreenState();
+  }
+}
 
+class _EventsScreenState extends ConsumerState<EventsScreen> {
+
+  Event? selectedEvent;
+
+  @override
+  Widget build(BuildContext context) {
+    final DateTime now = DateTime.now();
+
+    print('Building event screen: ${selectedEvent}');
+    if (selectedEvent != null) {
+      print('Selected event name: ${selectedEvent!.name}');
+    }
+
+    // User
     User currentUser = ref.read(userProvider)!;
+    bool hasSelectedDifficulty = currentUser.currentEventDifficulty != null;
+
+    // Submissions
     List<Submission> submissions = ref.watch(submissionsProvider);
     List<String> completedChallengeIds = submissions.map((s) => s.challengeId).toList();
+
+    // In-person events
     List<InPersonEvent> inPersonEvents = ref.watch(inPersonEventProvider);
 
-    bool hasSelectedDifficulty = currentUser.currentEventDifficulty.isNotEmpty;
+    // Events
+    List<Event> events = ref.watch(eventProvider);
+    events.sort((a, b) => a.startDate.isBefore(b.startDate) ? 1 : 0);
+    Event currentEvent = events.where((e) =>
+      e.startDate.isBefore(now) & e.endDate.isAfter(now)
+    ).first;
+    selectedEvent = selectedEvent ?? currentEvent;
+    int selectedEventIndex = events.indexOf(selectedEvent!);
+
+    // Challenges
+    AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
+    List<Challenge> eventChallenges = [];
+    if (challenges.hasValue) {
+      eventChallenges = challenges.value!.where((c) => c.eventId == selectedEvent!.id).toList();
+    }
     List<Challenge> bonusChallenges = [];
     List<Challenge> mainChallenges = [];
-    if (hasSelectedDifficulty) {
-      bonusChallenges = challenges.where((c) =>
+    if (hasSelectedDifficulty && challenges.hasValue) {
+      bonusChallenges = eventChallenges.where((c) =>
       c.isBonus &&
           !completedChallengeIds.contains(c.id) &&
           c.startDate.isBefore(now) &&
           c.endDate.isAfter(now) &&
-          (c.difficulty == currentUser.currentEventDifficulty[0] || c.difficulty == Difficulty.all)
+          c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&
+          c.prerequisiteChallenges.every((e) => completedChallengeIds.contains(e)) &&
+          (c.difficulty == currentUser.currentEventDifficulty || c.difficulty == Difficulty.all)
       ).toList();
-      mainChallenges = challenges.where((c) =>
+      mainChallenges = eventChallenges.where((c) =>
       !c.isBonus &&
           !completedChallengeIds.contains(c.id) &&
           c.startDate.isBefore(now) &&
           c.endDate.isAfter(now) &&
-          (c.difficulty == currentUser.currentEventDifficulty[0] || c.difficulty == Difficulty.all)
+          c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&
+          c.prerequisiteChallenges.every((e) => completedChallengeIds.contains(e)) &&
+          (c.difficulty == currentUser.currentEventDifficulty || c.difficulty == Difficulty.all)
       ).toList();
     }
     
     return SingleChildScrollView(
+      physics: NeverScrollableScrollPhysics(),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text('This Month', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx) => EventDetailsScreen(event: currentEvent))
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black38,
-                        offset: Offset(0, 2),
-                        blurRadius: 5,
-                        spreadRadius: 3
-                      )
-                    ]
+
+          // Page header
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(20),
+            height: 300,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                selectedEventIndex > 0
+                  ? IconButton(
+                    onPressed: () {
+                      selectedEvent = events[selectedEventIndex - 1];
+                      setState(() {});
+                    },
+                    icon: Icon(Icons.chevron_left)
+                  ) :
+                  IconButton(
+                    onPressed: null,
+                    icon: Icon(Icons.chevron_left, color: Colors.transparent)
                   ),
-                  child: Stack(
-                    alignment: Alignment.topLeft,
-                    children: [
-                      Image.network(
-                          currentEvent.displayImageUrl,
-                          fit: BoxFit.fill,
-                          height: 300,
-                          width: double.infinity,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
-                          currentEvent.name,
-                          style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold),),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 20,),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Spacer(),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Upcoming Challenges', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,),),
-                    if (!hasSelectedDifficulty)
-                      Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 50),
-                          child: Column(
-                            children: [
-                              Text('Select a difficulty to get started!', style: TextStyle(fontSize: 15),),
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (ctx) => DifficultySelectionScreen(event: currentEvent,))
-                                    );
-                                  },
-                                  icon: Icon(Icons.add_circle_outline, size: 30,)
-                              )
-                            ],
-                          )
-                        ),
-                      ),
-                    if (hasSelectedDifficulty)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 10,),
-                          if (bonusChallenges.isEmpty && mainChallenges.isEmpty)
-                            Container(
-                              alignment: Alignment.center,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(height: 20,),
-                                  Icon(Icons.celebration, color: Theme.of(context).colorScheme.primary,),
-                                  Text(
-                                    'Looks like you are all caught up!\nCheck back later for more challenges!',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: Theme.of(context).colorScheme.primary),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          if (bonusChallenges.isNotEmpty)
-                            Text('Bonus', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-                          if (bonusChallenges.isNotEmpty)
-                            BonusChallengeCarousel(challenges: bonusChallenges),
-                          SizedBox(height: 20,),
-                          if (mainChallenges.isNotEmpty)
-                            Text('Main', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-                          if (mainChallenges.isNotEmpty)
-                            UpcomingChallengesCarousel(challenges: mainChallenges),
-                          SizedBox(height: 20,),
-                        ],
-                      ),
-                    Text('In-Person Events', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
-                    TextButton.icon(
-                      onPressed: () {
+                    GestureDetector(
+                      onTap: () {
                         Navigator.of(context).push(
-                            MaterialPageRoute(builder: (ctx) => InPersonEventCreationScreen())
+                            MaterialPageRoute(builder: (ctx) => EventDetailsScreen(event: selectedEvent!, challenges: eventChallenges,))
                         );
                       },
-                      icon: Icon(Icons.add, color: Colors.blue,),
-                      label: Text(
-                        'Schedule an event',
-                        style: TextStyle(color: Colors.blue),),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            height: 120,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(100),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black12,
+                                    offset: Offset(0, 5),
+                                    spreadRadius: 1,
+                                    blurRadius: 5
+                                )
+                              ]
+                            )
+                          ),
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(selectedEvent!.displayImageUrl),
+                            maxRadius: 50,
+                          ),
+                        ],
+                      ),
                     ),
-                    for (InPersonEvent event in inPersonEvents)
-                      InPersonEventCard(event: event)
+                    SizedBox(height: 10,),
+                    GestureDetector(
+                      onTap: () {
+                        selectedEvent = currentEvent;
+                        setState(() {});
+                      },
+                      child: Text(
+                        selectedEvent == currentEvent ? 'Current Event' : '(Return to Current Event)',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 10,
+                        ),
+                      )
+                    ),
+                    Text(
+                      selectedEvent!.name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ],
+                Spacer(),
+                selectedEventIndex < events.length - 1
+                  ? IconButton(
+                      onPressed: () {
+                        selectedEvent = events[selectedEventIndex + 1];
+                        setState(() {});
+                      },
+                      icon: Icon(Icons.chevron_right)
+                  ) :
+                  IconButton(
+                      onPressed: null,
+                      icon: Icon(Icons.chevron_right, color: Colors.transparent)
+                  ),
+                ],
+            ),
+          ),
+
+          // Page Body
+          SizedBox(height: 20,),
+          CurrentEventDetails(
+            hasSelectedDifficulty: hasSelectedDifficulty,
+            currentEvent: selectedEvent!,
+            bonusChallenges: bonusChallenges,
+            mainChallenges: mainChallenges,
+            inPersonEvents: inPersonEvents,
           ),
         ],
       ),

@@ -29,7 +29,7 @@ final kColorScheme = ColorScheme.fromSeed(seedColor: Color(0xFF6A4C93)).copyWith
   secondary: Color(0xFFA580D7),
   tertiary: Color(0xFF4D3370),
 );
-final kColorSchemeDark = ColorScheme.fromSeed(seedColor: Colors.pink, brightness: Brightness.dark);
+final kColorSchemeDark = ColorScheme.fromSeed(seedColor: Color(0xFF6A4C93), brightness: Brightness.dark);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,11 +46,16 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
+    var brightness = MediaQuery.platformBrightnessOf(context);
+    bool lightMode = brightness == Brightness.light;
+    if (settings.isNotEmpty && settings['theme'] != null && settings['theme'] != 'system') {
+      lightMode = settings['theme'] == 'light';
+    }
 
     return MaterialApp(
       title: 'You Better',
       theme: ThemeData(
-        // colorScheme: settings[Setting.darkModeEnabled]! ? kColorSchemeDark : kColorScheme,
+        brightness: Brightness.light,
         colorScheme: kColorScheme,
         extensions: <ThemeExtension<dynamic>>[
           CustomColorsExtension(
@@ -58,6 +63,11 @@ class MyApp extends ConsumerWidget {
           ),
         ]
       ),
+      darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          colorScheme: kColorSchemeDark,
+      ),
+      themeMode: lightMode ? ThemeMode.light : ThemeMode.dark,
       home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (ctx, snapshot) {
@@ -67,6 +77,7 @@ class MyApp extends ConsumerWidget {
               );
             }
             if (snapshot.hasData) {
+              ref.read(userProvider);
               return MainScreen();
             }
             return const AuthScreen();

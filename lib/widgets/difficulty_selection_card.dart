@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class DifficultySelectionCard extends StatelessWidget {
 
-  DifficultySelectionCard({
+  const DifficultySelectionCard({
     super.key,
     required this.themeColor,
     required this.title,
@@ -12,10 +12,10 @@ class DifficultySelectionCard extends StatelessWidget {
     required this.description
   });
 
-  Color themeColor;
-  String title;
-  String subtitle;
-  String description;
+  final Color themeColor;
+  final String title;
+  final String subtitle;
+  final String description;
 
   @override
   Widget build(BuildContext context) {

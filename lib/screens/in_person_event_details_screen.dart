@@ -13,7 +13,7 @@ class InPersonEventDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    List<User> users = ref.read(usersProvider);
+    AsyncValue<List<User>> users = ref.read(usersProvider);
 
     String _statusText = '';
 
@@ -82,7 +82,8 @@ class InPersonEventDetailsScreen extends ConsumerWidget {
                   children: [
                     Text('Attending:', style: TextStyle(fontWeight: FontWeight.bold),),
                     for(String userId in event.attending)
-                      Text(users.where((u) => u.id == userId).first.userName),
+                      if (users.hasValue)
+                        Text(users.value!.where((u) => u.id == userId).first.userName),
                   ],
                 ),
               ),

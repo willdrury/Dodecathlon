@@ -2,7 +2,7 @@ import 'package:dodecathlon/screens/notifications_screen.dart';
 import 'package:flutter/material.dart';
 
 class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
-  DefaultAppBar({
+  const DefaultAppBar({
     super.key,
     required this.label,
     required this.useShadow,
@@ -13,7 +13,7 @@ class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String label;
   final Color backgroundColor;
   final Color textColor;
-  bool useShadow;
+  final bool useShadow;
 
   @override
   Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);

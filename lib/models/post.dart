@@ -50,6 +50,7 @@ class Post {
     } catch (error) {
       return error.toString();
     }
+    return null;
   }
 
   Future<String?> delete() async {
@@ -58,5 +59,6 @@ class Post {
     } catch (error) {
       return error.toString();
     }
+    return null;
   }
 }

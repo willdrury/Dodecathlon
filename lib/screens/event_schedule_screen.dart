@@ -1,42 +1,36 @@
-import 'package:dodecathlon/data/competition_2025/competition.dart';
+import 'dart:math';
+import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/event.dart';
-import 'package:dodecathlon/utilities/color_utility.dart';
+import 'package:dodecathlon/providers/challenges_provider.dart';
 import 'package:dodecathlon/widgets/event_list_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class EventScheduleScreen extends StatefulWidget {
+import '../providers/events_provider.dart';
+
+class EventScheduleScreen extends ConsumerStatefulWidget {
   EventScheduleScreen({super.key});
 
   @override
-  State<EventScheduleScreen> createState() => _EventScheduleScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _EventScheduleScreenState();
 }
 
-class _EventScheduleScreenState extends State<EventScheduleScreen> {
-  List<Event> events = competition2025.events;
-
-  late List<Color> _backgroundColors;
+class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
 
   ScrollController? _scrollController;
   Color _backgroundColor = Colors.white;
 
-  @override
-  void initState() {
-    super.initState();
-    _backgroundColors = events.map((event) => event.themeColor).toList();
-    _backgroundColors.insert(0, Colors.white);
-  }
-
-  bool _changeBackground(ScrollNotification notification) {
+  bool _changeBackground(ScrollNotification notification, List<Color> backgroundColors, int numSections) {
     if (_scrollController == null) return true;
     double maxExtent = _scrollController!.position.maxScrollExtent;
     double currentPixels = _scrollController!.position.pixels;
     setState(() {
-      double sectionHeight = maxExtent/12;
-      int aboveIndex = (12*currentPixels/maxExtent).floor();
-      int belowIndex = (12*currentPixels/maxExtent).ceil();
-      Color above = _backgroundColors[aboveIndex];
-      Color below = _backgroundColors[belowIndex];
+      double sectionHeight = maxExtent/numSections;
+      int aboveIndex = (numSections*currentPixels/maxExtent).floor();
+      int belowIndex = min((numSections*currentPixels/maxExtent).ceil(), numSections);
+      Color above = backgroundColors[aboveIndex];
+      Color below = backgroundColors[belowIndex];
       double remainder = currentPixels%sectionHeight/sectionHeight;
       _backgroundColor = Color.lerp(Color.lerp(above, below, remainder)!, Colors.white, .85)!;
     });
@@ -45,10 +39,45 @@ class _EventScheduleScreenState extends State<EventScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Event> events = ref.read(eventProvider);
+    AsyncValue<List<Challenge>> challenges = ref.read(challengesProvider);
+    List<Color> _backgroundColors = events.map((event) => event.themeColor).toList();
+    _backgroundColors.insert(0, Colors.white);
+
+    final List<CrossAxisAlignment> boxAlignments = [
+      CrossAxisAlignment.center,
+      CrossAxisAlignment.start,
+      CrossAxisAlignment.end,
+      CrossAxisAlignment.center,
+      CrossAxisAlignment.end,
+      CrossAxisAlignment.start,
+      CrossAxisAlignment.end,
+      CrossAxisAlignment.center,
+      CrossAxisAlignment.end,
+      CrossAxisAlignment.start,
+      CrossAxisAlignment.end,
+      CrossAxisAlignment.center,
+    ];
+
+    final List<TextAlign> textAlignments = [
+      TextAlign.center,
+      TextAlign.start,
+      TextAlign.end,
+      TextAlign.center,
+      TextAlign.end,
+      TextAlign.start,
+      TextAlign.end,
+      TextAlign.center,
+      TextAlign.end,
+      TextAlign.start,
+      TextAlign.end,
+      TextAlign.center,
+    ];
+
     return Scaffold(
       backgroundColor: _backgroundColor,
       body: NotificationListener<ScrollNotification>(
-        onNotification: _changeBackground,
+        onNotification: (ScrollNotification notification) => _changeBackground(notification, _backgroundColors, events.length),
         child: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -77,67 +106,14 @@ class _EventScheduleScreenState extends State<EventScheduleScreen> {
                     ),
                   ),
                   SizedBox(height: 150,),
-                  EventListItem(
-                    event: events[0],
-                    columnAlignment: CrossAxisAlignment.center,
-                    textAlignment: TextAlign.center,
-                  ),
-                  EventListItem(
-                    event: events[1],
-                    columnAlignment: CrossAxisAlignment.start,
-                    textAlignment: TextAlign.start,
-                  ),
-                  EventListItem(
-                    event: events[2],
-                    columnAlignment: CrossAxisAlignment.end,
-                    textAlignment: TextAlign.end,
-                  ),
-                  EventListItem(
-                    event: events[3],
-                    columnAlignment: CrossAxisAlignment.center,
-                    textAlignment: TextAlign.center,
-                  ),
-                  EventListItem(
-                    event: events[4],
-                    columnAlignment: CrossAxisAlignment.end,
-                    textAlignment: TextAlign.end,
-                  ),
-                  EventListItem(
-                    event: events[5],
-                    columnAlignment: CrossAxisAlignment.start,
-                    textAlignment: TextAlign.start,
-                  ),
-                  EventListItem(
-                    event: events[6],
-                    columnAlignment: CrossAxisAlignment.end,
-                    textAlignment: TextAlign.end,
-                  ),
-
-                  EventListItem(
-                    event: events[7],
-                    columnAlignment: CrossAxisAlignment.center,
-                    textAlignment: TextAlign.center,
-                  ),
-                  EventListItem(
-                    event: events[8],
-                    columnAlignment: CrossAxisAlignment.end,
-                    textAlignment: TextAlign.end,
-                  ),
-                  EventListItem(
-                    event: events[9],
-                    columnAlignment: CrossAxisAlignment.start,
-                    textAlignment: TextAlign.start,
-                  ),
-                  EventListItem(
-                    event: events[10],
-                    columnAlignment: CrossAxisAlignment.end,
-                    textAlignment: TextAlign.end,
-                  ),
-                  EventListItem(
-                    event: events[11],
-                    columnAlignment: CrossAxisAlignment.center,
-                    textAlignment: TextAlign.center,
-                  ),
+                  for (int i = 0; i < events.length; i++)
+                    if (challenges.hasValue)
+                      EventListItem(
+                        event: events[i],
+                        eventChallenges: challenges.value!.where((c) => c.eventId == events[i].id).toList(),
+                        columnAlignment: boxAlignments[i],
+                        textAlignment: textAlignments[i],
+                      ),
                 ],
               );
             }

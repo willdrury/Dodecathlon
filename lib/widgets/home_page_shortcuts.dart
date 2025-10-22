@@ -1,3 +1,4 @@
+import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/event.dart';
 import 'package:flutter/material.dart';
 
@@ -7,13 +8,21 @@ import '../screens/faq_screen.dart';
 
 class HomePageShortcuts extends StatelessWidget {
 
-  HomePageShortcuts({super.key, required this.currentEvent, required this.nextEvent});
+  const HomePageShortcuts({
+    super.key,
+    required this.currentEvent,
+    required this.eventChallenges,
+    required this.nextEvent
+  });
 
-  Event currentEvent;
-  Event nextEvent;
+  final Event currentEvent;
+  final List<Challenge> eventChallenges;
+  final Event nextEvent;
 
   @override
   Widget build(BuildContext context) {
+    print('nextColor: ${nextEvent.themeColor}');
+
     return GridView(
       physics: ClampingScrollPhysics(),
       shrinkWrap: true,
@@ -28,7 +37,7 @@ class HomePageShortcuts extends StatelessWidget {
         InkWell(
           onTap: () {
             Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx) => EventDetailsScreen(event: currentEvent))
+                MaterialPageRoute(builder: (ctx) => EventDetailsScreen(event: currentEvent, challenges: eventChallenges,))
             );
           },
           child: Container(
@@ -44,7 +53,7 @@ class HomePageShortcuts extends StatelessWidget {
         InkWell(
           onTap: () {
             Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx) => EventDetailsScreen(event: nextEvent))
+                MaterialPageRoute(builder: (ctx) => EventDetailsScreen(event: nextEvent, challenges: eventChallenges,))
             );
           },
           child: Container(

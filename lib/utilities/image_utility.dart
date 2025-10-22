@@ -16,10 +16,8 @@ class ImageUtility {
     try {
       await imageRef.putFile(file);
       final String imageUrl = await imageRef.getDownloadURL();
-      print('imageUrl: $imageUrl');
       return imageUrl;
     } on FirebaseException catch (e) {
-      print('fuckers');
       print(e.toString);
     }
     return null;

@@ -4,6 +4,17 @@ enum ThemeMode {
   dark,
 }
 
+ThemeMode stringToTheme(String theme) {
+  if (theme == 'system') {
+    return ThemeMode.system;
+  } else if (theme == 'light') {
+    return ThemeMode.light;
+  } else if (theme == 'dark') {
+    return ThemeMode.dark;
+  }
+  return ThemeMode.system;
+}
+
 class UserSettings {
   ThemeMode theme;
   bool commentNotifications;

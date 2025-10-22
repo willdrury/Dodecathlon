@@ -3,16 +3,15 @@ import 'package:dodecathlon/models/submission.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/main_screen.dart';
 import 'package:dodecathlon/screens/post_creation_screen.dart';
-import 'package:dodecathlon/widgets/challenge_submission_widgets/book_submission_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/user.dart';
 
 class BookCompletionScreen extends ConsumerStatefulWidget {
-  BookCompletionScreen({super.key, required this.challenge, });
+  const BookCompletionScreen({super.key, required this.challenge, });
 
-  Challenge challenge;
+  final Challenge challenge;
 
   @override
   ConsumerState<BookCompletionScreen> createState() => _BookCompletionScreenState();

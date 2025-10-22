@@ -29,7 +29,7 @@ class ChallengeDetailsScreen extends StatelessWidget {
               child: FilledButton(
                   onPressed: () {
                     Navigator.of(context).push(
-                        MaterialPageRoute(builder: (ctx) => challenge!.getSubmissionScreen({
+                        MaterialPageRoute(builder: (ctx) => challenge.getSubmissionScreen({
                           'challenge': challenge,
                         }))
                     );

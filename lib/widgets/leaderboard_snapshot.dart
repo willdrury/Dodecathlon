@@ -3,12 +3,12 @@ import 'package:dodecathlon/widgets/podium.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-class LeaderboardSnapshop extends StatefulWidget {
+class LeaderboardSnapshot extends StatefulWidget {
 
-  LeaderboardSnapshop({super.key, required this.currentUser, required this.users});
+  const LeaderboardSnapshot({super.key, required this.currentUser, required this.users});
 
-  User currentUser;
-  List<User> users;
+  final User currentUser;
+  final List<User> users;
 
   @override
   State<StatefulWidget> createState() {
@@ -16,7 +16,7 @@ class LeaderboardSnapshop extends StatefulWidget {
   }
 }
 
-class _LeaderboardSnapshotState extends State<LeaderboardSnapshop> {
+class _LeaderboardSnapshotState extends State<LeaderboardSnapshot> {
 
   bool _isEvent = true;
   late List<User> usersByEvent;

@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RankListItemSnapshot extends StatelessWidget {
-  RankListItemSnapshot({super.key, required this.user});
+  const RankListItemSnapshot({super.key, required this.user});
 
-  User user;
+  final User user;
 
   @override
   Widget build(BuildContext context) {

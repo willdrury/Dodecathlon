@@ -3,9 +3,9 @@ import 'package:dodecathlon/widgets/leaderboard_list_item.dart';
 import 'package:flutter/material.dart';
 
 class LeaderboardSubTab extends StatefulWidget {
-  LeaderboardSubTab({super.key, required this.users});
+  const LeaderboardSubTab({super.key, required this.users});
 
-  List<User> users;
+  final List<User> users;
 
   @override
   State<StatefulWidget> createState() {

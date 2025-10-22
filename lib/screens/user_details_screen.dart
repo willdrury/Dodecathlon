@@ -8,9 +8,9 @@ import '../providers/users_provider.dart';
 String kDefaultIcon = 'https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3407.jpg?w=360';
 
 class UserDetailsScreen extends ConsumerStatefulWidget {
-  UserDetailsScreen({super.key, required this.user});
+  const UserDetailsScreen({super.key, required this.user});
 
-  User user;
+  final User user;
 
   @override
   ConsumerState<UserDetailsScreen> createState() => _UserDetailsScreenState();
@@ -34,19 +34,25 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
   Widget build(BuildContext context) {
 
     User currentUser = ref.watch(userProvider)!;
-    List<User> users = ref.watch(usersProvider);
+    AsyncValue<List<User>> users = ref.watch(usersProvider);
 
-    List<User> usersByCompetition = List.from(users);
+    List<User> usersByCompetition = [];
+    if (users.hasValue) {
+      usersByCompetition = List.from(users.value!);
+    }
     usersByCompetition.sort((a,b) => b.currentCompetitionPoints[0] - a.currentCompetitionPoints[0]);
     User listUser = usersByCompetition.where((u) => u.userName == widget.user.userName).toList()[0];
     int currentUserIndex = usersByCompetition.indexOf(listUser) + 1;
 
     int numFollowers = 0;
-    for (User u in users) {
-      if (u.friends.contains(widget.user.id)) {
-        numFollowers++;
+    if (users.hasValue) {
+      for (User u in users.value!) {
+        if (u.friends.contains(widget.user.id)) {
+          numFollowers++;
+        }
       }
     }
+
 
     Widget addFriendText = currentUser.friends.contains(widget.user.id)
       ? Text('Remove Friend', style: TextStyle(color: Colors.red))

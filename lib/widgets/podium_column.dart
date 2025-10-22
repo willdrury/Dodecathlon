@@ -6,7 +6,7 @@ import '../screens/user_details_screen.dart';
 String kDefaultIcon = 'https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3407.jpg?w=360';
 
 class PodiumColumn extends StatelessWidget {
-  PodiumColumn({
+  const PodiumColumn({
     super.key,
     required this.heightFactor,
     required this.barColor,
@@ -16,8 +16,8 @@ class PodiumColumn extends StatelessWidget {
 
   final double heightFactor;
   final Color barColor;
-  User user;
-  bool isEvent;
+  final User user;
+  final bool isEvent;
 
   @override
   Widget build(BuildContext context) {

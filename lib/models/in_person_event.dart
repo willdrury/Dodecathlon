@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dodecathlon/models/user.dart';
 
 class InPersonEvent {
   final String name;
@@ -55,6 +54,7 @@ class InPersonEvent {
     } catch (error) {
       return error.toString();
     }
+    return null;
   }
 
 }

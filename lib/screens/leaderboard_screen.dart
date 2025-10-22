@@ -3,10 +3,10 @@ import 'package:dodecathlon/widgets/leaderboard_sub_tab.dart';
 import 'package:flutter/material.dart';
 
 class LeaderboardScreen extends StatelessWidget {
-  LeaderboardScreen({super.key, required this.currentUser, required this.users});
+  const LeaderboardScreen({super.key, required this.currentUser, required this.users});
 
-  User currentUser;
-  List<User> users;
+  final User currentUser;
+  final List<User> users;
 
   @override
   Widget build(BuildContext context) {

@@ -1,19 +1,22 @@
+import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/event.dart';
 import 'package:dodecathlon/screens/event_details_screen.dart';
 import 'package:dodecathlon/utilities/color_utility.dart';
 import 'package:flutter/material.dart';
 
 class EventListItem extends StatelessWidget {
-  EventListItem({
+  const EventListItem({
     super.key,
     required this.event,
+    required this.eventChallenges,
     required this.columnAlignment,
     required this.textAlignment,
   });
 
-  Event event;
-  CrossAxisAlignment columnAlignment;
-  TextAlign textAlignment;
+  final Event event;
+  final List<Challenge> eventChallenges;
+  final CrossAxisAlignment columnAlignment;
+  final TextAlign textAlignment;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class EventListItem extends StatelessWidget {
           GestureDetector(
             onTap: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => EventDetailsScreen(event: event))
+                  MaterialPageRoute(builder: (ctx) => EventDetailsScreen(event: event, challenges: eventChallenges,))
               );
             },
             child: Container(

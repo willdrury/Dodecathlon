@@ -9,9 +9,9 @@ import '../../models/user.dart';
 import '../post_creation_screen.dart';
 
 class PageCountSubmissionScreen extends ConsumerStatefulWidget {
-  PageCountSubmissionScreen({super.key, required this.challenge});
+  const PageCountSubmissionScreen({super.key, required this.challenge});
 
-  Challenge challenge;
+  final Challenge challenge;
 
   @override
   ConsumerState<PageCountSubmissionScreen> createState() => _PageCountSubmissionScreenState();

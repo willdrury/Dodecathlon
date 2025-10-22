@@ -1,16 +1,19 @@
 import 'package:dodecathlon/screens/account_management_screen.dart';
 import 'package:dodecathlon/screens/notification_management_screen.dart';
-import 'package:dodecathlon/screens/notifications_screen.dart';
 import 'package:dodecathlon/screens/theme_selection_screen.dart';
 import 'package:dodecathlon/screens/user_stats_screen.dart';
 import 'package:dodecathlon/widgets/profile_picture_input.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../models/user.dart' as dd;
+import '../providers/settings_provider.dart';
 import '../providers/user_provider.dart';
 import '../providers/users_provider.dart';
+
+final formatter = DateFormat('yMMMMd');
 
 class ProfileDetails extends ConsumerStatefulWidget {
   ProfileDetails({super.key});
@@ -20,23 +23,33 @@ class ProfileDetails extends ConsumerStatefulWidget {
 }
 
 class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
+
   @override
   Widget build(BuildContext context) {
 
     dd.User currentUser = ref.watch(userProvider)!;
-    List<dd.User> users = ref.watch(usersProvider);
+    AsyncValue<List<dd.User>> users = ref.watch(usersProvider);
+    Map<dynamic, dynamic> settings = ref.watch(settingsProvider);
 
-    List<dd.User> usersByCompetition = List.from(users);
+    List<dd.User> usersByCompetition = [];
+    if (users.hasValue) {
+      usersByCompetition = List.from(users.value!);
+    }
     usersByCompetition.sort((a,b) => b.currentCompetitionPoints[0] - a.currentCompetitionPoints[0]);
-    dd.User listUser = usersByCompetition.where((u) => u.userName == currentUser.userName).toList()[0];
+    dd.User listUser = usersByCompetition.where((u) => u.id == currentUser.id).toList()[0];
     int currentUserIndex = usersByCompetition.indexOf(listUser) + 1;
 
     int numFollowers = 0;
-    for (dd.User u in users) {
-      if (u.friends.contains(currentUser.id) && currentUser.id != u.id) {
-        numFollowers++;
+    if (users.hasValue) {
+      for (dd.User u in users.value!) {
+        if (u.friends.contains(currentUser.id) && currentUser.id != u.id) {
+          numFollowers++;
+        }
       }
     }
+
+    String themeMode = settings['theme'] as String;
+    themeMode = themeMode[0].toUpperCase() + themeMode.substring(1);
 
     return Column(
       children: [
@@ -44,7 +57,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
         Container(// Profile Info
           height: 200,
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           child: Column(
             children: [
               SizedBox(
@@ -111,13 +124,13 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
         ),
         SizedBox(height: 10,),
         Container(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           child: Column(
             children: [
               ListTile(
                 leading: Icon(Icons.calendar_today),
                 title: Text('Statistics'),
-                subtitle: Text('Joined Nov 1, 2024'),
+                subtitle: Text('Joined: ${formatter.format(currentUser.createdDate)}'),
                 trailing: Icon(Icons.arrow_right),
                 onTap: () {
                   Navigator.of(context).push(
@@ -128,7 +141,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
               ListTile(
                 leading: Icon(Icons.light_mode_outlined),
                 title: Text('Theme'),
-                subtitle: Text('System Default'),
+                subtitle: Text(themeMode),
                 trailing: Icon(Icons.arrow_right),
                 onTap: () {
                   Navigator.of(context).push(
@@ -139,7 +152,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
               ListTile(
                 leading: Icon(Icons.notifications_outlined),
                 title: Text('Notification Settings'),
-                subtitle: Text('All Allowed'),
+                subtitle: Text('Push, In-app, Email'),
                 trailing: Icon(Icons.arrow_right),
                 onTap: () {
                   Navigator.of(context).push(
@@ -163,7 +176,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
         ),
         SizedBox(height: 10,),
         Container(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           width: double.infinity,
           child: TextButton(
               onPressed: () {

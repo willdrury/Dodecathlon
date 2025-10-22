@@ -9,14 +9,18 @@ import 'package:intl/intl.dart';
 final formatter = DateFormat('MMM d');
 
 class InPersonEventCard extends ConsumerWidget {
-  InPersonEventCard({super.key, required this.event});
+  const InPersonEventCard({super.key, required this.event});
 
-  InPersonEvent event;
+  final InPersonEvent event;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<User> users = ref.read(usersProvider);
-    List<User> hosts = users.where((u) => u.userName == event.host).toList();
+    AsyncValue<List<User>> users = ref.read(usersProvider);
+    List<User> hosts = [];
+    if (users.hasValue) {
+      hosts = users.value!.where((u) => u.userName == event.host).toList();
+    }
+
     if (hosts.isEmpty) {
       return Text('unable to locate host');
     }
@@ -47,7 +51,9 @@ class InPersonEventCard extends ConsumerWidget {
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Stack(
               children: [
-                Image.network(event.displayImageUrl, fit: BoxFit.fill,
+                Image.network(
+                  event.displayImageUrl,
+                  fit: BoxFit.fill,
                   frameBuilder: (_, image, loadingBuilder, __) {
                     if (loadingBuilder == null) {
                       return const SizedBox(
@@ -76,7 +82,7 @@ class InPersonEventCard extends ConsumerWidget {
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                   ),
                   child: Text('Location: ${event.location}'),
                 ),

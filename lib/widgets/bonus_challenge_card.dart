@@ -2,59 +2,86 @@ import 'package:dodecathlon/models/challenge.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../models/event.dart';
+
 final formatter = DateFormat('MMM d');
 
 class BonusChallengeCard extends StatelessWidget {
-  BonusChallengeCard({super.key, required this.challenge});
+  const BonusChallengeCard({super.key, required this.challenge, required this.event});
 
-  Challenge challenge;
+  final Challenge challenge;
+  final Event event;
 
   @override
   Widget build(BuildContext context) {
 
-    Widget overlay = Container(
-      padding: EdgeInsets.all(15),
-      width: double.infinity,
-      decoration: BoxDecoration(
-          // border: challenge.endDate == null ? null : Border.all(
-          //     color: Colors.blue,
-          //     width: 4
-          // ),
-          borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
-            colors: [Color.fromARGB(0, 255, 255, 255), Color.fromARGB(255, 80, 80, 80)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          )
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-              challenge.name,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)
+    Widget displayImage = challenge.imageUrl == null
+        ? Expanded(
+      child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: event.themeColor,
           ),
-          if (challenge.endDate != null)
-            Text(
-              'Ends: ${formatter.format(challenge.endDate!)}',
-              style: TextStyle(color: Colors.white, fontSize: 10),
-            ),
-        ],
+          child: Icon(event.icon, size: 50, color: Colors.white,)
+      ),
+    )
+        : Expanded(
+      child: Hero(
+        tag: challenge.id,
+        child: Image.network(
+          width: double.infinity,
+          challenge.imageUrl!,
+          fit: BoxFit.cover,
+          loadingBuilder: (BuildContext ctx, Widget child, ImageChunkEvent? loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(child: CircularProgressIndicator());
+          },
+        ),
       ),
     );
 
-    return Stack(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        if (challenge.imageUrl != null)
-          Hero(
-            tag: challenge.id,
-            child: Image.network(challenge.imageUrl!, fit: BoxFit.fill, height: double.infinity,)
-          ),
-        overlay,
-      ]
+        displayImage,
+        Container(
+            width: double.infinity,
+            height: 60,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black87,
+                    offset: Offset(0, 0),
+                    blurRadius: 10,
+                  )
+                ]
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    challenge.name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                    maxLines: 1,
+                  ),
+                  Text(
+                    '(${challenge.maxPoints.toString()} pts)',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                    maxLines: 1,
+                  ),
+                  Spacer(),
+                  Text(
+                    'Ends ${formatter.format(challenge.endDate)}',
+                    style: TextStyle(color: Colors.grey, fontSize: 10),
+                  ),
+                ],
+              ),
+            )
+        )
+      ],
     );
   }
 }

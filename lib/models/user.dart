@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/submission.dart';
 import 'package:dodecathlon/utilities/image_utility.dart';
-import 'package:flutter/cupertino.dart';
 
 class User {
 
@@ -14,7 +13,7 @@ class User {
   List<int> currentCompetitionPoints;
   List<String> submissions;
   List<String> friends;
-  List<Difficulty> currentEventDifficulty;
+  Difficulty? currentEventDifficulty;
   String? profileImageUrl;
   List<String>? competitions;
   final String? id;
@@ -29,11 +28,11 @@ class User {
     required this.currentCompetitionPoints,
     required this.submissions,
     required this.friends,
-    required this.currentEventDifficulty,
     required this.likedPostIds,
     required this.createdDate,
     this.profileImageUrl,
     this.competitions,
+    this.currentEventDifficulty,
     this.id,
   });
 
@@ -43,7 +42,7 @@ class User {
     'currentEventPoints': currentEventPoints,
     'currentCompetitionPoints': currentCompetitionPoints,
     'friends': friends,
-    'currentEventDifficulty': currentEventDifficulty.map((e) => e.name).toList(),
+    'currentEventDifficulty': currentEventDifficulty,
     'profileImageUrl': profileImageUrl,
     'submissions': submissions,
     'competitions': competitions,
@@ -59,7 +58,7 @@ class User {
       currentEventPoints: List<int>.from(data['currentEventPoints'] as List<dynamic>),
       currentCompetitionPoints: List<int>.from(data['currentCompetitionPoints'] as List<dynamic>),
       friends: List<String>.from(data['friends'] as List<dynamic>),
-      currentEventDifficulty: (List<String>.from(data['currentEventDifficulty'] as List<dynamic>)).map((e) => getDifficultyEnumFromString(e)).toList(),
+      currentEventDifficulty: getDifficultyFromString(data['currentEventDifficulty']),
       profileImageUrl: data['profileImageUrl'],
       submissions: List<String>.from(data['submissions'] as List<dynamic>),
       competitions: List<String>.from(data['competitions'] as List<dynamic>),
@@ -78,7 +77,12 @@ class User {
   }
 
   Future<String?> update() async {
-    await FirebaseFirestore.instance.collection('users').doc(id).update(toJson());
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(id).update(toJson());
+    } catch (e) {
+      return e.toString();
+    }
+    return null;
   }
 
   Future<String?> updateProfileImage (File profileImage, String path) async {
@@ -88,13 +92,14 @@ class User {
     await FirebaseFirestore.instance.collection('users').doc(id).update({
       'profileImageUrl': imageUrl,
     });
+    return null;
   }
   
   Future<List<Submission>> getSubmissions() async {
     if (submissionData != null) return submissionData!;
-    if (submissions == null || submissions.isEmpty) return [];
+    if (submissions.isEmpty) return [];
     final querySnapshot = await FirebaseFirestore.instance.collection('submissions').where('id', whereIn: submissions).where('userId', isEqualTo: id).get();
-    submissionData = querySnapshot.docs.map((snapshot) => Submission.fromMap(snapshot.data()!)).toList();
+    submissionData = querySnapshot.docs.map((snapshot) => Submission.fromMap(snapshot.data())).toList();
     return submissionData!;
   }
 

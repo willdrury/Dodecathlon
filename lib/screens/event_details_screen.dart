@@ -1,18 +1,15 @@
-import 'package:dodecathlon/data/competition_2025/competition.dart';
 import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/event.dart';
-import 'package:dodecathlon/utilities/color_utility.dart';
 import 'package:flutter/material.dart';
 
 class EventDetailsScreen extends StatelessWidget {
-  const EventDetailsScreen({super.key, required this.event});
+  const EventDetailsScreen({super.key, required this.event, required this.challenges});
 
   final Event event;
+  final List<Challenge> challenges;
 
   @override
   Widget build(BuildContext context) {
-
-    List<Challenge> challenges = competition2025Challenges.where((c) => c.event == event).toList();
 
     String _statusText = '';
 

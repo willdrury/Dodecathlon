@@ -4,9 +4,9 @@ import 'package:dodecathlon/models/notification.dart' as dd;
 
 
 class NotificationListTile extends StatefulWidget {
-  NotificationListTile({super.key, required this.notification});
+  const NotificationListTile({super.key, required this.notification});
 
-  dd.Notification notification;
+  final dd.Notification notification;
 
   @override
   State<NotificationListTile> createState() => _NotificationListTileState();

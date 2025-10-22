@@ -35,4 +35,14 @@ platform :android do
     gradle(task: "clean assembleRelease")
     upload_to_play_store
   end
+
+#   desc "Distribute to testers"
+#   lane :distribute do
+#       build_android_app(...)
+#       release = firebase_app_distribution(
+#           app: "1:365380606260:android:39b111099a03db818f6d61",
+#           testers: "willdrury18@gmail.com",
+#           release_notes: "Lots of amazing new features to test out!"
+#       )
+#   end
 end

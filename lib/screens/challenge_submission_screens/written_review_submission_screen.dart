@@ -9,9 +9,9 @@ import '../../providers/user_provider.dart';
 import '../post_creation_screen.dart';
 
 class WrittenReviewSubmissionScreen extends ConsumerStatefulWidget {
-  WrittenReviewSubmissionScreen({super.key, required this.challenge});
+  const WrittenReviewSubmissionScreen({super.key, required this.challenge});
 
-  Challenge challenge;
+  final Challenge challenge;
 
   @override
   ConsumerState<WrittenReviewSubmissionScreen> createState() => _WrittenReviewSubmissionScreenState();

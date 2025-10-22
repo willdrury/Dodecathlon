@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 import '../../models/challenge.dart';
 
-Event puzzles = Event(
-  name: 'Puzzles',
-  description: 'Relax and enjoy some fun puzzles, courtesy of the New York Times. Bonus puzzles also available.',
+Event meditation = Event(
+  name: 'Meditation',
+  description: 'Meditate',
   hasMultipleDifficulties: true,
-  beginnerDescription: 'Sudoku? Doesn\'t that involve math?',
-  intermediateDescription: 'I have a 100+ day streak on Wordle right now',
-  advancedDescription: 'I solved the NYT Sunday crossword yesterday. Without any hints.',
+  beginnerDescription: '5 min a day',
+  intermediateDescription: '15 min a day',
+  advancedDescription: '30 min a day',
   themeColor: Colors.teal,
   icon: Icons.extension,
   startDate: DateTime(2025, 12),
@@ -17,4 +17,4 @@ Event puzzles = Event(
   displayImageUrl: ''
 );
 
-List<Challenge> puzzleChallenges = [];
+List<Challenge> meditationChallenges = [];

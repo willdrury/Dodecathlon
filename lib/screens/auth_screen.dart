@@ -3,19 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dodecathlon/models/user.dart' as dd;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final _firebase = FirebaseAuth.instance;
 
-class AuthScreen extends StatefulWidget {
+class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<AuthScreen> createState() {
     return _AuthScreenState();
   }
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _AuthScreenState extends ConsumerState<AuthScreen> {
 
   bool _isLogin = true;
   final _form = GlobalKey<FormState>();
@@ -23,6 +24,7 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredPassword = '';
   var _enteredUsername = '';
   bool _isAuthenticating = false;
+  UserCredential? userCredentials;
 
   void _submit() async {
     if (!_form.currentState!.validate()) {
@@ -35,9 +37,9 @@ class _AuthScreenState extends State<AuthScreen> {
         _isAuthenticating = true;
       });
       if (_isLogin) {
-        final userCredentials = await _firebase.signInWithEmailAndPassword(email: _enteredEmail, password: _enteredPassword);
+        userCredentials = await _firebase.signInWithEmailAndPassword(email: _enteredEmail, password: _enteredPassword);
       } else {
-        final userCredentials = await _firebase.createUserWithEmailAndPassword(
+        userCredentials = await _firebase.createUserWithEmailAndPassword(
             email: _enteredEmail, password: _enteredPassword
         );
 
@@ -47,17 +49,18 @@ class _AuthScreenState extends State<AuthScreen> {
           currentEventPoints: [0],
           currentCompetitionPoints: [0],
           friends: [],
-          id: userCredentials.user!.uid,
+          id: userCredentials!.user!.uid,
           profileImageUrl: null,
           submissions: [],
           competitions: [],
-          currentEventDifficulty: [],
+          currentEventDifficulty: null,
           likedPostIds: [],
           createdDate: DateTime.now(),
         );
 
-        await FirebaseFirestore.instance.collection('users').doc(userCredentials.user!.uid).set(user.toJson());
+        await FirebaseFirestore.instance.collection('users').doc(userCredentials!.user!.uid).set(user.toJson());
       }
+
     } on FirebaseAuthException catch (error) {
       if (error.code == 'email-already-in-use') {
         //   ... show some error message
@@ -106,6 +109,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 if (value == null || value.trim().isEmpty || !value.contains('@')) {
                                   return 'Please enter a valid email address';
                                 }
+                                return null;
                               },
                               onSaved: (value) {
                                 _enteredEmail = value!;
@@ -124,6 +128,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                   if (value == null || value.trim().isEmpty || value.length < 4) {
                                     return 'Please enter a valid username';
                                   }
+                                  return null;
                                 },
                                 onSaved: (value) {
                                   _enteredUsername = value!;
@@ -138,6 +143,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 if (value == null || value.trim().isEmpty || value.length < 6) {
                                   return 'Password must be at least 6 characters long';
                                 }
+                                return null;
                               },
                               onSaved: (value) {
                                 _enteredPassword = value!;

@@ -8,9 +8,9 @@ import '../../models/user.dart';
 import '../../providers/user_provider.dart';
 
 class QuizSubmissionScreen extends ConsumerStatefulWidget {
-  QuizSubmissionScreen({super.key, required this.challenge});
+  const QuizSubmissionScreen({super.key, required this.challenge});
 
-  Challenge challenge;
+  final Challenge challenge;
 
   @override
   ConsumerState<QuizSubmissionScreen> createState() => _QuizSubmissionScreenState();

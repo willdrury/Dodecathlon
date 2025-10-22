@@ -19,9 +19,9 @@ Event reading = Event(
 
 Challenge beginnerPageCount = Challenge(
     name: 'Read 100 pages',
-    id: '10000',
+    id: 'e77f92db-4337-404c-9b90-b4af7d1779ed',
     description: 'Read 100 pages this month',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.beginner,
     maxPoints: 50,
     scoringMechanism: ScoringMechanism.gradated,
@@ -30,14 +30,34 @@ Challenge beginnerPageCount = Challenge(
     isRecurring: false,
     isEditable: true,
     startDate: DateTime.utc(2024, 1, 25),
-    endDate: DateTime(2025, 2)
+    endDate: DateTime(2025, 2),
+    prerequisiteChallenges: [],
+    conflictingChallenges: ['84103a19-3fce-4b3a-8780-a63a17cd2b4d'],
+);
+
+Challenge beginnerBook = Challenge(
+    name: 'Finish a book',
+    id: '84103a19-3fce-4b3a-8780-a63a17cd2b4d',
+    description: 'Finish a book over 100 pages',
+    eventId: reading.id!,
+    difficulty: Difficulty.beginner,
+    maxPoints: 50,
+    scoringMechanism: ScoringMechanism.completion,
+    submissionScreen: SubmissionScreen.bookCompletion,
+    isBonus: false,
+    isRecurring: false,
+    isEditable: false,
+    startDate: DateTime.utc(2024, 1, 25),
+    endDate: DateTime(2025, 2),
+    prerequisiteChallenges: [],
+    conflictingChallenges: ['e77f92db-4337-404c-9b90-b4af7d1779ed'],
 );
 
 Challenge intermediatePageCount = Challenge(
     name: 'Read 500 pages',
-    id: '10001',
+    id: 'fa7afe59-2540-4c53-becc-3fb7de889861',
     description: 'Read 500 this month',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.intermediate,
     maxPoints: 70,
     scoringMechanism: ScoringMechanism.gradated,
@@ -47,47 +67,16 @@ Challenge intermediatePageCount = Challenge(
     isEditable: true,
     imageUrl: 'https://www.pwcva.gov/assets/2022-11/mikolaj-DCzpr09cTXY-unsplash.jpg',
     startDate: DateTime.utc(2024, 1, 25),
-    endDate: DateTime(2025, 2)
-);
-
-Challenge advancedPageCount = Challenge(
-    name: 'Read 1,000 pages',
-    id: '10002',
-    description: 'Read 1,000 this month',
-    event: reading,
-    difficulty: Difficulty.advanced,
-    maxPoints: 90,
-    scoringMechanism: ScoringMechanism.gradated,
-    submissionScreen: SubmissionScreen.pageCount,
-    isBonus: false,
-    isRecurring: false,
-    isEditable: true,
-    imageUrl: 'https://www.pwcva.gov/assets/2022-11/mikolaj-DCzpr09cTXY-unsplash.jpg',
-    startDate: DateTime.utc(2024, 1, 25),
-    endDate: DateTime(2025, 2)
-);
-
-Challenge beginnerBook = Challenge(
-    name: 'Finish a book',
-    id: '10003',
-    description: 'Finish a book over 100 pages',
-    event: reading,
-    difficulty: Difficulty.beginner,
-    maxPoints: 50,
-    scoringMechanism: ScoringMechanism.completion,
-    submissionScreen: SubmissionScreen.bookCompletion,
-    isBonus: false,
-    isRecurring: false,
-    isEditable: false,
-    startDate: DateTime.utc(2024, 1, 25),
-    endDate: DateTime(2025, 2)
+    endDate: DateTime(2025, 2),
+    prerequisiteChallenges: [],
+    conflictingChallenges: ['4c0f5472-4c1e-42b6-b90f-073bc4720aed'],
 );
 
 Challenge intermediateFirstBook = Challenge(
     name: 'Read your first book',
-    id: '10004',
+    id: '4c0f5472-4c1e-42b6-b90f-073bc4720aed',
     description: 'Read 1 book over 200 pages',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.intermediate,
     maxPoints: 45,
     scoringMechanism: ScoringMechanism.completion,
@@ -97,14 +86,16 @@ Challenge intermediateFirstBook = Challenge(
     isEditable: false,
     imageUrl: 'https://media.istockphoto.com/id/612523400/photo/one-old-brown-book.jpg?s=612x612&w=0&k=20&c=Cp-hEcRfw1bJApDhpWqPEb4wGr3w1Yt1YdWF7uoidiA=',
     startDate: DateTime.utc(2024, 1, 25),
-    endDate: DateTime(2025, 2)
+    endDate: DateTime(2025, 2),
+    prerequisiteChallenges: [],
+    conflictingChallenges: ['fa7afe59-2540-4c53-becc-3fb7de889861'],
 );
 
 Challenge intermediateAdditionalBook = Challenge(
     name: 'Read another book',
-    id: '10005',
+    id: '9a244a4c-f83d-4102-a1c5-066282789b72',
     description: 'Finish another book of any length',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.intermediate,
     maxPoints: 25,
     scoringMechanism: ScoringMechanism.completion,
@@ -114,14 +105,35 @@ Challenge intermediateAdditionalBook = Challenge(
     isEditable: false,
     imageUrl: 'https://media.istockphoto.com/id/949118068/photo/books.webp?a=1&b=1&s=612x612&w=0&k=20&c=lxb-mHWs3AkeKR-J7ZwD8a5Mo9vmsq3uYPMaJbIUoCI=',
     startDate: DateTime.utc(2024, 1, 25),
-    endDate: DateTime(2025, 2)
+    endDate: DateTime(2025, 2),
+    prerequisiteChallenges: ['4c0f5472-4c1e-42b6-b90f-073bc4720aed'],
+    conflictingChallenges: [],
+);
+
+Challenge advancedPageCount = Challenge(
+    name: 'Read 1,000 pages',
+    id: '46045563-a7e8-4a25-80f4-409025a9cbd7',
+    description: 'Read 1,000 this month',
+    eventId: reading.id!,
+    difficulty: Difficulty.advanced,
+    maxPoints: 90,
+    scoringMechanism: ScoringMechanism.gradated,
+    submissionScreen: SubmissionScreen.pageCount,
+    isBonus: false,
+    isRecurring: false,
+    isEditable: true,
+    imageUrl: 'https://www.pwcva.gov/assets/2022-11/mikolaj-DCzpr09cTXY-unsplash.jpg',
+    startDate: DateTime.utc(2024, 1, 25),
+    endDate: DateTime(2025, 2),
+    prerequisiteChallenges: [],
+    conflictingChallenges: ['41fdbf85-f65c-436c-8270-3913fc2e2625'],
 );
 
 Challenge advancedFirstBook = Challenge(
     name: 'Read your first book',
-    id: '10006',
+    id: '41fdbf85-f65c-436c-8270-3913fc2e2625',
     description: 'Read a book over 300 pages',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.advanced,
     maxPoints: 40,
     scoringMechanism: ScoringMechanism.completion,
@@ -131,14 +143,16 @@ Challenge advancedFirstBook = Challenge(
     isEditable: false,
     imageUrl: 'https://media.istockphoto.com/id/612523400/photo/one-old-brown-book.jpg?s=612x612&w=0&k=20&c=Cp-hEcRfw1bJApDhpWqPEb4wGr3w1Yt1YdWF7uoidiA=',
     startDate: DateTime.utc(2024, 1, 25),
-    endDate: DateTime(2025, 2)
+    endDate: DateTime(2025, 2),
+    prerequisiteChallenges: [],
+    conflictingChallenges: ['46045563-a7e8-4a25-80f4-409025a9cbd7'],
 );
 
-Challenge advancedAdditionalBook = Challenge(
-    name: 'Read another book',
-    id: '10007',
+Challenge advancedAdditionalBook1 = Challenge(
+    name: 'Read a second book',
+    id: 'c782c32c-797d-4ce1-beb7-2aee35c69414',
     description: 'Finish another book of any length',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.advanced,
     maxPoints: 25,
     scoringMechanism: ScoringMechanism.completion,
@@ -148,14 +162,35 @@ Challenge advancedAdditionalBook = Challenge(
     isEditable: false,
     imageUrl: 'https://media.istockphoto.com/id/949118068/photo/books.webp?a=1&b=1&s=612x612&w=0&k=20&c=lxb-mHWs3AkeKR-J7ZwD8a5Mo9vmsq3uYPMaJbIUoCI=',
     startDate: DateTime.utc(2024, 1, 25),
-    endDate: DateTime(2025, 2)
+    endDate: DateTime(2025, 2),
+    prerequisiteChallenges: ['41fdbf85-f65c-436c-8270-3913fc2e2625'],
+    conflictingChallenges: [],
+);
+
+Challenge advancedAdditionalBook2 = Challenge(
+    name: 'Read a third book',
+    id: '2e1093b9-54a5-4067-a0dd-b08cf42b56bb',
+    description: 'Finish another book of any length',
+    eventId: reading.id!,
+    difficulty: Difficulty.advanced,
+    maxPoints: 25,
+    scoringMechanism: ScoringMechanism.completion,
+    submissionScreen: SubmissionScreen.bookCompletion,
+    isBonus: false,
+    isRecurring: true,
+    isEditable: false,
+    imageUrl: 'https://media.istockphoto.com/id/949118068/photo/books.webp?a=1&b=1&s=612x612&w=0&k=20&c=lxb-mHWs3AkeKR-J7ZwD8a5Mo9vmsq3uYPMaJbIUoCI=',
+    startDate: DateTime.utc(2024, 1, 25),
+    endDate: DateTime(2025, 2),
+    prerequisiteChallenges: ['c782c32c-797d-4ce1-beb7-2aee35c69414'],
+    conflictingChallenges: [],
 );
 
 Challenge bookClub = Challenge(
     name: 'Attend a Book Club Meeting',
-    id: '10008',
+    id: '04224b4d-d3e8-4583-927e-1e05ab43c3a7',
     description: 'Attend at least one book club meeting this month. May be online or in-person',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.all,
     maxPoints: 5,
     scoringMechanism: ScoringMechanism.completion,
@@ -165,14 +200,16 @@ Challenge bookClub = Challenge(
     isEditable: false,
     imageUrl: 'https://image.cnbcfm.com/api/v1/image/104702698-GettyImages-583816330-book-club.jpg?v=1532563764&w=1480&h=833&ffmt=webp&vtcrop=y',
     startDate: DateTime.utc(2024, 1, 25),
-    endDate: DateTime(2025, 2)
+    endDate: DateTime(2025, 2),
+    prerequisiteChallenges: [],
+    conflictingChallenges: [],
 );
 
 Challenge bookReview = Challenge(
     name: 'Write a Book Review',
-    id: '10009',
+    id: 'ebfc7d3f-17fb-4e78-9d2d-a0ac648620d7',
     description: 'Write a 300+ word book review and post it to the app',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.all,
     maxPoints: 5,
     scoringMechanism: ScoringMechanism.completion,
@@ -182,14 +219,16 @@ Challenge bookReview = Challenge(
     isEditable: false,
     imageUrl: 'https://negativespace.co/wp-content/uploads/2018/05/negative-space-drawing-pencils-white-paper-rawpixel-thumb-1.jpg',
     startDate: DateTime.utc(2024, 1, 25),
-    endDate: DateTime(2025, 2)
+    endDate: DateTime(2025, 2),
+    prerequisiteChallenges: [],
+    conflictingChallenges: [],
 );
 
 Challenge bonusReading1 = Challenge(
     name: 'Read This!',
-    id: '10010',
+    id: '82359ee3-071f-43a2-a754-66aa9b1133bd',
     description: 'Read the following article and answer questions for bonus points!',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.all,
     maxPoints: 5,
     scoringMechanism: ScoringMechanism.completion,
@@ -200,14 +239,16 @@ Challenge bonusReading1 = Challenge(
     isEditable: false,
     imageUrl: 'https://miro.medium.com/v2/resize:fit:4800/format:webp/1*42ebJizcUtZBNIZPmmMZ5Q.jpeg',
     startDate: DateTime.utc(2025, 1, 4),
-    endDate: DateTime.utc(2025, 1, 5, 23, 59, 59)
+    endDate: DateTime.utc(2025, 1, 5, 23, 59, 59),
+    prerequisiteChallenges: [],
+    conflictingChallenges: [],
 );
 
 Challenge bonusReading2 = Challenge(
     name: 'Read This!',
-    id: '10011',
+    id: '4b12f83e-e562-4fec-b1a5-7f1322a75582',
     description: 'Read the following article and answer questions for bonus points!',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.all,
     maxPoints: 5,
     scoringMechanism: ScoringMechanism.completion,
@@ -218,14 +259,16 @@ Challenge bonusReading2 = Challenge(
     isEditable: false,
     imageUrl: 'https://publishyourpurpose.com/wp-content/uploads/2022/07/how-many-pages-good-book-publish-your-purpose.png',
     startDate: DateTime.utc(2025, 1, 11),
-    endDate: DateTime.utc(2025, 1, 12, 23, 59, 59)
+    endDate: DateTime.utc(2025, 1, 12, 23, 59, 59),
+    prerequisiteChallenges: [],
+    conflictingChallenges: [],
 );
 
 Challenge bonusReading3 = Challenge(
     name: 'Read This!',
-    id: '10012',
+    id: '220d7cce-1566-49db-a9ec-abc9c5b6eb8b',
     description: 'Read the following article and answer questions for bonus points!',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.all,
     maxPoints: 5,
     scoringMechanism: ScoringMechanism.completion,
@@ -235,14 +278,16 @@ Challenge bonusReading3 = Challenge(
     isRecurring: false,
     isEditable: false,
     startDate: DateTime.utc(2025, 1, 18),
-    endDate: DateTime.utc(2025, 1, 19, 23, 59, 59)
+    endDate: DateTime.utc(2025, 1, 19, 23, 59, 59),
+    prerequisiteChallenges: [],
+    conflictingChallenges: [],
 );
 
 Challenge bonusReading4 = Challenge(
     name: 'Read This!',
-    id: '10013',
+    id: '06d8e4a6-7111-4264-a6ae-1fdc1edbbd65',
     description: 'Read the following article and answer questions for bonus points!',
-    event: reading,
+    eventId: reading.id!,
     difficulty: Difficulty.all,
     maxPoints: 5,
     scoringMechanism: ScoringMechanism.completion,
@@ -253,7 +298,9 @@ Challenge bonusReading4 = Challenge(
     isEditable: false,
     imageUrl: 'https://miro.medium.com/v2/resize:fit:4800/format:webp/1*42ebJizcUtZBNIZPmmMZ5Q.jpeg',
     startDate: DateTime.utc(2024, 1, 25),
-    endDate: DateTime.utc(2025, 1, 26, 23, 59, 59)
+    endDate: DateTime.utc(2025, 1, 26, 23, 59, 59),
+    prerequisiteChallenges: [],
+    conflictingChallenges: [],
 );
 
 List<Challenge> readingChallenges = [
@@ -264,11 +311,12 @@ List<Challenge> readingChallenges = [
   intermediateAdditionalBook,
   advancedPageCount,
   advancedFirstBook,
-  advancedAdditionalBook,
-  bonusReading1,
+  advancedAdditionalBook1,
+  advancedAdditionalBook2,
   bookReview,
   bookClub,
-  bonusReading2,
-  bonusReading3,
-  bonusReading4
+  // bonusReading1,
+  // bonusReading2,
+  // bonusReading3,
+  // bonusReading4
 ];

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../../models/challenge.dart';
 
-Event miscellaneous = Event(
-  name: 'Miscellaneous',
-  description: 'Try new things and make the most of your summer vacation! Events range from bowling, to swimming, to visiting the zoo. ',
+Event writing = Event(
+  name: 'Writing',
+  description: 'Get your creative juices flowing, spend some time reflecting, and practice your writing skills.',
   hasMultipleDifficulties: false,
   themeColor: Colors.orange,
   icon: Icons.auto_awesome,

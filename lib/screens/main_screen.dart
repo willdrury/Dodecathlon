@@ -3,12 +3,10 @@ import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/providers/users_provider.dart';
 import 'package:dodecathlon/screens/loading_screen.dart';
 import 'package:dodecathlon/screens/post_creation_screen.dart';
-import 'package:dodecathlon/utilities/custom_color_extension.dart';
 import 'package:dodecathlon/widgets/default_app_bar.dart';
 import 'package:dodecathlon/widgets/default_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:dodecathlon/screens/submission_selection_screen.dart';
 import 'package:dodecathlon/screens/events_screen.dart';
 import 'package:dodecathlon/screens/leaderboard_screen.dart';
@@ -35,8 +33,16 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Color _appBarTextColor = Colors.black;
   Color _scaffoldBackgroundColor = Colors.white;
   Widget? _floatingActionButton;
+  ScrollPhysics _scrollPhysics = NeverScrollableScrollPhysics();
+  late ScrollController _scrollController;
   late User? currentUser;
-  late List<User> users;
+  late AsyncValue<List<User>> users;
+
+  @override
+  void initState() {
+    _scrollController = ScrollController();
+    super.initState();
+  }
 
   void _onDestinationSelected(int index, BuildContext ctx) async {
     setState(() {
@@ -48,19 +54,28 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           _appBarLabel = '';
           _useAppBarShadow = false;
           _appBarColor = Colors.transparent;
-          _appBarTextColor = Colors.black;
-          _scaffoldBackgroundColor = Colors.white;
+          _appBarTextColor = Theme.of(context).colorScheme.onSurface;
+          _scaffoldBackgroundColor = Theme.of(context).colorScheme.surface;
           _floatingActionButton = null;
+          _scrollPhysics = NeverScrollableScrollPhysics();
+          if (_scrollController.hasClients) {
+            _scrollController.animateTo(
+              0.0, // The offset to scroll to (0.0 is the top)
+              duration: const Duration(milliseconds: 500), // Animation duration
+              curve: Curves.easeOut, // Animation curve
+            );
+          }
         case 1:
           _currentPageIndex = index;
           _currentScreen = EventsScreen();
           _showAppBar = true;
-          _appBarLabel = '';
-          _useAppBarShadow = false;
+          _appBarLabel = 'Events';
+          _useAppBarShadow = true;
           _appBarColor = Colors.transparent;
-          _appBarTextColor = Colors.black;
-          _scaffoldBackgroundColor = Colors.white;
+          _appBarTextColor = Theme.of(context).colorScheme.onSurface;
+          _scaffoldBackgroundColor = Theme.of(context).colorScheme.surface;
           _floatingActionButton = null;
+          _scrollPhysics = ScrollPhysics();
         case 2:
           Navigator.of(context).push(
               MaterialPageRoute(builder: (ctx) => SubmissionSelectionScreen())
@@ -71,9 +86,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           _showAppBar = true;
           _appBarLabel = 'Social';
           _useAppBarShadow = true;
-          _appBarColor = Colors.white;
-          _appBarTextColor = Colors.black;
-          _scaffoldBackgroundColor = Colors.white;
+          _appBarColor = Theme.of(context).colorScheme.surface;
+          _appBarTextColor = Theme.of(context).colorScheme.onSurface;
+          _scaffoldBackgroundColor = Theme.of(context).colorScheme.surface;
           _floatingActionButton = FloatingActionButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -84,16 +99,18 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             backgroundColor: Colors.black,
             child: const Icon(Icons.add),
           );
+          _scrollPhysics = ScrollPhysics();
         case 4:
           _currentPageIndex = index;
-          _currentScreen = LeaderboardScreen(currentUser: currentUser!, users: users,);
+          _currentScreen = LeaderboardScreen(currentUser: currentUser!, users: users.value!,);
           _showAppBar = true;
           _useAppBarShadow = false;
           _appBarColor = Theme.of(context).colorScheme.primaryContainer;
           _appBarLabel = 'Leaderboard';
           _appBarTextColor = Theme.of(context).colorScheme.tertiary;
-          _scaffoldBackgroundColor = Colors.white;
+          _scaffoldBackgroundColor = Theme.of(context).colorScheme.surface;
           _floatingActionButton = null;
+          _scrollPhysics = ScrollPhysics();
       }
     });
   }
@@ -106,9 +123,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       setState(() {
         _currentScreen = LoadingScreen();
       });
+    } else {
+      _onDestinationSelected(_currentPageIndex, context);
     }
-
-    CustomColorsExtension customColors = Theme.of(context).extension<CustomColorsExtension>()!;
 
     Color appBarColor = _appBarColor != null
         ? _appBarColor!
@@ -119,19 +136,21 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       endDrawer: DefaultDrawer(),
       floatingActionButton: _floatingActionButton,
       body: NestedScrollView(
+        controller: _scrollController,
+        physics: _scrollPhysics,
         floatHeaderSlivers: true,
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              if (_showAppBar)
-                DefaultAppBar(
-                  label: _appBarLabel,
-                  useShadow: _useAppBarShadow,
-                  backgroundColor: appBarColor,
-                  textColor: _appBarTextColor,
-                ),
-            ];
-          },
-          body: _currentScreen
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            if (_showAppBar)
+              DefaultAppBar(
+                label: _appBarLabel,
+                useShadow: _useAppBarShadow,
+                backgroundColor: appBarColor,
+                textColor: _appBarTextColor,
+              ),
+          ];
+        },
+        body: _currentScreen
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -147,7 +166,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             _onDestinationSelected(index, context);
           },
           indicatorColor: Theme.of(context).colorScheme.primaryContainer,
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           shadowColor: Colors.black,
           elevation: 10.0,
           selectedIndex: _currentPageIndex,

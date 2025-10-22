@@ -1,5 +1,6 @@
-import 'package:dodecathlon/models/challenge.dart';
 import 'package:flutter/material.dart';
+
+import '../data/material_icon_map.dart';
 
 class Event {
 
@@ -17,7 +18,6 @@ class Event {
   final String? prize;
   final String? id;
 
-
   Event({
     required this.name,
     required this.description,
@@ -33,4 +33,21 @@ class Event {
     this.prize,
     this.id
   });
+
+  factory Event.fromMap(Map data, String id) {
+    return Event(
+        name: data['name'],
+        description: data['description'],
+        hasMultipleDifficulties: data['hasMultipleDifficulties'],
+        themeColor: Color(int.parse(data['themeColor'].substring(1, 7), radix: 16)).withAlpha(255),
+        icon: materialIconMap[data['icon']] ?? Icons.emoji_events,
+        startDate: DateTime.parse((data['startDate'])),
+        endDate: DateTime.parse((data['endDate'])),
+        displayImageUrl: data['displayImageUrl'],
+        beginnerDescription: data['beginnerDescription'],
+        intermediateDescription: data['intermediateDescription'],
+        advancedDescription: data['advancedDescription'],
+        id: id
+    );
+  }
 }

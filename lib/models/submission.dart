@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dodecathlon/models/user.dart';
 import 'package:uuid/uuid.dart';
 
 Uuid uuid = Uuid();
@@ -61,6 +60,7 @@ class Submission {
     } catch (error) {
       return error.toString();
     }
+    return null;
   }
 
 }

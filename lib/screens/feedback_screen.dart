@@ -9,7 +9,7 @@ class FeedbackScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Feedback'),
       ),
-      body: Center(child: Text('Feedback Screen'),),
+      body: Center(child: Text('Actually, I don\'t care'),),
     );
   }
 }

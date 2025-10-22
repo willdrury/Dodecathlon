@@ -1,7 +1,4 @@
-import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/providers/announcement_provider.dart';
-import 'package:dodecathlon/screens/challenge_details_screen.dart';
-import 'package:dodecathlon/widgets/bonus_challenge_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,7 +22,7 @@ class _AnnouncementsCarouselState extends ConsumerState<AnnouncementsCarousel> {
     if (announcements.isEmpty) {
       return Container(
         padding: EdgeInsets.all(20),
-        child: Text('Nothing here...'),
+        child: Text('Looks like you are all caught up!'),
       );
     }
 

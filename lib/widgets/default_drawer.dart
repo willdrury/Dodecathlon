@@ -1,24 +1,48 @@
+import 'dart:async';
+
+import 'package:dodecathlon/screens/admin_login_screen.dart';
 import 'package:dodecathlon/screens/event_schedule_screen.dart';
 import 'package:dodecathlon/screens/faq_screen.dart';
 import 'package:dodecathlon/screens/feedback_screen.dart';
 import 'package:dodecathlon/screens/profile_screen.dart';
-import 'package:dodecathlon/screens/settings_screen.dart';
 import 'package:dodecathlon/widgets/vertical_icon_button.dart';
 import 'package:flutter/material.dart';
 
 class DefaultDrawer extends StatelessWidget {
-  const DefaultDrawer({super.key});
+  DefaultDrawer({super.key});
+
+  late Timer _timer;
+
+  void _startOperation(BuildContext context) {
+    _timer = Timer(const Duration(seconds: 5), () {
+      _timer.cancel();
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (ctx) => AdminLoginScreen())
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       width: 130,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: Border(),
       child: ListView(
         children: [
           DrawerHeader(
               child: GestureDetector(
+                onTapDown: (_) {
+                  _startOperation(context);
+                },
+                onTapUp: (_) {
+                  _timer.cancel();
+                },
                 onTap: () {
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (ctx) => EventScheduleScreen())

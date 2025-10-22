@@ -12,7 +12,7 @@ import 'package:uuid/uuid.dart';
 Uuid uuid = Uuid();
 
 class PostCreationScreen extends ConsumerStatefulWidget {
-  PostCreationScreen({
+  const PostCreationScreen({
     super.key,
     this.initialImageUrl,
     this.initialTitle,
@@ -20,10 +20,10 @@ class PostCreationScreen extends ConsumerStatefulWidget {
     this.title,
   });
 
-  String? initialImageUrl;
-  String? initialTitle;
-  String? initialDescription;
-  String? title;
+  final String? initialImageUrl;
+  final String? initialTitle;
+  final String? initialDescription;
+  final String? title;
 
   @override
   ConsumerState<PostCreationScreen> createState() => _PostCreationScreenState();
@@ -119,7 +119,10 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (ctx) => MainScreen()),
+                              (Route<dynamic> route) => false,
+                        );
                       },
                       child: Text('Back', style: TextStyle(fontSize: 20, color: Colors.black)),
                     ),

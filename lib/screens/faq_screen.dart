@@ -1,7 +1,7 @@
 import 'package:dodecathlon/widgets/faq_list_tile.dart';
 import 'package:flutter/material.dart';
 
-import '../data/FAQs.dart';
+import '../data/faq_list.dart';
 
 class FaqScreen extends StatelessWidget {
   const FaqScreen({super.key});

@@ -3,10 +3,10 @@ import 'package:dodecathlon/screens/user_details_screen.dart';
 import 'package:flutter/material.dart';
 
 class LeaderboardListItem extends StatelessWidget {
-  LeaderboardListItem({super.key, required this.user, required this.points});
+  const LeaderboardListItem({super.key, required this.user, required this.points});
   
-  User user;
-  int points;
+  final User user;
+  final int points;
   
   @override
   Widget build(BuildContext context) {

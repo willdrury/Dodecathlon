@@ -1,6 +1,5 @@
 import 'package:dodecathlon/models/post.dart';
 import 'package:dodecathlon/models/user.dart';
-import 'package:dodecathlon/providers/posts_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,9 +10,9 @@ import '../screens/user_details_screen.dart';
 final formatter = DateFormat('yMMMMd').add_jm();
 
 class PostContainer extends ConsumerStatefulWidget {
-  PostContainer({super.key, required this.post});
+  const PostContainer({super.key, required this.post});
 
-  Post post;
+  final Post post;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -65,7 +64,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
       margin: EdgeInsets.symmetric(vertical: 10),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.black12)
       ),

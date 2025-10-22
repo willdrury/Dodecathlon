@@ -1,14 +1,13 @@
-import 'package:dodecathlon/data/competition_2025/competition.dart';
-import 'package:dodecathlon/data/competition_2025/reading.dart';
 import 'package:dodecathlon/models/challenge.dart';
-import 'package:dodecathlon/models/competition.dart';
 import 'package:dodecathlon/models/submission.dart';
+import 'package:dodecathlon/providers/events_provider.dart';
 import 'package:dodecathlon/providers/submission_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../models/event.dart';
 import '../models/user.dart';
+import '../providers/challenges_provider.dart';
 import '../widgets/select_difficulty_container.dart';
 
 class SubmissionSelectionScreen extends ConsumerStatefulWidget {
@@ -20,9 +19,6 @@ class SubmissionSelectionScreen extends ConsumerStatefulWidget {
 
 class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionScreen> {
 
-  Competition comp = competition2025;
-  final int eventIndex = 0;
-  List<Challenge> challenges = readingChallenges;
   Challenge? _currentSelection;
 
   void onSelected(Challenge? selectedChallenge) {
@@ -31,45 +27,101 @@ class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionS
     });
   }
 
-  void onNext() {
+  void onNext(BuildContext ctx, List<Challenge> challenges) {
     if (_currentSelection == null) return;
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => _currentSelection!.getSubmissionScreen({
-          'challenge': _currentSelection,
-        }))
-    );
+
+    if (_currentSelection!.conflictingChallenges.isNotEmpty) {
+      String conflictingChallengeNames = _currentSelection!.conflictingChallenges.map((c) {
+        return challenges.where((c1) => c1.id == c).first.name;
+      }).toList().join('\n');
+      showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Attention!'),
+            content: Text(
+              'If you submit this challenge you will be unable to submit the following other challenges:\n\n$conflictingChallengeNames',
+            ),
+            actions: <Widget>[
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text('Continue'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => _currentSelection!.getSubmissionScreen({
+                        'challenge': _currentSelection,
+                      }))
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (ctx) => _currentSelection!.getSubmissionScreen({
+            'challenge': _currentSelection,
+          }))
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
 
+    final DateTime now = DateTime.now();
     User currentUser = ref.watch(userProvider)!;
+    List<Event> events = ref.watch(eventProvider);
+      Event currentEvent = events.where((e) =>
+        e.startDate.isBefore(now) & e.endDate.isAfter(now)
+    ).first;
     List<Submission> userSubmissions = ref.watch(submissionsProvider);
     List<String> completedChallengeIds = userSubmissions.map((s) => s.challengeId).toList();
-    final now = DateTime.now();
+    AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
+    List<Challenge> eventChallenges = [];
+    if (challenges.hasValue) {
+      eventChallenges = challenges.value!.where((c) => c.eventId == currentEvent.id).toList();
+    }
 
-    if (currentUser.currentEventDifficulty.isEmpty) {
+    if (currentUser.currentEventDifficulty == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: SelectDifficultyContainer(eventIndex: eventIndex),
+        body: SelectDifficultyContainer(event: currentEvent),
       );
     }
 
-    List<Challenge> bonusChallenges = challenges.where((c) =>
+    List<Challenge> bonusChallenges = eventChallenges.where((c) =>
       c.isBonus &&
       !completedChallengeIds.contains(c.id) &&
       c.startDate.isBefore(now) &&
       c.endDate.isAfter(now) &&
-      (c.difficulty == currentUser.currentEventDifficulty[0] || c.difficulty == Difficulty.all)
+      c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&
+      c.prerequisiteChallenges.every((e) => completedChallengeIds.contains(e)) &&
+      (c.difficulty == currentUser.currentEventDifficulty || c.difficulty == Difficulty.all)
     ).toList();
-    List<Challenge> mainChallenges = challenges.where((c) =>
+    List<Challenge> mainChallenges = eventChallenges.where((c) =>
       !c.isBonus &&
       !completedChallengeIds.contains(c.id) &&
       c.startDate.isBefore(now) &&
       c.endDate.isAfter(now) &&
-      (c.difficulty == currentUser.currentEventDifficulty[0] || c.difficulty == Difficulty.all)
+      c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&
+      c.prerequisiteChallenges.every((e) => completedChallengeIds.contains(e)) &&
+      (c.difficulty == currentUser.currentEventDifficulty || c.difficulty == Difficulty.all)
     ).toList();
-    List<Challenge> completedChallenges = challenges.where((c) =>
+    List<Challenge> completedChallenges = eventChallenges.where((c) =>
         completedChallengeIds.contains(c.id)
     ).toList();
 
@@ -90,7 +142,9 @@ class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionS
                   ),
                   Spacer(),
                   TextButton(
-                    onPressed: onNext,
+                    onPressed: () {
+                      onNext(context, eventChallenges);
+                    },
                     child: Text(
                         'Next', style: TextStyle(fontSize: 20, color: _currentSelection == null ? Colors.grey : Theme.of(context).colorScheme.primary)),
                   ),

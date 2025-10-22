@@ -1,7 +1,11 @@
+import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:flutter/Material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
-import '../providers/settings_provider.dart';
+import '../models/user.dart';
+
+final formatter = DateFormat('yMMMMd');
 
 class UserStatsScreen extends ConsumerStatefulWidget {
   UserStatsScreen({super.key});
@@ -16,92 +20,50 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
+    User user = ref.watch(userProvider)!;
+    List<String> achievements = [];
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Stats'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
-        child: GridView(
-          physics: ClampingScrollPhysics(),
-          shrinkWrap: true,
-          padding: EdgeInsets.all(20),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 1.7,
-            crossAxisSpacing: 20,
-            mainAxisSpacing: 20,
+        padding: EdgeInsets.all(10),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(title: Text('Joined'), subtitle: Text(formatter.format(user.createdDate)),),
+              ListTile(title: Text('Highest Rank'),),
+              ListTile(title: Text('Previous Events'), trailing: Icon(Icons.chevron_right), onTap: () {},),
+              ListTile(title: Text('Achievements:'),),
+              GridView(
+                physics: ClampingScrollPhysics(),
+                shrinkWrap: true,
+                padding: EdgeInsets.all(20),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.7,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                ),
+                children: [
+                  for(String s in achievements)
+                    Container(
+                      height: 200,
+                      child: Column(
+                        children: [
+                          Icon(Icons.celebration, size: 60, color: Colors.pink,),
+                          Text(s)
+                        ],
+                      ),
+                    )
+                ]
+              ),
+            ]
           ),
-          children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black38,
-                        offset: Offset(0, 5),
-                        spreadRadius: 1,
-                        blurRadius: 5
-                    )
-                  ]
-              ),
-              child: Text('Joined: ', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black38,
-                        offset: Offset(0, 5),
-                        spreadRadius: 1,
-                        blurRadius: 5
-                    )
-                  ]
-              ),
-              child: Text('Highest rank', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.tertiary,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black38,
-                        offset: Offset(0, 5),
-                        spreadRadius: 1,
-                        blurRadius: 5
-                    )
-                  ]
-              ),
-              child: Text('Previous events', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black38,
-                        offset: Offset(0, 5),
-                        spreadRadius: 1,
-                        blurRadius: 5
-                    )
-                  ]
-              ),
-              child: Text('Achievements', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
-            ),
-          ],
         ),
-      ),
+      )
     );
   }
 }

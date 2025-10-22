@@ -1,14 +1,13 @@
 import 'package:dodecathlon/models/user.dart' as dd;
 import 'package:dodecathlon/widgets/profile_details.dart';
-import 'package:dodecathlon/widgets/profile_picture_input.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/post.dart';
+import '../models/submission.dart';
 import '../providers/posts_provider.dart';
+import '../providers/submission_provider.dart';
 import '../providers/user_provider.dart';
-import '../providers/users_provider.dart';
 import '../widgets/post_container.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -23,6 +22,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     dd.User currentUser = ref.watch(userProvider)!;
+    List<Submission> userSubmissions = ref.watch(submissionsProvider);
     List<Post> posts = ref.watch(postsProvider).where((p) =>
       p.userId == currentUser.id
     ).toList();
@@ -40,7 +40,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     return DefaultTabController(
       initialIndex: 0,
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Profile'),
@@ -50,7 +50,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: Column(
             children: [
               Container(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 child: TabBar(
                   tabs: <Widget>[
                     Tab(
@@ -58,6 +58,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                     Tab(
                       text: 'Posts',
+                    ),
+                    Tab(
+                      text: 'Submissions',
                     ),
                   ],
                 ),
@@ -77,6 +80,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             return PostContainer(post: posts[i]);
                           }
                         )
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: SingleChildScrollView(
+                          child: ListView.builder(
+                              itemCount: userSubmissions.length,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (ctx, i) {
+                                return Text(userSubmissions[i].challengeId);
+                              }
+                          )
                       ),
                     )
                   ],

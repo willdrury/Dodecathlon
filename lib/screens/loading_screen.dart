@@ -6,7 +6,6 @@ class LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('initState');
     return Center(
       child: CircularProgressIndicator(),
     );

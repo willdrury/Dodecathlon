@@ -18,7 +18,7 @@ class _SocialScreenState extends ConsumerState<SocialScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<User> users = ref.watch(usersProvider);
+    AsyncValue<List<User>> users = ref.watch(usersProvider);
     List<Post> posts = ref.watch(postsProvider);
     posts.sort((p1, p2) {
       if (p1.createdAt.isBefore(p2.createdAt)) {
@@ -27,13 +27,16 @@ class _SocialScreenState extends ConsumerState<SocialScreen> {
       return -1;
     });
 
-    for (Post p in posts) {
-      p.user = users.where((u) => u.id == p.userId).first;
+    if (users.hasValue) {
+      for (Post p in posts) {
+        p.user = users.value!.where((u) => u.id == p.userId).first;
+      }
     }
+
 
     return Scaffold(
         body: SingleChildScrollView(
-          physics: ScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(),
           padding: EdgeInsets.all(20),
           child: Column(
             children: [

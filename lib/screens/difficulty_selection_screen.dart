@@ -10,9 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'main_screen.dart';
 
 class DifficultySelectionScreen extends ConsumerStatefulWidget {
-  DifficultySelectionScreen({super.key, required this.event});
+  const DifficultySelectionScreen({super.key, required this.event});
 
-  Event event;
+  final Event event;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -61,11 +61,7 @@ class _DifficultySelectionScreenState extends ConsumerState<DifficultySelectionS
               ),
               child: const Text('Continue'),
               onPressed: () {
-                if (currentUser.currentEventDifficulty.isEmpty) {
-                  currentUser.currentEventDifficulty.add(difficulty);
-                } else {
-                  currentUser.currentEventDifficulty[0] = difficulty;
-                }
+                currentUser.currentEventDifficulty = difficulty;
                 UserProvider().setUser(currentUser);
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (ctx) => MainScreen()),

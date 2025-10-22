@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dodecathlon/models/announcement.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 class AnnouncementProvider extends StateNotifier<List<Announcement>> {
   AnnouncementProvider() : super([]);

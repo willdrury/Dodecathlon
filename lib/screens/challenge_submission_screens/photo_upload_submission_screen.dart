@@ -7,16 +7,16 @@ import '../../models/user.dart';
 import '../../providers/user_provider.dart';
 import '../post_creation_screen.dart';
 
-class EventAttendanceSubmissionScreen extends ConsumerStatefulWidget {
-  const EventAttendanceSubmissionScreen({super.key, required this.challenge});
+class PhotoUploadSubmissionScreen extends ConsumerStatefulWidget {
+  const PhotoUploadSubmissionScreen({super.key, required this.challenge});
 
   final Challenge challenge;
 
   @override
-  ConsumerState<EventAttendanceSubmissionScreen> createState() => _EventAttendanceSubmissionScreenState();
+  ConsumerState<PhotoUploadSubmissionScreen> createState() => _PhotoUploadSubmissionScreenState();
 }
 
-class _EventAttendanceSubmissionScreenState extends ConsumerState<EventAttendanceSubmissionScreen> {
+class _PhotoUploadSubmissionScreenState extends ConsumerState<PhotoUploadSubmissionScreen> {
 
   bool _shareEnabled = false;
   User? currentUser;
@@ -38,7 +38,7 @@ class _EventAttendanceSubmissionScreenState extends ConsumerState<EventAttendanc
 
     Navigator.of(ctx).push(
       MaterialPageRoute(builder: (ctx) => PostCreationScreen(
-        title: 'Tell us about the event!',
+        title: 'Tell us about what you did!',
       )),
     );
   }
@@ -75,10 +75,10 @@ class _EventAttendanceSubmissionScreenState extends ConsumerState<EventAttendanc
                 ),
                 SizedBox(height: 60,),
                 Text(
-                  'To get credit for this challenge, submit a post with evidence of yourself attending the event. '
-                  'This can be a photo, description of what happened, or anything else which can be used as proof. \n\n'
-                  'Once submitted, it will need to be approved by another user in order to receive full points.\n\n'
-                  'Click "Next" to submit your evidence!',
+                  'To get credit for this challenge, submit a post with evidence of yourself completing the challenge. '
+                      'This can be a photo, description of what happened, or anything else which can be used as proof. \n\n'
+                      'Once submitted, it will need to be approved by another user in order to receive full points.\n\n'
+                      'Click "Next" to submit your evidence!',
                   style: TextStyle(fontSize: 20),
                 ),
               ],
