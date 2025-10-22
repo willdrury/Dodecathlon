@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="200mm"
+   height="300mm"
+   viewBox="0 0 200 300"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     transform="matrix(0.264583,0,0,0.264583,111.876,150.509)"
+     id="g21">
+    <path
+       d="m 312.62291,180.19028 v 57.08211 L 285.38068,340.32525 153.13638,409.5226 54.567894,377.58506 -60.838502,297.55957 V 268.95602 L -503.86836,374.25693 V 633.6596 H 570.7912 l -8.11134,-512.90299 z"
+       style="fill:#d9d9d9;stroke:#d9d9d9;stroke-width:1.31429;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:20;paint-order:stroke fill markers"
+       id="path39" />
+    <path
+       d="m 98.64998,-13.085352 54.4864,60.287186 132.2443,69.197356 27.24223,-17.52151 -115.4064,-80.025492 z"
+       style="fill:none;stroke:#d9d9d9;stroke-width:15.2701;stroke-linejoin:round"
+       id="path38" />
+    <path
+       d="M 98.64998,-13.085352 -33.594327,56.112001 -60.838502,159.16487 54.567894,153.65705 153.13638,47.201834 Z"
+       style="fill:none;stroke:#d9d9d9;stroke-width:15.2701;stroke-linejoin:round"
+       id="path37" />
+    <path
+       d="M 285.38068,340.32525 268.54277,265.62008 125.8922,288.64745 54.567894,377.58506 153.13638,409.5226 Z"
+       style="fill:none;stroke:#d9d9d9;stroke-width:15.2701;stroke-linejoin:round"
+       id="path36" />
+    <path
+       d="m 312.62291,98.87768 -27.24223,17.52151 -8.14649,72.20321 -8.69142,77.01768 16.83791,74.70517 27.24223,-103.05286 v -57.08211 z"
+       style="fill:none;stroke:#d9d9d9;stroke-width:15.2701;stroke-linejoin:round"
+       id="path35" />
+    <path
+       d="m 54.567894,153.65705 -115.406396,5.50782 v 109.79115 28.60355 L 54.567894,377.58506 125.8922,288.64745 95.814039,231.7216 Z"
+       style="fill:none;stroke:#d9d9d9;stroke-width:15.2701;stroke-linejoin:round"
+       id="path34" />
+    <path
+       d="m 153.13638,47.201834 -98.568486,106.455216 41.246145,78.06455 30.078161,56.92585 142.65057,-23.02737 8.69142,-77.01768 8.14649,-72.20321 z"
+       style="fill:none;stroke:#d9d9d9;stroke-width:15.2701;stroke-linejoin:round"
+       id="path33" />
+  </g>
+</svg>
