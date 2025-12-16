@@ -19,8 +19,13 @@ class _SocialScreenState extends ConsumerState<SocialScreen> {
   @override
   Widget build(BuildContext context) {
     AsyncValue<List<User>> users = ref.watch(usersProvider);
-    List<Post> posts = ref.watch(postsProvider);
-    posts.sort((p1, p2) {
+    AsyncValue<List<Post>> posts = ref.watch(postsProvider);
+
+    if (!posts.hasValue) {
+      return Center(child: CircularProgressIndicator(),);
+    }
+
+    posts.value!.sort((p1, p2) {
       if (p1.createdAt.isBefore(p2.createdAt)) {
         return 1;
       }
@@ -28,34 +33,34 @@ class _SocialScreenState extends ConsumerState<SocialScreen> {
     });
 
     if (users.hasValue) {
-      for (Post p in posts) {
+      for (Post p in posts.value!) {
         p.user = users.value!.where((u) => u.id == p.userId).first;
       }
     }
 
 
     return Scaffold(
-        body: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.all(20),
-          child: Column(
-            children: [
-              MediaQuery.removePadding(
-                removeTop: true,
-                context: context,
-                child: ListView.builder(
-                    itemCount: posts.length,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (ctx, i) {
-                      return PostContainer(post: posts[i]);
-                    }
-                ),
+      body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            MediaQuery.removePadding(
+              removeTop: true,
+              context: context,
+              child: ListView.builder(
+                  itemCount: posts.value!.length,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (ctx, i) {
+                    return PostContainer(post: posts.value![i]);
+                  }
               ),
-              SizedBox(height: 60,),
-            ],
-          ),
+            ),
+            SizedBox(height: 60,),
+          ],
         ),
+      ),
     );
   }
 }

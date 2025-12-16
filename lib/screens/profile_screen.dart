@@ -11,7 +11,7 @@ import '../providers/user_provider.dart';
 import '../widgets/post_container.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
-  ProfileScreen({super.key});
+  const ProfileScreen({super.key});
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
@@ -22,10 +22,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     dd.User currentUser = ref.watch(userProvider)!;
-    List<Submission> userSubmissions = ref.watch(submissionsProvider);
-    List<Post> posts = ref.watch(postsProvider).where((p) =>
-      p.userId == currentUser.id
-    ).toList();
+    AsyncValue<List<Submission>> userSubmissions = ref.watch(submissionsProvider);
+    AsyncValue<List<Post>> allPosts = ref.watch(postsProvider);
+    List<Post> posts = [];
+    if (allPosts.hasValue) {
+      posts = allPosts.value!.where((p) =>
+        p.userId == currentUser.id
+      ).toList();
+    }
 
     posts.sort((p1, p2) {
       if (p1.createdAt.isBefore(p2.createdAt)) {
@@ -84,16 +88,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.all(10),
-                      child: SingleChildScrollView(
-                          child: ListView.builder(
-                              itemCount: userSubmissions.length,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (ctx, i) {
-                                return Text(userSubmissions[i].challengeId);
-                              }
+                      child: userSubmissions.hasValue
+                        ? SingleChildScrollView(
+                        child: ListView.builder(
+                            itemCount: userSubmissions.value!.length,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (ctx, i) {
+                              return Text(userSubmissions.value![i].challengeId);
+                            }
                           )
-                      ),
+                        )
+                        : Center(child: CircularProgressIndicator()),
                     )
                   ],
                 ),

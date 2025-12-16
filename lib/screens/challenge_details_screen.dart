@@ -18,7 +18,7 @@ class ChallengeDetailsScreen extends StatelessWidget {
             if (challenge.imageUrl != null)
               Hero(
                   tag: challenge.id,
-                  child: Image.network(challenge.imageUrl!, fit: BoxFit.fill, height: 250, width: double.infinity,),
+                  child: Image.network(challenge.imageUrl!, fit: BoxFit.fitWidth, height: 250, width: double.infinity,),
               ),
             Container(
               padding: EdgeInsets.all(20),

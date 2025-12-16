@@ -3,7 +3,7 @@ import 'package:flutter/Material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AccountManagementScreen extends ConsumerStatefulWidget {
-  AccountManagementScreen({super.key});
+  const AccountManagementScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {

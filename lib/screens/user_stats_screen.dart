@@ -8,7 +8,7 @@ import '../models/user.dart';
 final formatter = DateFormat('yMMMMd');
 
 class UserStatsScreen extends ConsumerStatefulWidget {
-  UserStatsScreen({super.key});
+  const UserStatsScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -49,7 +49,7 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                 ),
                 children: [
                   for(String s in achievements)
-                    Container(
+                    SizedBox(
                       height: 200,
                       child: Column(
                         children: [

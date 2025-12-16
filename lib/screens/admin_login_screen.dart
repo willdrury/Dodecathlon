@@ -2,7 +2,7 @@ import 'package:dodecathlon/screens/admin_home_screen.dart';
 import 'package:flutter/Material.dart';
 
 class AdminLoginScreen extends StatelessWidget {
-  AdminLoginScreen({super.key});
+  const AdminLoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

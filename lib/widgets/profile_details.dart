@@ -16,7 +16,7 @@ import '../providers/users_provider.dart';
 final formatter = DateFormat('yMMMMd');
 
 class ProfileDetails extends ConsumerStatefulWidget {
-  ProfileDetails({super.key});
+  const ProfileDetails({super.key});
 
   @override
   ConsumerState<ProfileDetails> createState() => _ProfileDetailsState();
@@ -30,6 +30,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
     dd.User currentUser = ref.watch(userProvider)!;
     AsyncValue<List<dd.User>> users = ref.watch(usersProvider);
     Map<dynamic, dynamic> settings = ref.watch(settingsProvider);
+    print('settings: $settings');
 
     List<dd.User> usersByCompetition = [];
     if (users.hasValue) {
@@ -97,7 +98,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
                 ),
               ),
               Spacer(),
-              Container(
+              SizedBox(
                 height: 40,
                 child: Row( // Followers
                   children: [

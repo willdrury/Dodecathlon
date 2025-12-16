@@ -21,7 +21,7 @@ class _EventProgressBarState extends State<EventProgressBar> {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Container(
+        SizedBox(
           height: 280,
           width: 280,
           child:  CircularProgressIndicator(

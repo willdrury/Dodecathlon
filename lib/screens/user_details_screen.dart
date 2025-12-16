@@ -117,7 +117,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
                       ),
                     ),
                     Spacer(),
-                    Container(
+                    SizedBox(
                       height: 40,
                       child: Row( // Followers
                         children: [

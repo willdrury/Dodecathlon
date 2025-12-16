@@ -3,7 +3,6 @@ import 'package:dodecathlon/models/event.dart';
 import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/widgets/difficulty_selection_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

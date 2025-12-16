@@ -16,7 +16,7 @@ final timeFormatter = DateFormat('h:mm a');
 Uuid uuid = Uuid();
 
 class InPersonEventCreationScreen extends ConsumerStatefulWidget {
-  InPersonEventCreationScreen({super.key, });
+  const InPersonEventCreationScreen({super.key, });
 
   @override
   ConsumerState<InPersonEventCreationScreen> createState() => _InPersonEventCreationScreenState();
@@ -167,7 +167,7 @@ class _InPersonEventCreationScreenState extends ConsumerState<InPersonEventCreat
     if (!valid) {
       setState(() {});
       return;
-    };
+    }
 
     InPersonEvent newEvent = InPersonEvent(
         name: _titleController.text,
@@ -182,6 +182,11 @@ class _InPersonEventCreationScreenState extends ConsumerState<InPersonEventCreat
     );
 
     String? error = await newEvent.upload();
+    if (error != null) {
+      SnackBar snackBar = SnackBar(content: Text(error));
+      if (ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+      return;
+    }
 
     if(ctx.mounted) {
       Navigator.of(ctx).pushAndRemoveUntil(

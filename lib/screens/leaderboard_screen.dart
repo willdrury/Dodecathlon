@@ -1,12 +1,8 @@
-import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/widgets/leaderboard_sub_tab.dart';
 import 'package:flutter/material.dart';
 
 class LeaderboardScreen extends StatelessWidget {
-  const LeaderboardScreen({super.key, required this.currentUser, required this.users});
-
-  final User currentUser;
-  final List<User> users;
+  const LeaderboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +35,8 @@ class LeaderboardScreen extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  LeaderboardSubTab(users: users),
-                  LeaderboardSubTab(users: users.where(
-                          (user) => currentUser.friends.contains(user.id) || user.id == currentUser.id
-                  ).toList()),
+                  LeaderboardSubTab(isFriendsList: false,),
+                  LeaderboardSubTab(isFriendsList: true,),
                 ],
               ),
             ),

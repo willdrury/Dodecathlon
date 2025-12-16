@@ -11,7 +11,7 @@ import '../providers/challenges_provider.dart';
 import '../widgets/select_difficulty_container.dart';
 
 class SubmissionSelectionScreen extends ConsumerStatefulWidget {
-  SubmissionSelectionScreen({super.key});
+  const SubmissionSelectionScreen({super.key});
 
   @override
   ConsumerState<SubmissionSelectionScreen> createState() => _SubmissionSelectionScreenState();
@@ -84,17 +84,37 @@ class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionS
 
     final DateTime now = DateTime.now();
     User currentUser = ref.watch(userProvider)!;
-    List<Event> events = ref.watch(eventProvider);
-      Event currentEvent = events.where((e) =>
+    AsyncValue<List<Event>> events = ref.watch(eventProvider);
+    if (!events.hasValue) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    Event? currentEvent = events.value!.where((e) =>
         e.startDate.isBefore(now) & e.endDate.isAfter(now)
-    ).first;
-    List<Submission> userSubmissions = ref.watch(submissionsProvider);
-    List<String> completedChallengeIds = userSubmissions.map((s) => s.challengeId).toList();
+    ).firstOrNull;
+    if (currentEvent == null) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(child: Text('Looks like there are no challenges for the current event')),
+      );
+    }
+
+    AsyncValue<List<Submission>> userSubmissions = ref.watch(submissionsProvider);
+    if (!userSubmissions.hasValue) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    print('userSubmissions: $userSubmissions');
+
+
+    List<String> completedChallengeIds = userSubmissions.value!.map((s) => s.challengeId).toList();
     AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
     List<Challenge> eventChallenges = [];
     if (challenges.hasValue) {
       eventChallenges = challenges.value!.where((c) => c.eventId == currentEvent.id).toList();
     }
+
+    print('completedChallengeIds: $completedChallengeIds');
 
     if (currentUser.currentEventDifficulty == null) {
       return Scaffold(

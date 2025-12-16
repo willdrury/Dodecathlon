@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/settings_provider.dart';
 
 class ThemeSelectionScreen extends ConsumerStatefulWidget {
-  ThemeSelectionScreen({super.key});
+  const ThemeSelectionScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {

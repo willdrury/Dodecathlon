@@ -15,14 +15,14 @@ class InPersonEventDetailsScreen extends ConsumerWidget {
 
     AsyncValue<List<User>> users = ref.read(usersProvider);
 
-    String _statusText = '';
+    String statusText = '';
 
     if (DateTime.now().isAfter(event.startTime) && DateTime.now().isBefore(event.endTime)) {
-      _statusText = 'In Progress';
+      statusText = 'In Progress';
     } else if (DateTime.now().isAfter(event.endTime)) {
-      _statusText = 'Completed';
+      statusText = 'Completed';
     } else {
-      _statusText = 'Starts on ${event.startTime.month}.${event.startTime.day}.${event.startTime.year}';
+      statusText = 'Starts on ${event.startTime.month}.${event.startTime.day}.${event.startTime.year}';
     }
 
     return Scaffold(
@@ -45,7 +45,7 @@ class InPersonEventDetailsScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Status:', style: TextStyle(fontWeight: FontWeight.bold),),
-                    Text(_statusText),
+                    Text(statusText),
                   ],
                 ),
               ),

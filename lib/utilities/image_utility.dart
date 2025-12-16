@@ -5,10 +5,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 class ImageUtility {
   final storageRef = FirebaseStorage.instance.ref();
 
-  List<File> getUserProfileImages(){
-    final imagesRef = storageRef.child('profileImages');
-    return [];
-  }
+  // List<File> getUserProfileImages(){
+  //   final imagesRef = storageRef.child('profileImages');
+  //   return [];
+  // }
 
   // Returns upload url or null on error
   Future<String?> uploadImage(String path, File file) async {

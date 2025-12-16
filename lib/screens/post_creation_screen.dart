@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/post.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/main_screen.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/user.dart';
 import 'package:image_picker/image_picker.dart';
+import '../models/submission.dart';
 import '../utilities/image_utility.dart';
 import 'package:uuid/uuid.dart';
 
@@ -18,12 +20,14 @@ class PostCreationScreen extends ConsumerStatefulWidget {
     this.initialTitle,
     this.initialDescription,
     this.title,
+    this.challenge,
   });
 
   final String? initialImageUrl;
   final String? initialTitle;
   final String? initialDescription;
   final String? title;
+  final Challenge? challenge;
 
   @override
   ConsumerState<PostCreationScreen> createState() => _PostCreationScreenState();
@@ -31,7 +35,6 @@ class PostCreationScreen extends ConsumerStatefulWidget {
 
 class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
 
-  bool _shareEnabled = false;
   User? currentUser;
   late String? _imageUrl;
   final String _postId = uuid.v4();
@@ -82,17 +85,26 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
 
   void uploadPost(BuildContext ctx) async {
     Post newPost = Post(
-        userId: currentUser!.id!,
-        title: _titleController.text,
-        createdAt: DateTime.now(),
-        description: _descriptionController.text,
-        imageUrl: _imageUrl,
-        user: currentUser,
-        id: _postId,
-        highlighted: false,
+      userId: currentUser!.id!,
+      title: _titleController.text,
+      createdAt: DateTime.now(),
+      description: _descriptionController.text,
+      imageUrl: _imageUrl,
+      user: currentUser,
+      id: _postId,
+      highlighted: false,
     );
     
     String? error = await newPost.upload();
+    if (error != null) {
+      SnackBar snackBar = SnackBar(content: Text(error));
+      if(ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+      return;
+    }
+
+    if (widget.challenge != null) {
+      if (ctx.mounted) uploadSubmission(ctx);
+    }
 
     if(ctx.mounted) {
       Navigator.of(ctx).pushAndRemoveUntil(
@@ -100,12 +112,34 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
             (Route<dynamic> route) => false,
       );
     }
+  }
 
+  // Only called if page was pushed by a challenge submission screen
+  void uploadSubmission(BuildContext ctx) async {
+    Submission submission = Submission(
+      userId: currentUser!.id!,
+      points: widget.challenge!.maxPoints, // TODO: set this according to challenge scoring mechanism
+      challengeId: widget.challenge!.id,
+      isVerified: true, // TODO: Set this based on verification mechanism
+      isBonus: widget.challenge!.isBonus,
+    );
+    String? error = await submission.upload();
+    if (error != null) {
+      SnackBar snackBar = SnackBar(content: Text(error));
+      if(ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+      return;
+    }
+
+    currentUser!.currentCompetitionPoints[0] = currentUser!.currentCompetitionPoints[0] + widget.challenge!.maxPoints;
+    currentUser!.currentEventPoints[0] = currentUser!.currentEventPoints[0] + widget.challenge!.maxPoints;
+    currentUser!.submissions.add(submission.id);
+    UserProvider().setUser(currentUser!);
   }
 
   @override
   Widget build(BuildContext context) {
     currentUser = ref.read(userProvider)!;
+    print('post creation screen event: ${widget.challenge}');
 
     return Scaffold(
       body: Container(

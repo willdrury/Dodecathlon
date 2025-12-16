@@ -1,5 +1,8 @@
 import 'package:dodecathlon/models/user.dart';
+import 'package:dodecathlon/providers/events_provider.dart';
+import 'package:dodecathlon/providers/settings_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
+import 'package:dodecathlon/providers/user_event_rankings_provider.dart';
 import 'package:dodecathlon/providers/users_provider.dart';
 import 'package:dodecathlon/screens/loading_screen.dart';
 import 'package:dodecathlon/screens/post_creation_screen.dart';
@@ -13,8 +16,10 @@ import 'package:dodecathlon/screens/leaderboard_screen.dart';
 import 'package:dodecathlon/screens/social_screen.dart';
 import 'package:dodecathlon/screens/home_screen.dart';
 
+import '../models/event.dart';
+
 class MainScreen extends ConsumerStatefulWidget {
-  MainScreen({super.key});
+  const MainScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -22,12 +27,15 @@ class MainScreen extends ConsumerStatefulWidget {
   }
 }
 
-class _MainScreenState extends ConsumerState<MainScreen> {
+class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObserver {
 
-  late Widget _currentScreen = HomeScreen();
+  // Display variables
+  late Widget _currentScreen = HomeScreen(onPageChange: onDestinationSelected,);
   int _currentPageIndex = 0;
   bool _showAppBar = true;
   bool _useAppBarShadow = false;
+  bool _newEventStarted = false;
+  bool _showNewEventStartedButton = false;
   Color? _appBarColor;
   String _appBarLabel = '';
   Color _appBarTextColor = Colors.black;
@@ -35,21 +43,126 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Widget? _floatingActionButton;
   ScrollPhysics _scrollPhysics = NeverScrollableScrollPhysics();
   late ScrollController _scrollController;
+
+  // Data variables
+  Map<dynamic, dynamic>? _userSettings;
+  List<Event>? _events;
   late User? currentUser;
   late AsyncValue<List<User>> users;
+  Event? _currentEvent;
+  List<(String, int)>? _userRankings;
 
   @override
   void initState() {
     _scrollController = ScrollController();
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
-  void _onDestinationSelected(int index, BuildContext ctx) async {
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(final AppLifecycleState state) {
+    switch(state) {
+      case AppLifecycleState.resumed:
+        print("APP STATE RESUMED");
+        setState(() {
+          _refreshContent();
+        });
+        break;
+      case AppLifecycleState.inactive:
+        print("APP STATE INACTIVE");
+        break;
+      case AppLifecycleState.paused:
+        print("APP STATE PAUSED");
+        break;
+      default:
+        break;
+    }
+  }
+
+  Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('A new event has begun'),
+          content: Text(
+            'Select a difficulty to get started!',
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme
+                    .of(context)
+                    .textTheme
+                    .labelLarge,
+              ),
+              child: const Text('Return Home'),
+              onPressed: () {
+                setState(() {
+                  _currentPageIndex = 0;
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _refreshContent() {
+    if (currentUser == null || _events == null || _userSettings == null) {
+      return;
+    }
+    if (_events!.isEmpty) {
+      return;
+    }
+    if (_currentEvent == null) {
+      return;
+    }
+
+    // Detect date chance since last login
+    DateTime now = DateTime.now();
+    DateTime lastLoginDate = _userSettings!['last_login_date'] as DateTime;
+    if (lastLoginDate.day != now.day || lastLoginDate.month != now.month || lastLoginDate.year != now.year) {
+
+      // Update user event rank
+      if (_userRankings != null && _userRankings!.isNotEmpty) {
+        List<String> userIdsByRank = _userRankings!.map((e) => e.$1).toList();
+        int currentRank = userIdsByRank.indexOf(currentUser!.id!);
+        if (currentRank > -1) {
+          currentUser!.currentEventRank[0] = currentRank;
+          currentUser!.update();
+        }
+      }
+    }
+
+    // Check if new event has started
+    if (!currentUser!.currentEventIndexes.contains(_currentEvent!.id)) {
+
+      // Navigate user to home page
+      if (_currentPageIndex != 0) {
+        _showNewEventStartedButton = true;
+      }
+
+      setState(() {
+        _newEventStarted = true;
+      });
+    }
+  }
+
+  void onDestinationSelected(int index, BuildContext ctx) async {
     setState(() {
       switch (index) {
         case 0:
           _currentPageIndex = index;
-          _currentScreen = HomeScreen();
+          _currentScreen = HomeScreen(onPageChange: onDestinationSelected,);
           _showAppBar = true;
           _appBarLabel = '';
           _useAppBarShadow = false;
@@ -102,7 +215,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           _scrollPhysics = ScrollPhysics();
         case 4:
           _currentPageIndex = index;
-          _currentScreen = LeaderboardScreen(currentUser: currentUser!, users: users.value!,);
+          _currentScreen = LeaderboardScreen();
           _showAppBar = true;
           _useAppBarShadow = false;
           _appBarColor = Theme.of(context).colorScheme.primaryContainer;
@@ -119,12 +232,49 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Widget build(BuildContext context) {
     currentUser = ref.watch(userProvider);
     users = ref.watch(usersProvider);
+    _userSettings = ref.watch(settingsProvider);
+    AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
+    AsyncValue<List<(String, int)>> userRankingsStream = ref.watch(userEventRankingsProvider);
+
+    var now = DateTime.now();
+    if (eventStream.hasValue) {
+      _events = eventStream.value!;
+      _currentEvent = _events!.where((e) => e.startDate.isBefore(now) & e.endDate.isAfter(now)).firstOrNull;
+    }
+
+    if (userRankingsStream.hasValue) {
+      _userRankings = userRankingsStream.value!;
+    }
+
     if (currentUser == null) {
       setState(() {
         _currentScreen = LoadingScreen();
       });
     } else {
-      _onDestinationSelected(_currentPageIndex, context);
+
+      // Check if date has changed and reload events
+      _refreshContent();
+
+      // Update user if new event has started
+      if (_newEventStarted) {
+        if (_showNewEventStartedButton) {
+          _dialogBuilder(context);
+        }
+        // TODO: Move this to utility function on user? (user.startNewEvent?)
+        currentUser!.currentEventIndexes = [_currentEvent!.id!];
+        currentUser!.currentEventDifficulty = null;
+        currentUser!.currentEventPoints = [0];
+        UserProvider().setUser(currentUser!);
+      }
+
+      // Update last login date
+      ref.read(settingsProvider.notifier).updateSettings(_userSettings!);
+      onDestinationSelected(_currentPageIndex, context);
+
+      setState(() {
+        _newEventStarted = false;
+        _showNewEventStartedButton = false;
+      });
     }
 
     Color appBarColor = _appBarColor != null
@@ -163,7 +313,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         ),
         child: NavigationBar(
           onDestinationSelected: (int index) {
-            _onDestinationSelected(index, context);
+            onDestinationSelected(index, context);
           },
           indicatorColor: Theme.of(context).colorScheme.primaryContainer,
           backgroundColor: Theme.of(context).colorScheme.surface,

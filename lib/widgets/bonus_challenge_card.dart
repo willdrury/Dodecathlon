@@ -7,10 +7,16 @@ import '../models/event.dart';
 final formatter = DateFormat('MMM d');
 
 class BonusChallengeCard extends StatelessWidget {
-  const BonusChallengeCard({super.key, required this.challenge, required this.event});
+  const BonusChallengeCard({
+    super.key,
+    required this.challenge,
+    required this.event,
+    required this.isCompleted
+  });
 
   final Challenge challenge;
   final Event event;
+  final bool isCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -26,17 +32,26 @@ class BonusChallengeCard extends StatelessWidget {
       ),
     )
         : Expanded(
-      child: Hero(
-        tag: challenge.id,
-        child: Image.network(
-          width: double.infinity,
-          challenge.imageUrl!,
-          fit: BoxFit.cover,
-          loadingBuilder: (BuildContext ctx, Widget child, ImageChunkEvent? loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Center(child: CircularProgressIndicator());
-          },
-        ),
+      child: Stack(
+        children: [
+          Hero(
+            tag: challenge.id,
+            child: Image.network(
+              width: double.infinity,
+              challenge.imageUrl!,
+              fit: BoxFit.cover,
+              loadingBuilder: (BuildContext ctx, Widget child, ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              color: Colors.black38, // 40% opaque black
+            ),
+          ),
+        ],
       ),
     );
 

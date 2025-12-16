@@ -1,6 +1,7 @@
 import 'package:dodecathlon/models/post.dart';
 import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
+import 'package:dodecathlon/screens/post_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -45,7 +46,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
               child: const Text('Delete'),
               onPressed: () async {
                 String? error = await widget.post.delete();
-                Navigator.of(context).pop();
+                if (context.mounted) Navigator.of(context).pop();
                 setState(() {});
               },
             ),
@@ -58,7 +59,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
   @override
   Widget build(BuildContext context) {
     User user = ref.read(userProvider)!;
-    bool _isLiked = user.likedPostIds.contains(widget.post.id);
+    bool isLiked = user.likedPostIds.contains(widget.post.id);
 
     return Container (
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -108,23 +109,39 @@ class _PostContainerState extends ConsumerState<PostContainer> {
             ),
           ),
           if (widget.post.imageUrl !=  null)
-            Image.network(widget.post.imageUrl!, fit: BoxFit.fill,
-              frameBuilder: (_, image, loadingBuilder, __) {
-                if (loadingBuilder == null) {
-                  return const SizedBox(
-                    height: 300,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-                return image;
-              },
-              loadingBuilder: (BuildContext ctx, Widget child, ImageChunkEvent? loadingProgress) {
-                if (loadingProgress == null) return child;
-                return const SizedBox(
-                  height: 300,
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              },
+            Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: 500,
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+                        PostDetailsScreen(post: widget.post)
+                    ));
+                  },
+                  child: Image.network(
+                    widget.post.imageUrl!,
+                    fit: BoxFit.fitWidth,
+                    frameBuilder: (_, image, loadingBuilder, __) {
+                      if (loadingBuilder == null) {
+                        return const SizedBox(
+                          height: 300,
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+                      return image;
+                    },
+                    loadingBuilder: (BuildContext ctx, Widget child, ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const SizedBox(
+                        height: 300,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    },
+                  ),
+                ),
+              ),
             ),
           Container(
               padding: EdgeInsets.all(10),
@@ -137,7 +154,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                 ],
               )
           ),
-          Container(
+          SizedBox(
             height: 40,
             child: Row(
               mainAxisSize: MainAxisSize.max,
@@ -145,7 +162,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
               children: [
                 IconButton(
                     onPressed: () async {
-                      if (_isLiked) {
+                      if (isLiked) {
                         user.likedPostIds.remove(widget.post.id);
                       } else {
                         user.likedPostIds.add(widget.post.id);
@@ -153,10 +170,14 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                       await user.update();
                       setState(() {});
                     },
-                    icon: _isLiked ? Icon(Icons.favorite, color: Colors.red,) : Icon(Icons.favorite_border)
+                    icon: isLiked ? Icon(Icons.favorite, color: Colors.red,) : Icon(Icons.favorite_border)
                 ),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+                          PostDetailsScreen(post: widget.post)
+                      ));
+                    },
                     icon: Icon(Icons.comment)
                 )
               ],

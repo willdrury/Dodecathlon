@@ -2,7 +2,6 @@ import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/screens/challenge_details_screen.dart';
 import 'package:dodecathlon/widgets/challenge_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import '../models/event.dart';
 

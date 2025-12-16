@@ -2,15 +2,19 @@ import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/screens/challenge_details_screen.dart';
 import 'package:dodecathlon/widgets/bonus_challenge_card.dart';
 import 'package:flutter/material.dart';
-
 import '../models/event.dart';
-import 'challenge_card.dart';
 
 class BonusChallengeCarousel extends StatefulWidget {
-  const BonusChallengeCarousel({super.key, required this.challenges, required this.event});
+  const BonusChallengeCarousel({
+    super.key,
+    required this.challenges,
+    required this.event,
+    required this.isCompleted
+  });
 
   final List<Challenge> challenges;
   final Event event;
+  final bool isCompleted;
 
   @override
   State<StatefulWidget> createState() {
@@ -61,7 +65,7 @@ class _BonusChallengeCarouselState extends State<BonusChallengeCarousel> with Si
             },
             children: [
               for (Challenge challenge in widget.challenges)
-                BonusChallengeCard(challenge: challenge, event: widget.event,)
+                BonusChallengeCard(challenge: challenge, event: widget.event, isCompleted: widget.isCompleted)
             ]
         ),
       ),

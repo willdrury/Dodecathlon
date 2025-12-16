@@ -30,6 +30,11 @@ class _QuizSubmissionScreenState extends ConsumerState<QuizSubmissionScreen> {
       isBonus: widget.challenge.isBonus,
     );
     String? error = await submission.upload();
+    if (error != null) {
+      SnackBar snackBar = SnackBar(content: Text(error));
+      if(ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+      return;
+    }
 
     currentUser!.currentCompetitionPoints[0] = currentUser!.currentCompetitionPoints[0] + widget.challenge.maxPoints;
     currentUser!.currentEventPoints[0] = currentUser!.currentEventPoints[0] + widget.challenge.maxPoints;

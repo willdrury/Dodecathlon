@@ -1,10 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CircularProgressContainer extends StatefulWidget {
-  CircularProgressContainer({
+  const CircularProgressContainer({
     super.key,
     required this.currentPoints,
     required this.maxPoints,
@@ -77,7 +75,7 @@ class _CircularProgressContainerState extends State<CircularProgressContainer> w
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Container( // Indicator
+          SizedBox( // Indicator
             height: widget.indicatorDiameter,
             width: widget.indicatorDiameter,
             child:  CircularProgressIndicator(

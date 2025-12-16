@@ -10,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../providers/events_provider.dart';
 
 class EventScheduleScreen extends ConsumerStatefulWidget {
-  EventScheduleScreen({super.key});
+  const EventScheduleScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _EventScheduleScreenState();
@@ -39,10 +39,20 @@ class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Event> events = ref.read(eventProvider);
-    AsyncValue<List<Challenge>> challenges = ref.read(challengesProvider);
-    List<Color> _backgroundColors = events.map((event) => event.themeColor).toList();
-    _backgroundColors.insert(0, Colors.white);
+    AsyncValue<List<Event>> events = ref.watch(eventProvider);
+    AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
+
+    if (!events.hasValue || !challenges.hasValue) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    List<Color> backgroundColors = [];
+    if (events.hasValue) {
+      backgroundColors = events.value!.map((event) => event.themeColor).toList();
+    }
+    backgroundColors.insert(0, Colors.white);
 
     final List<CrossAxisAlignment> boxAlignments = [
       CrossAxisAlignment.center,
@@ -77,7 +87,7 @@ class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
     return Scaffold(
       backgroundColor: _backgroundColor,
       body: NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification notification) => _changeBackground(notification, _backgroundColors, events.length),
+        onNotification: (ScrollNotification notification) => _changeBackground(notification, backgroundColors, events.value!.length),
         child: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -96,7 +106,7 @@ class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
                     width: 300,
                     child: Column(
                       children: [
-                        Container(
+                        SizedBox(
                           width: double.infinity,
                           child: Text('2025\nEVENT\nSCHEDULE', style: GoogleFonts.robotoMono(fontSize: 50), textAlign: TextAlign.left,)
                         ),
@@ -106,11 +116,11 @@ class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
                     ),
                   ),
                   SizedBox(height: 150,),
-                  for (int i = 0; i < events.length; i++)
+                  for (int i = 0; i < events.value!.length; i++)
                     if (challenges.hasValue)
                       EventListItem(
-                        event: events[i],
-                        eventChallenges: challenges.value!.where((c) => c.eventId == events[i].id).toList(),
+                        event: events.value![i],
+                        eventChallenges: challenges.value!.where((c) => c.eventId == events.value![i].id).toList(),
                         columnAlignment: boxAlignments[i],
                         textAlignment: textAlignments[i],
                       ),

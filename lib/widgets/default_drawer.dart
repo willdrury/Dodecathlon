@@ -11,20 +11,15 @@ import 'package:flutter/material.dart';
 class DefaultDrawer extends StatelessWidget {
   DefaultDrawer({super.key});
 
-  late Timer _timer;
+  Timer? _timer;
 
   void _startOperation(BuildContext context) {
     _timer = Timer(const Duration(seconds: 5), () {
-      _timer.cancel();
+      _timer!.cancel();
       Navigator.of(context).push(
           MaterialPageRoute(builder: (ctx) => AdminLoginScreen())
       );
     });
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
   }
 
   @override
@@ -41,7 +36,7 @@ class DefaultDrawer extends StatelessWidget {
                   _startOperation(context);
                 },
                 onTapUp: (_) {
-                  _timer.cancel();
+                  _timer!.cancel();
                 },
                 onTap: () {
                   Navigator.of(context).push(

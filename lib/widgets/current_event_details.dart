@@ -16,6 +16,7 @@ class CurrentEventDetails extends StatelessWidget {
     required this.currentEvent,
     required this.bonusChallenges,
     required this.mainChallenges,
+    required this.completedChallenges,
     required this.inPersonEvents,
   });
 
@@ -23,6 +24,7 @@ class CurrentEventDetails extends StatelessWidget {
   final Event currentEvent;
   final List<Challenge> bonusChallenges;
   final List<Challenge> mainChallenges;
+  final List<Challenge> completedChallenges;
   final List<InPersonEvent> inPersonEvents;
 
   @override
@@ -67,13 +69,18 @@ class CurrentEventDetails extends StatelessWidget {
                 if (bonusChallenges.isNotEmpty)
                   Text('Bonus', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
                 if (bonusChallenges.isNotEmpty)
-                  BonusChallengeCarousel(challenges: bonusChallenges, event: currentEvent,),
+                  BonusChallengeCarousel(challenges: bonusChallenges, event: currentEvent, isCompleted: false),
                 SizedBox(height: 20,),
                 if (mainChallenges.isNotEmpty)
                   Text('Main', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
                 if (mainChallenges.isNotEmpty)
-                  UpcomingChallengesCarousel(challenges: mainChallenges, event: currentEvent!,),
-                SizedBox(height: 40,),
+                  UpcomingChallengesCarousel(challenges: mainChallenges, event: currentEvent,),
+                SizedBox(height: 20,),
+                if (completedChallenges.isNotEmpty)
+                  Text('Completed', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+                if (completedChallenges.isNotEmpty)
+                  BonusChallengeCarousel(challenges: completedChallenges, event: currentEvent, isCompleted: true),
+                SizedBox(height: 80,),
               ],
             ),
 
@@ -94,8 +101,6 @@ class CurrentEventDetails extends StatelessWidget {
           ),
           for (InPersonEvent event in inPersonEvents)
             InPersonEventCard(event: event),
-          if (inPersonEvents.isEmpty)
-            SizedBox(height: 200,)
         ],
       ),
     );

@@ -18,29 +18,17 @@ class PhotoUploadSubmissionScreen extends ConsumerStatefulWidget {
 
 class _PhotoUploadSubmissionScreenState extends ConsumerState<PhotoUploadSubmissionScreen> {
 
-  bool _shareEnabled = false;
   User? currentUser;
 
-  void uploadSubmission(BuildContext ctx) async {
-    Submission submission = Submission(
-      userId: currentUser!.id!,
-      points: 0,
-      challengeId: widget.challenge.id,
-      isVerified: true,
-      isBonus: widget.challenge.isBonus,
-    );
-    String? error = await submission.upload();
-
-    currentUser!.currentCompetitionPoints[0] = currentUser!.currentCompetitionPoints[0] + widget.challenge.maxPoints;
-    currentUser!.currentEventPoints[0] = currentUser!.currentEventPoints[0] + widget.challenge.maxPoints;
-    currentUser!.submissions.add(submission.id);
-    UserProvider().setUser(currentUser!);
-
-    Navigator.of(ctx).push(
-      MaterialPageRoute(builder: (ctx) => PostCreationScreen(
-        title: 'Tell us about what you did!',
-      )),
-    );
+  void navigateToPostCreationScreen(BuildContext ctx) async {
+    if (ctx.mounted) {
+      Navigator.of(ctx).push(
+        MaterialPageRoute(builder: (ctx) => PostCreationScreen(
+          title: 'Tell us about what you did!',
+          challenge: widget.challenge,
+        )),
+      );
+    }
   }
 
   @override
@@ -49,7 +37,8 @@ class _PhotoUploadSubmissionScreenState extends ConsumerState<PhotoUploadSubmiss
 
     return Scaffold(
       body: Container(
-        color: Theme.of(context).colorScheme.primaryContainer.withAlpha(10),
+        height: double.infinity,
+        color: Theme.of(context).colorScheme.primaryContainer.withAlpha(50),
         padding: EdgeInsets.all(20),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -66,20 +55,49 @@ class _PhotoUploadSubmissionScreenState extends ConsumerState<PhotoUploadSubmiss
                     Spacer(),
                     TextButton(
                       onPressed: () {
-                        uploadSubmission(context);
+                        navigateToPostCreationScreen(context);
                       },
                       child: Text(
                           'Next', style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.primary)),
                     ),
                   ],
                 ),
-                SizedBox(height: 60,),
-                Text(
-                  'To get credit for this challenge, submit a post with evidence of yourself completing the challenge. '
-                      'This can be a photo, description of what happened, or anything else which can be used as proof. \n\n'
-                      'Once submitted, it will need to be approved by another user in order to receive full points.\n\n'
-                      'Click "Next" to submit your evidence!',
-                  style: TextStyle(fontSize: 20),
+                SizedBox(height: 40,),
+                Container(
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0, 5),
+                          spreadRadius: 1,
+                          blurRadius: 10
+                      )
+                    ]
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'To get credit for this challenge, submit a post with evidence of yourself completing the challenge. '
+                            'This can be a photo, description of what happened, or anything else which can be used as proof. \n\n'
+                            'Once submitted, it will need to be approved by another user in order to receive full points.\n\n'
+                            'Click "Next" to submit your evidence!',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      SizedBox(height: 40,),
+                      FilledButton(
+                        onPressed: () {
+                          navigateToPostCreationScreen(context);
+                        },
+                        child: Text(
+                          'Next',
+                          style: TextStyle(fontSize: 20)
+                        )
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -52,19 +52,27 @@ class _BookCompletionScreenState extends ConsumerState<BookCompletionScreen> {
     );
     String? error = await submission.upload();
 
+    if (error != null) {
+      const snackBar = SnackBar(content: Text('Error'));
+      if (ctx.mounted)  ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+      return; // TODO: Handle error
+    }
+
     currentUser!.currentCompetitionPoints[0] = currentUser!.currentCompetitionPoints[0] + widget.challenge.maxPoints;
     currentUser!.currentEventPoints[0] = currentUser!.currentEventPoints[0] + widget.challenge.maxPoints;
     currentUser!.submissions.add(submission.id);
     UserProvider().setUser(currentUser!);
 
     if (_shareEnabled) {
-      Navigator.of(ctx).push(
-        MaterialPageRoute(builder: (ctx) => PostCreationScreen(
-          initialTitle: '${currentUser!.userName} just finished ${_titleController.text}',
-          initialDescription: _reviewController.text,
-          title: 'How does this look?',
-        )),
-      );
+      if (ctx.mounted) {
+        Navigator.of(ctx).push(
+          MaterialPageRoute(builder: (ctx) => PostCreationScreen(
+            initialTitle: '${currentUser!.userName} just finished ${_titleController.text}',
+            initialDescription: _reviewController.text,
+            title: 'How does this look?',
+          )),
+        );
+      }
     }
     else if(ctx.mounted) {
       Navigator.of(ctx).pushAndRemoveUntil(

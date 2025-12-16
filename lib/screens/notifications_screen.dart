@@ -9,17 +9,17 @@ class NotificationsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<dd.Notification> notifications = ref.watch(notificationProvider);
+    AsyncValue<List<dd.Notification>> notifications = ref.watch(notificationProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Notifications'),
       ),
-      body: notifications.isNotEmpty
+      body: notifications.hasValue && notifications.value!.isNotEmpty
         ? ListView.builder(
-            itemCount: notifications.length,
+            itemCount: notifications.value!.length,
             itemBuilder: (ctx, i) {
-              return NotificationListTile(notification: notifications[i]);
+              return NotificationListTile(notification: notifications.value![i]);
             })
         : Center(child: Text('Looks like you are all caught up!'))
     );

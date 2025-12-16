@@ -46,7 +46,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         dd.User user = dd.User(
           userName: _enteredUsername,
           email: _enteredEmail,
+          currentEventIndexes: [],
           currentEventPoints: [0],
+          currentEventRank: [0],
           currentCompetitionPoints: [0],
           friends: [],
           id: userCredentials!.user!.uid,
@@ -65,11 +67,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       if (error.code == 'email-already-in-use') {
         //   ... show some error message
       }
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? 'Authentication Failed')));
-      setState(() {
-        _isAuthenticating = false;
-      });
+      if (context.mounted) {
+        if (mounted) ScaffoldMessenger.of(context).clearSnackBars();
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? 'Authentication Failed')));
+        setState(() {
+          _isAuthenticating = false;
+        });
+      }
     }
   }
 

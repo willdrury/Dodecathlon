@@ -3,7 +3,7 @@ import 'package:dodecathlon/widgets/podium_column.dart';
 import 'package:flutter/material.dart';
 
 class Podium extends StatelessWidget {
-  Podium({super.key, required this.currentUser, required this.users, required this.byEvent});
+  const Podium({super.key, required this.currentUser, required this.users, required this.byEvent});
 
   final User currentUser;
   final List<User> users;

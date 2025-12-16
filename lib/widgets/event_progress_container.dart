@@ -1,53 +1,80 @@
 import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/submission.dart';
 import 'package:dodecathlon/models/user.dart';
+import 'package:dodecathlon/providers/challenges_provider.dart';
+import 'package:dodecathlon/providers/events_provider.dart';
 import 'package:dodecathlon/providers/submission_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/widgets/event_rank_snapshot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/event.dart';
 import 'circular_progress_container.dart';
 
 class EventProgressContainer extends ConsumerWidget {
 
-  const EventProgressContainer({super.key});
+  const EventProgressContainer({super.key, required this.onPageChange});
+
+  final Function(int, BuildContext) onPageChange;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     User user = ref.read(userProvider)!;
-    List<Submission> submissions = ref.watch(submissionsProvider);
+    AsyncValue<List<Submission>> submissions = ref.watch(submissionsProvider);
+    AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
+    AsyncValue<List<Event>> events = ref.watch(eventProvider);
 
-    int _maxMainPoints = 80;
-    if (user.currentEventDifficulty == Difficulty.intermediate) {
-      _maxMainPoints = 60;
-    } else if (user.currentEventDifficulty == Difficulty.beginner) {
-      _maxMainPoints = 40;
+    if (!events.hasValue || !challenges.hasValue || !submissions.hasValue) {
+      return Center(child: CircularProgressIndicator());
     }
 
-    int _mainPoints = 0;
-    int _bonusPoints = 0;
-    for (Submission s in submissions) {
+    DateTime now = DateTime.now();
+    Event? currentEvent = events.value!.where((e) =>
+      e.startDate.isBefore(now) & e.endDate.isAfter(now)
+    ).firstOrNull;
+
+    if (currentEvent == null) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    List<String> currentChallengeIds = challenges.value!.where((c) =>c.eventId == currentEvent.id!)
+      .map((c) => c.id)
+      .toList();
+
+    List<Submission> userEventSubmissions = submissions.value!.where((s) =>
+      currentChallengeIds.contains(s.challengeId) && s.userId == user.id
+    ).toList();
+
+    int maxMainPoints = 80;
+    if (user.currentEventDifficulty == Difficulty.intermediate) {
+      maxMainPoints = 60;
+    } else if (user.currentEventDifficulty == Difficulty.beginner) {
+      maxMainPoints = 40;
+    }
+
+    int mainPoints = 0;
+    int bonusPoints = 0;
+    for (Submission s in userEventSubmissions) {
       if (s.isBonus) {
-        _bonusPoints += s.points;
+        bonusPoints += s.points;
       } else {
-        _mainPoints += s.points;
+        mainPoints += s.points;
       }
     }
-    _mainPoints = _mainPoints.clamp(0, _maxMainPoints);
-    _bonusPoints = _bonusPoints.clamp(0, 20);
 
-    bool isLight = Theme.of(context).brightness == Brightness.light;
+    mainPoints = mainPoints.clamp(0, maxMainPoints);
+    bonusPoints = bonusPoints.clamp(0, 20);
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+      padding: EdgeInsets.only(left: 10, right: 10, bottom: 20),
       child: Stack(
         children: [
           Container(
             alignment: Alignment.bottomRight,
             width: double.infinity,
             padding: EdgeInsets.only(right: 20, top: 80),
-            child: EventRankSnapshot(),
+            child: EventRankSnapshot(onPageChange: onPageChange,),
           ),
           Column(
             children: [
@@ -68,18 +95,23 @@ class EventProgressContainer extends ConsumerWidget {
                         style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onSurface),
                       )
                   ),
-                  CircularProgressContainer(
-                    currentPoints: _mainPoints,
-                    maxPoints: _maxMainPoints,
-                    circleColor: Theme.of(context).colorScheme.surface,
-                    indicatorColor: Theme.of(context).colorScheme.primary,
-                    upperTextColor: Theme.of(context).colorScheme.primary,
-                    lowerTextColor: Theme.of(context).colorScheme.onSurface,
-                    circleDiameter: 200,
-                    indicatorDiameter: 230,
-                    indicatorWidth: 8,
-                    indicatorProgress: _mainPoints/_maxMainPoints,
-                    fontSize: 120,
+                  GestureDetector(
+                    onTap: () {
+                      onPageChange(1, context);
+                    },
+                    child: CircularProgressContainer(
+                      currentPoints: mainPoints,
+                      maxPoints: maxMainPoints,
+                      circleColor: Theme.of(context).colorScheme.surface,
+                      indicatorColor: Theme.of(context).colorScheme.primary,
+                      upperTextColor: Theme.of(context).colorScheme.primary,
+                      lowerTextColor: Theme.of(context).colorScheme.onSurface,
+                      circleDiameter: 200,
+                      indicatorDiameter: 230,
+                      indicatorWidth: 8,
+                      indicatorProgress: mainPoints/maxMainPoints,
+                      fontSize: 120,
+                    ),
                   ),
                   Spacer(),
                 ],
@@ -96,18 +128,23 @@ class EventProgressContainer extends ConsumerWidget {
                         style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onSurface),
                       )
                   ),
-                  CircularProgressContainer(
-                    currentPoints: _bonusPoints,
-                    maxPoints: 20,
-                    circleColor: Theme.of(context).colorScheme.surface,
-                    indicatorColor: Colors.blue,
-                    upperTextColor: Colors.blue,
-                    lowerTextColor: Theme.of(context).colorScheme.onSurface,
-                    circleDiameter: 80,
-                    indicatorDiameter: 100,
-                    indicatorWidth: 5,
-                    indicatorProgress: _bonusPoints/20,
-                    fontSize: 50,
+                  GestureDetector(
+                    onTap: () {
+                      onPageChange(1, context);
+                    },
+                    child: CircularProgressContainer(
+                      currentPoints: bonusPoints,
+                      maxPoints: 20,
+                      circleColor: Theme.of(context).colorScheme.surface,
+                      indicatorColor: Colors.blue,
+                      upperTextColor: Colors.blue,
+                      lowerTextColor: Theme.of(context).colorScheme.onSurface,
+                      circleDiameter: 80,
+                      indicatorDiameter: 100,
+                      indicatorWidth: 5,
+                      indicatorProgress: bonusPoints/20,
+                      fontSize: 50,
+                    ),
                   ),
                   Spacer()
                 ],

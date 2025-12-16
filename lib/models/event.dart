@@ -16,6 +16,7 @@ class Event {
   final String? intermediateDescription;
   final String? advancedDescription;
   final String? prize;
+  final String? mainChallengeId;
   final String? id;
 
   Event({
@@ -31,7 +32,8 @@ class Event {
     this.intermediateDescription,
     this.advancedDescription,
     this.prize,
-    this.id
+    this.mainChallengeId,
+    this.id,
   });
 
   factory Event.fromMap(Map data, String id) {
@@ -47,6 +49,7 @@ class Event {
         beginnerDescription: data['beginnerDescription'],
         intermediateDescription: data['intermediateDescription'],
         advancedDescription: data['advancedDescription'],
+        mainChallengeId: data['mainChallengeId'],
         id: id
     );
   }

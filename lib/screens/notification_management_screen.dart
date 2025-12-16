@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/settings_provider.dart';
 
 class NotificationManagementScreen extends ConsumerStatefulWidget {
-  NotificationManagementScreen({super.key});
+  const NotificationManagementScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {

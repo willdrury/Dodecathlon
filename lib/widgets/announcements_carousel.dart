@@ -17,9 +17,15 @@ class _AnnouncementsCarouselState extends ConsumerState<AnnouncementsCarousel> {
   @override
   Widget build(BuildContext context) {
 
-    List<Announcement> announcements = ref.watch(announcementProvider);
+    AsyncValue<List<Announcement>> announcements = ref.watch(announcementProvider);
 
-    if (announcements.isEmpty) {
+    if (!announcements.hasValue) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (announcements.value!.isEmpty) {
       return Container(
         padding: EdgeInsets.all(20),
         child: Text('Looks like you are all caught up!'),
@@ -39,7 +45,7 @@ class _AnnouncementsCarouselState extends ConsumerState<AnnouncementsCarousel> {
               itemExtent: 350,
               shrinkExtent: 350,
               children: [
-                for (Announcement a in announcements)
+                for (Announcement a in announcements.value!)
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
@@ -50,7 +56,7 @@ class _AnnouncementsCarouselState extends ConsumerState<AnnouncementsCarousel> {
                       children: [
                         ListTile(
                           title: Text(a.title, style: TextStyle(fontWeight: FontWeight.bold),),
-                          leading: Container(
+                          leading: SizedBox(
                             height: 30,
                             child: Image.asset('assets/images/DodecathlonLogoOutline.png')
                           ),

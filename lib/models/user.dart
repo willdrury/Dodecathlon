@@ -9,7 +9,9 @@ class User {
 
   final String userName;
   final String email;
+  List<String> currentEventIndexes;
   List<int> currentEventPoints;
+  List<int> currentEventRank;
   List<int> currentCompetitionPoints;
   List<String> submissions;
   List<String> friends;
@@ -24,7 +26,9 @@ class User {
   User({
     required this.userName,
     required this.email,
+    required this.currentEventIndexes,
     required this.currentEventPoints,
+    required this.currentEventRank,
     required this.currentCompetitionPoints,
     required this.submissions,
     required this.friends,
@@ -39,7 +43,9 @@ class User {
   Map<String, dynamic> toJson() => {
     'userName': userName,
     'email': email,
+    'currentEventIndexes': currentEventIndexes,
     'currentEventPoints': currentEventPoints,
+    'currentEventRank': currentEventRank,
     'currentCompetitionPoints': currentCompetitionPoints,
     'friends': friends,
     'currentEventDifficulty': currentEventDifficulty,
@@ -55,7 +61,9 @@ class User {
     return User(
       userName: data['userName'],
       email: data['email'],
+      currentEventIndexes: List<String>.from(data['currentEventIndexes'] as List<dynamic>),
       currentEventPoints: List<int>.from(data['currentEventPoints'] as List<dynamic>),
+      currentEventRank: List<int>.from(data['currentEventRank'] as List<dynamic>),
       currentCompetitionPoints: List<int>.from(data['currentCompetitionPoints'] as List<dynamic>),
       friends: List<String>.from(data['friends'] as List<dynamic>),
       currentEventDifficulty: getDifficultyFromString(data['currentEventDifficulty']),
