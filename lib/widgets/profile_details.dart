@@ -30,7 +30,6 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
     dd.User currentUser = ref.watch(userProvider)!;
     AsyncValue<List<dd.User>> users = ref.watch(usersProvider);
     Map<dynamic, dynamic> settings = ref.watch(settingsProvider);
-    print('settings: $settings');
 
     List<dd.User> usersByCompetition = [];
     if (users.hasValue) {

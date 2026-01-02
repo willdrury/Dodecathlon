@@ -1,5 +1,7 @@
 import 'package:dodecathlon/models/post.dart';
+import 'package:dodecathlon/models/post_comment.dart';
 import 'package:dodecathlon/models/user.dart';
+import 'package:dodecathlon/providers/post_comments_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/post_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,7 @@ class PostContainer extends ConsumerStatefulWidget {
 
 class _PostContainerState extends ConsumerState<PostContainer> {
 
-  Future<void> _dialogBuilder(BuildContext context) async {
+  Future<void> _dialogBuilder(BuildContext context, List<PostComment>? comments) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -45,6 +47,11 @@ class _PostContainerState extends ConsumerState<PostContainer> {
               ),
               child: const Text('Delete'),
               onPressed: () async {
+                if (comments != null) {
+                  for (PostComment c in comments) {
+                    await c.delete();
+                  }
+                }
                 String? error = await widget.post.delete();
                 if (context.mounted) Navigator.of(context).pop();
                 setState(() {});
@@ -60,6 +67,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
   Widget build(BuildContext context) {
     User user = ref.read(userProvider)!;
     bool isLiked = user.likedPostIds.contains(widget.post.id);
+    AsyncValue<List<PostComment>> comments = ref.watch(postCommentsProvider);
 
     return Container (
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -92,18 +100,35 @@ class _PostContainerState extends ConsumerState<PostContainer> {
               color: Colors.white,
               onSelected: (String value) {
                 if (value == 'Delete') {
-                  _dialogBuilder(context);
+                  _dialogBuilder(context, comments.value);
                 }
               },
               itemBuilder: (ctx) {
                 return <PopupMenuEntry<String>>[
                   if (widget.post.userId == user.id)
-                    PopupMenuItem(value: 'Delete', child: ListTile(
-                      title: Text('Delete', style: TextStyle(color: Colors.red),),
-                      leading: Icon(Icons.delete, color: Colors.red,),)
+                    PopupMenuItem(
+                      value: 'Delete',
+                      child: ListTile(
+                        title: Text('Delete', style: TextStyle(color: Colors.red),),
+                        leading: Icon(Icons.delete, color: Colors.red,),
+                      )
                     ),
-                  PopupMenuItem(value: 'Report', child: ListTile(title: Text('Report'), leading: Icon(Icons.flag),)),
-                  PopupMenuItem(value: 'Approve', child: ListTile(title: Text('Approve'), leading: Icon(Icons.thumbs_up_down),))
+                  if (widget.post.userId != user.id)
+                    PopupMenuItem(
+                      value: 'Report',
+                      child: ListTile(
+                        title: Text('Report'),
+                        leading: Icon(Icons.flag),
+                      )
+                    ),
+                  if (widget.post.userId != user.id)
+                    PopupMenuItem(
+                      value: 'Approve',
+                      child: ListTile(
+                        title: Text('Approve'),
+                        leading: Icon(Icons.thumbs_up_down),
+                      )
+                    )
                 ];
               },
             ),
@@ -143,16 +168,23 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                 ),
               ),
             ),
-          Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(widget.post.title, style: TextStyle(fontWeight: FontWeight.bold),),
-                  if (widget.post.description != null)
-                    Text(widget.post.description!)
-                ],
-              )
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+                PostDetailsScreen(post: widget.post)
+              ));
+            },
+            child: Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.post.title, style: TextStyle(fontWeight: FontWeight.bold),),
+                    if (widget.post.description != null)
+                      Text(widget.post.description!)
+                  ],
+                )
+            ),
           ),
           SizedBox(
             height: 40,
@@ -164,10 +196,13 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                     onPressed: () async {
                       if (isLiked) {
                         user.likedPostIds.remove(widget.post.id);
+                        widget.post.likes.remove(user.id!);
                       } else {
                         user.likedPostIds.add(widget.post.id);
+                        widget.post.likes.add(user.id!);
                       }
                       await user.update();
+                      await widget.post.upload();
                       setState(() {});
                     },
                     icon: isLiked ? Icon(Icons.favorite, color: Colors.red,) : Icon(Icons.favorite_border)

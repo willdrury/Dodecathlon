@@ -33,6 +33,10 @@ class PostDetailsScreen extends ConsumerWidget {
     List<PostComment> comments = commentsStream.value!.where((c) =>
       c.postId == post.id
     ).toList();
+    
+    List<User> likedUsers = users.value!.where((u) => 
+      post.likes.contains(u.id)
+    ).toList();
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
@@ -58,13 +62,68 @@ class PostDetailsScreen extends ConsumerWidget {
                   children: [
                     Text(
                       post.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20 // TODO: Use standardized size
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Text(
                       '${post.user!.userName}  |  ${formatter.format(post.createdAt)}',
+                      style: TextStyle(
+                        color: Colors.grey
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    if (likedUsers.isNotEmpty)
+                      Container(
+                        child: Text(
+                          'Liked by:',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 10
+                          ),
+                        ),
+                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        if (likedUsers.isNotEmpty)
+                          Expanded(
+                            child: Stack(
+                              children: [
+                                for (int i = 0; i < min(likedUsers.length, 7); i++)
+                                  Container(
+                                    margin: EdgeInsets.only(left: i * 30),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          height: 50,
+                                          width: 50,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(50),
+                                            color: Colors.white
+                                          ),
+                                        ),
+                                        CircleAvatar(
+                                          radius: 20,
+                                          backgroundImage: NetworkImage(
+                                            likedUsers[i].profileImageUrl != null
+                                              ? likedUsers[i].profileImageUrl!
+                                              : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                if (likedUsers.length >= 7)
+                                  Container(
+                                    margin: EdgeInsets.only(left: 230, top: 20),
+                                    alignment: Alignment.bottomLeft,
+                                    child: Text('...')
+                                  ),
+                              ],
+                            ),
+                          ),
+                      ],
                     ),
                     SizedBox(height: 20,),
                     Text(post.description!),

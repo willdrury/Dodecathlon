@@ -17,7 +17,7 @@ class User {
   List<String> friends;
   Difficulty? currentEventDifficulty;
   String? profileImageUrl;
-  List<String>? competitions;
+  List<String> competitions;
   final String? id;
   List<Submission>? submissionData;
   List<String> likedPostIds;
@@ -34,8 +34,8 @@ class User {
     required this.friends,
     required this.likedPostIds,
     required this.createdDate,
+    required this.competitions,
     this.profileImageUrl,
-    this.competitions,
     this.currentEventDifficulty,
     this.id,
   });
@@ -48,7 +48,7 @@ class User {
     'currentEventRank': currentEventRank,
     'currentCompetitionPoints': currentCompetitionPoints,
     'friends': friends,
-    'currentEventDifficulty': currentEventDifficulty,
+    'currentEventDifficulty': currentEventDifficulty?.name,
     'profileImageUrl': profileImageUrl,
     'submissions': submissions,
     'competitions': competitions,
@@ -88,6 +88,7 @@ class User {
     try {
       await FirebaseFirestore.instance.collection('users').doc(id).update(toJson());
     } catch (e) {
+      print('Error updating user: ${e.toString()}');
       return e.toString();
     }
     return null;

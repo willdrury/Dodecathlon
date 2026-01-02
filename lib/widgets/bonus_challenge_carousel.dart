@@ -40,8 +40,8 @@ class _BonusChallengeCarouselState extends State<BonusChallengeCarousel> with Si
 
   @override
   void dispose() {
-    super.dispose();
     _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,7 +60,10 @@ class _BonusChallengeCarouselState extends State<BonusChallengeCarousel> with Si
             shrinkExtent: 180,
             onTap: (int valueChanged) {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(challenge: widget.challenges[valueChanged]))
+                  MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(
+                    challenge: widget.challenges[valueChanged],
+                    isCompleted: widget.isCompleted,
+                  ))
               );
             },
             children: [

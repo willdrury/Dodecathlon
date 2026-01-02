@@ -107,9 +107,11 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
     DateTime now = DateTime.now();
     Event? currentEvent = currentEvents.value!.isEmpty
         ? null
-        : currentEvents.value!.where((e) => e.startDate.isBefore(now) & e.endDate.isAfter(now)).firstOrNull;
+        : currentEvents.value!.where((e) =>
+            e.startDate.isBefore(now) & e.endDate.isAfter(now)
+          ).firstOrNull;
 
-    if (currentEvent == null) { // TODO: Better error handling
+    if (currentEvent == null) { // TODO: Better error handling. Show screen if there is no event
       return Center(child: Text('Looks like there are no current events'),);
     }
 
@@ -194,8 +196,8 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
                   ),
                   child: Text('Select a difficulty'),
                 ),
-              if (!showDifficultySelectionButton && mainChallenge != null)
-                HomeScreenEventSnapshot(challenge: mainChallenge,),
+              // if (!showDifficultySelectionButton && mainChallenge != null)
+              //   HomeScreenEventSnapshot(challenge: mainChallenge,),
             ],
           ),
         ],

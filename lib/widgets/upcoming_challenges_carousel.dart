@@ -56,7 +56,10 @@ class _BonusChallengeCarouselState extends State<UpcomingChallengesCarousel> wit
             itemSnapping: true,
             onTap: (int valueChanged) {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(challenge: widget.challenges[valueChanged]))
+                  MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(
+                    challenge: widget.challenges[valueChanged],
+                    isCompleted: false,
+                  ))
               );
             },
             children: [

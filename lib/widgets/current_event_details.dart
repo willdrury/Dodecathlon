@@ -34,7 +34,7 @@ class CurrentEventDetails extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Upcoming Challenges', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,),),
+          Text('Challenges', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,),),
 
           // Select Difficulty Container
           if (!hasSelectedDifficulty)

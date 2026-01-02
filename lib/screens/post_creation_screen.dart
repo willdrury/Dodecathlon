@@ -93,6 +93,9 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
       user: currentUser,
       id: _postId,
       highlighted: false,
+      reported: false,
+      submissionId: widget.challenge?.id,
+      likes: []
     );
     
     String? error = await newPost.upload();
@@ -139,7 +142,6 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
   @override
   Widget build(BuildContext context) {
     currentUser = ref.read(userProvider)!;
-    print('post creation screen event: ${widget.challenge}');
 
     return Scaffold(
       body: Container(

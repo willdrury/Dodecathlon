@@ -38,4 +38,13 @@ class PostComment {
     return null;
   }
 
+  Future<String?> delete() async {
+    try {
+      await FirebaseFirestore.instance.collection('post_comments').doc().delete();
+    } catch (error) {
+      return error.toString();
+    }
+    return null;
+  }
+
 }

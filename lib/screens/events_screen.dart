@@ -88,6 +88,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
       ).toList();
     }
 
+    print('eventChallenges: $eventChallenges');
+
     List<Challenge> bonusChallenges = [];
     List<Challenge> mainChallenges = [];
     List<Challenge> completedChallenges = [];
@@ -158,9 +160,10 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(100),
+                                // border: Border.all(color: selectedEvent!.themeColor.withAlpha(100)),
                                 boxShadow: [
                                   BoxShadow(
-                                      color: Colors.black12,
+                                      color: selectedEvent!.themeColor.withAlpha(100),
                                       offset: Offset(0, 5),
                                       spreadRadius: 1,
                                       blurRadius: 5
@@ -236,9 +239,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
             ),
           if (events.hasValue && selectedEventIndex < currentEventIndex)
             PreviousEventDetails(
-                currentEvent: currentEvent,
-                bonusChallenges: bonusChallenges,
-                mainChallenges: mainChallenges
+              currentEvent: currentEvent,
+              challenges: eventChallenges,
             ),
           if (events.hasValue && selectedEventIndex > currentEventIndex)
             NextEventDetails(currentEvent: currentEvent),

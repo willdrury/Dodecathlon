@@ -8,15 +8,21 @@ class Post {
   final String? description;
   final String? imageUrl;
   final String id;
+  final List<String> likes;
+  final String? submissionId;
   User? user;
   bool highlighted;
+  bool reported;
 
   Post({
     required this.userId,
     required this.title,
     required this.createdAt,
     required this.id,
+    required this.likes,
     required this.highlighted,
+    required this.reported,
+    this.submissionId,
     this.description,
     this.imageUrl,
     this.user,
@@ -29,7 +35,10 @@ class Post {
     'description': description,
     'imageUrl': imageUrl,
     'id': id,
+    'submissionId': submissionId,
     'highlighted': highlighted,
+    'reported': reported,
+    'likes': likes
   };
 
   factory Post.fromMap(Map data) {
@@ -39,8 +48,11 @@ class Post {
       createdAt: DateTime.fromMicrosecondsSinceEpoch((data['createdAt'] as Timestamp).microsecondsSinceEpoch),
       description: data['description'],
       imageUrl: data['imageUrl'],
+      submissionId: data['submissionId'],
       id: data['id'],
-      highlighted: data['highlighted']
+      highlighted: data['highlighted'],
+      reported: data['reported'],
+      likes: List<String>.from(data['likes'] as List<dynamic>),
     );
   }
 

@@ -8,13 +8,11 @@ class PreviousEventDetails extends StatelessWidget {
   const PreviousEventDetails({
     super.key,
     required this.currentEvent,
-    required this.bonusChallenges,
-    required this.mainChallenges,
+    required this.challenges
   });
 
   final Event currentEvent;
-  final List<Challenge> bonusChallenges;
-  final List<Challenge> mainChallenges;
+  final List<Challenge> challenges;
 
   @override
   Widget build(BuildContext context) {
@@ -30,18 +28,16 @@ class PreviousEventDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 10,),
-              if (bonusChallenges.isEmpty && mainChallenges.isEmpty)
-                Text('Looks like you didn\'t have any completed challenges last month.'),
-              if (bonusChallenges.isNotEmpty)
-                Text('Completed Bonus\'s', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-              if (bonusChallenges.isNotEmpty)
-                BonusChallengeCarousel(challenges: bonusChallenges, event: currentEvent, isCompleted: true,),
-              SizedBox(height: 20,),
-              if (mainChallenges.isNotEmpty)
-                Text('Completed Main Challenges', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-              if (mainChallenges.isNotEmpty)
-                UpcomingChallengesCarousel(challenges: mainChallenges, event: currentEvent,),
-              SizedBox(height: 80,),
+              if (challenges.isEmpty)
+                Text('Looks like there were no challanges this month.'),
+              if (challenges.isNotEmpty)
+                Text('Past Challenges', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+              if (challenges.isNotEmpty)
+                BonusChallengeCarousel(
+                    challenges: challenges,
+                    event: currentEvent,
+                    isCompleted: true
+                ),
             ],
           ),
         ],

@@ -27,7 +27,10 @@ class HomeScreenEventSnapshot extends ConsumerWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
-            MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(challenge: challenge))
+          MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(
+            challenge: challenge,
+            isCompleted: false,
+          ))
         );
       },
       child: Container(

@@ -38,7 +38,6 @@ class _SocialScreenState extends ConsumerState<SocialScreen> {
       }
     }
 
-
     return Scaffold(
       body: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
