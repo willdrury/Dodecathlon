@@ -3,22 +3,23 @@ import 'package:dodecathlon/providers/user_competition_rankings_provider.dart';
 import 'package:dodecathlon/providers/user_event_rankings_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/providers/users_provider.dart';
-import 'package:dodecathlon/widgets/leaderboard_list_item.dart';
+import 'package:dodecathlon/widgets/rankings_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LeaderboardSubTab extends ConsumerStatefulWidget {
-  const LeaderboardSubTab({super.key, required this.isFriendsList});
+// TODO: Refactor this to show only users who are in the current competition
+class RankingsSubTab extends ConsumerStatefulWidget {
+  const RankingsSubTab({super.key, required this.isFriendsList});
 
   final bool isFriendsList;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
-    return _LeaderboardSubTabState();
+    return _RankingsSubTabState();
   }
 }
 
-class _LeaderboardSubTabState extends ConsumerState<LeaderboardSubTab> with SingleTickerProviderStateMixin {
+class _RankingsSubTabState extends ConsumerState<RankingsSubTab> with SingleTickerProviderStateMixin {
   late final TabController _tabController;
 
   @override
@@ -99,7 +100,7 @@ class _LeaderboardSubTabState extends ConsumerState<LeaderboardSubTab> with Sing
                     icon: Icon(Icons.filter_list),
                   ),
                   for(int i = 0; i < usersByCompetition.length; i++)
-                    LeaderboardListItem(user: usersByCompetition[i], points: userIdsByCompetition[i].$2,)
+                    RankingsListItem(user: usersByCompetition[i], points: userIdsByCompetition[i].$2,)
                 ],
               ),
               Column(
@@ -111,7 +112,7 @@ class _LeaderboardSubTabState extends ConsumerState<LeaderboardSubTab> with Sing
                     icon: Icon(Icons.filter_list),
                   ),
                   for(int i = 0; i < usersByEvent.length; i++)
-                    LeaderboardListItem(user: usersByEvent[i], points: userIdsByEvent[i].$2)
+                    RankingsListItem(user: usersByEvent[i], points: userIdsByEvent[i].$2)
                 ],
               ),
             ],

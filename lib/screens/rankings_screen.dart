@@ -1,8 +1,8 @@
-import 'package:dodecathlon/widgets/leaderboard_sub_tab.dart';
+import 'package:dodecathlon/widgets/rankings_sub_tab.dart';
 import 'package:flutter/material.dart';
 
-class LeaderboardScreen extends StatelessWidget {
-  const LeaderboardScreen({super.key});
+class RankingsScreen extends StatelessWidget {
+  const RankingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +35,8 @@ class LeaderboardScreen extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  LeaderboardSubTab(isFriendsList: false,),
-                  LeaderboardSubTab(isFriendsList: true,),
+                  RankingsSubTab(isFriendsList: false,),
+                  RankingsSubTab(isFriendsList: true,),
                 ],
               ),
             ),

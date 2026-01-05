@@ -1,7 +1,9 @@
 import 'package:dodecathlon/models/event.dart';
 import 'package:dodecathlon/models/in_person_event.dart';
 import 'package:dodecathlon/models/submission.dart';
+import 'package:dodecathlon/providers/competition_provider.dart';
 import 'package:dodecathlon/providers/events_provider.dart';
+import 'package:dodecathlon/providers/settings_provider.dart';
 import 'package:dodecathlon/providers/submission_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/event_details_screen.dart';
@@ -12,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../models/challenge.dart';
+import '../models/competition.dart';
 import '../models/user.dart';
 import '../providers/challenges_provider.dart';
 import '../providers/in_person_event_provider.dart';
@@ -36,14 +39,26 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now();
 
-    // Events
-    AsyncValue<List<Event>> events = ref.watch(eventProvider);
-    if (!events.hasValue) {
+    // Settings
+    var settings = ref.watch(settingsProvider);
+    if (settings == null || settings['current_competition'] == null) {
       return Center(child: CircularProgressIndicator(),);
     }
 
-    events.value!.sort((a, b) => a.startDate.isAfter(b.startDate) ? 1 : 0);
-    Event? currentEvent = events.value!.where((e) =>
+    // Events and competition
+    AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
+    AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
+    if (!eventStream.hasValue || !competitions.hasValue) {
+      return Center(child: CircularProgressIndicator(),);
+    }
+
+    Competition currentCompetition = competitions.value!.firstWhere((c) => c.id == settings['current_competition']);
+    List<Event> competitionEvents = eventStream.value!.where((e) =>
+      currentCompetition.events.contains(e.id)
+    ).toList();
+
+    competitionEvents.sort((a, b) => a.startDate.isAfter(b.startDate) ? 1 : 0);
+    Event? currentEvent = competitionEvents.where((e) =>
       e.startDate.isBefore(now) & e.endDate.isAfter(now)
     ).firstOrNull;
     if (currentEvent == null) {
@@ -51,8 +66,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
     }
 
     selectedEvent = selectedEvent ?? currentEvent;
-    int currentEventIndex = events.value!.indexOf(currentEvent!);
-    int selectedEventIndex = events.value!.indexOf(selectedEvent!);
+    int currentEventIndex = competitionEvents.indexOf(currentEvent!);
+    int selectedEventIndex = competitionEvents.indexOf(selectedEvent!);
 
     // User
     User currentUser = ref.read(userProvider)!;
@@ -87,8 +102,6 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
         c.endDate.isAfter(now)
       ).toList();
     }
-
-    print('eventChallenges: $eventChallenges');
 
     List<Challenge> bonusChallenges = [];
     List<Challenge> mainChallenges = [];
@@ -130,7 +143,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                 selectedEventIndex > 0
                   ? IconButton(
                     onPressed: () {
-                      selectedEvent = events.value![selectedEventIndex - 1];
+                      selectedEvent = competitionEvents[selectedEventIndex - 1];
                       setState(() {});
                     },
                     icon: Icon(Icons.chevron_left)
@@ -210,10 +223,10 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                   ],
                 ),
                 Spacer(),
-                selectedEventIndex < events.value!.length - 1
+                selectedEventIndex < competitionEvents.length - 1
                   ? IconButton(
                       onPressed: () {
-                        selectedEvent = events.value![selectedEventIndex + 1];
+                        selectedEvent = competitionEvents[selectedEventIndex + 1];
                         setState(() {});
                       },
                       icon: Icon(Icons.chevron_right)
@@ -228,7 +241,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
 
           // Page Body
           SizedBox(height: 20,),
-          if (events.hasValue && inPersonEvents.hasValue && selectedEvent == currentEvent)
+          if (inPersonEvents.hasValue && selectedEvent == currentEvent)
             CurrentEventDetails(
               hasSelectedDifficulty: hasSelectedDifficulty,
               currentEvent: selectedEvent!,
@@ -237,12 +250,12 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
               completedChallenges: completedChallenges,
               inPersonEvents: upcommingInPersonEvents,
             ),
-          if (events.hasValue && selectedEventIndex < currentEventIndex)
+          if (selectedEventIndex < currentEventIndex)
             PreviousEventDetails(
               currentEvent: currentEvent,
               challenges: eventChallenges,
             ),
-          if (events.hasValue && selectedEventIndex > currentEventIndex)
+          if (selectedEventIndex > currentEventIndex)
             NextEventDetails(currentEvent: currentEvent),
           Container(
             margin: EdgeInsets.symmetric(vertical: 80),

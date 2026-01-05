@@ -4,8 +4,8 @@ import 'package:dodecathlon/screens/event_details_screen.dart';
 import 'package:dodecathlon/utilities/color_utility.dart';
 import 'package:flutter/material.dart';
 
-class EventListItem extends StatelessWidget {
-  const EventListItem({
+class EventScheduleListItem extends StatelessWidget {
+  const EventScheduleListItem({
     super.key,
     required this.event,
     required this.eventChallenges,

@@ -2,12 +2,15 @@ import 'dart:math';
 import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/event.dart';
 import 'package:dodecathlon/providers/challenges_provider.dart';
-import 'package:dodecathlon/widgets/event_list_item.dart';
+import 'package:dodecathlon/widgets/event_schedule_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../models/competition.dart';
+import '../providers/competition_provider.dart';
 import '../providers/events_provider.dart';
+import '../providers/settings_provider.dart';
 
 class EventScheduleScreen extends ConsumerStatefulWidget {
   const EventScheduleScreen({super.key});
@@ -39,19 +42,27 @@ class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    AsyncValue<List<Event>> events = ref.watch(eventProvider);
+    AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
     AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
 
-    if (!events.hasValue || !challenges.hasValue) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
+    var settings = ref.watch(settingsProvider);
+    if (settings == null || settings['current_competition'] == null) {
+      return Center(child: CircularProgressIndicator(),);
     }
 
-    List<Color> backgroundColors = [];
-    if (events.hasValue) {
-      backgroundColors = events.value!.map((event) => event.themeColor).toList();
+    AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
+    if (!competitions.hasValue || !challenges.hasValue || !eventStream.hasValue) {
+      return Center(child: CircularProgressIndicator(),);
     }
+
+    Competition currentCompetition = competitions.value!.firstWhere((c) => c.id == settings['current_competition']);
+    List<Event> competitionEvents = eventStream.value!.where((e) =>
+        currentCompetition.events.contains(e.id)
+    ).toList();
+
+
+    List<Color> backgroundColors = [];
+    backgroundColors = competitionEvents.map((event) => event.themeColor).toList();
     backgroundColors.insert(0, Colors.white);
 
     final List<CrossAxisAlignment> boxAlignments = [
@@ -87,7 +98,7 @@ class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
     return Scaffold(
       backgroundColor: _backgroundColor,
       body: NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification notification) => _changeBackground(notification, backgroundColors, events.value!.length),
+        onNotification: (ScrollNotification notification) => _changeBackground(notification, backgroundColors, competitionEvents.length),
         child: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -116,11 +127,11 @@ class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
                     ),
                   ),
                   SizedBox(height: 150,),
-                  for (int i = 0; i < events.value!.length; i++)
+                  for (int i = 0; i < competitionEvents.length; i++)
                     if (challenges.hasValue)
-                      EventListItem(
-                        event: events.value![i],
-                        eventChallenges: challenges.value!.where((c) => c.eventId == events.value![i].id).toList(),
+                      EventScheduleListItem(
+                        event: competitionEvents[i],
+                        eventChallenges: challenges.value!.where((c) => c.eventId == competitionEvents[i].id).toList(),
                         columnAlignment: boxAlignments[i],
                         textAlignment: textAlignments[i],
                       ),

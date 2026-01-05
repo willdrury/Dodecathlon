@@ -9,10 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../models/competition.dart';
 import '../models/post.dart';
 import '../models/user.dart';
 import '../models/event.dart';
 import '../providers/challenges_provider.dart';
+import '../providers/competition_provider.dart';
+import '../providers/settings_provider.dart';
 import '../providers/users_provider.dart';
 import '../providers/events_provider.dart';
 
@@ -96,18 +99,26 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
   Widget build(BuildContext context) {
 
     User user = ref.watch(userProvider)!;
+    var settings = ref.watch(settingsProvider);
     AsyncValue<List<User>> users = ref.watch(usersProvider);
-    AsyncValue<List<Event>> currentEvents = ref.watch(eventProvider);
-    if (!currentEvents.hasValue) {
+    AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
+    AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
+
+    if (!competitions.hasValue || !eventStream.hasValue || settings == null || settings['current_competition'] == null) {
       return Center(child: CircularProgressIndicator(),);
     }
 
-    currentEvents.value!.sort((a, b) => a.startDate.isBefore(b.startDate) ? 1 : 0);
+    Competition currentCompetition = competitions.value!.firstWhere((c) => c.id == settings['current_competition']);
+    List<Event> competitionEvents = eventStream.value!.where((e) =>
+        currentCompetition.events.contains(e.id)
+    ).toList();
+
+    competitionEvents.sort((a, b) => a.startDate.isBefore(b.startDate) ? 1 : 0);
 
     DateTime now = DateTime.now();
-    Event? currentEvent = currentEvents.value!.isEmpty
+    Event? currentEvent = competitionEvents.isEmpty
         ? null
-        : currentEvents.value!.where((e) =>
+        : competitionEvents.where((e) =>
             e.startDate.isBefore(now) & e.endDate.isAfter(now)
           ).firstOrNull;
 

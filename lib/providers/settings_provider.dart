@@ -23,7 +23,8 @@ Future<Database?> _getDatabase() async {
               'new_challenge_notifications INTEGER, '
               'leaderboard_update_notifications INTEGER, '
               'challenge_reminders INTEGER, '
-              'last_login_date INTEGER'
+              'last_login_date INTEGER, '
+              'current_competition TEXT'
               ')'
           );
         },
@@ -49,6 +50,7 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
     //   'leaderboard_update_notifications': 1,
     //   'challenge_reminders': 1,
     //   'last_login_date': DateTime.now().microsecondsSinceEpoch,
+    //   'current_competition': '',
     //   'id': userId,
     // };
     // await createSettings(defaultSettings);
@@ -64,6 +66,7 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
         'leaderboard_update_notifications': (row['leaderboard_update_notifications'] as int) == 1 ? true : false,
         'challenge_reminders': (row['challenge_reminders'] as int) == 1 ? true : false,
         'last_login_date': DateTime.fromMicrosecondsSinceEpoch(row['last_login_date'] as int),
+        'current_competition':  row['current_competition'] as String,
         'id': row['id'] as String,
       };
     }).toList();
@@ -82,6 +85,7 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
         'leaderboard_update_notifications': 1,
         'challenge_reminders': 1,
         'last_login_date': DateTime.now().microsecondsSinceEpoch,
+        'current_competition': '',
         'id': userId,
       };
       await createSettings(defaultSettings);
@@ -101,6 +105,7 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
       'leaderboard_update_notifications': settings['leaderboard_update_notifications'] ? 1 : 0,
       'challenge_reminders': settings['challenge_reminders'] ? 1 : 0,
       'last_login_date': DateTime.now().microsecondsSinceEpoch,
+      'current_competition': settings['current_competition'],
       'id': userId,
     }, where: 'id = ?', whereArgs: [userId]);
     state = settings;
@@ -111,6 +116,7 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
     final Database? db = await _getDatabase();
     if (db == null) return;
 
+    // print('creating settings');
     // db.execute('DROP TABLE IF EXISTS user_settings');
     // db.execute('CREATE TABLE user_settings('
     //     'id TEXT PRIMARY KEY, '
@@ -120,7 +126,8 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
     //     'new_challenge_notifications INTEGER, '
     //     'leaderboard_update_notifications INTEGER, '
     //     'challenge_reminders INTEGER, '
-    //     'last_login_date INTEGER'
+    //     'last_login_date INTEGER, '
+    //     'current_competition TEXT'
     //     ')'
     // );
 
@@ -132,6 +139,7 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
       'leaderboard_update_notifications': settings['leaderboard_update_notifications'],
       'challenge_reminders': settings['challenge_reminders'],
       'last_login_date': settings['last_login_date'],
+      'current_competition': settings['current_competition'],
       'id': userId,
     });
 

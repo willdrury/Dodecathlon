@@ -2,8 +2,8 @@ import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/screens/user_details_screen.dart';
 import 'package:flutter/material.dart';
 
-class LeaderboardListItem extends StatelessWidget {
-  const LeaderboardListItem({super.key, required this.user, required this.points});
+class RankingsListItem extends StatelessWidget {
+  const RankingsListItem({super.key, required this.user, required this.points});
   
   final User user;
   final int points;

@@ -142,7 +142,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
-                        PostDetailsScreen(post: widget.post)
+                      PostDetailsScreen(post: widget.post)
                     ));
                   },
                   child: Image.network(

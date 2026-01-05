@@ -2,7 +2,7 @@ import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/providers/user_event_rankings_provider.dart';
 import 'package:dodecathlon/providers/users_provider.dart';
-import 'package:dodecathlon/screens/leaderboard_screen.dart';
+import 'package:dodecathlon/screens/rankings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';

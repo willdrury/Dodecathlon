@@ -10,6 +10,7 @@ class Competition {
   final List<String> events;
   final Color themeColor;
   final String id;
+  final String? displayImageUrl;
 
   Competition({
     required this.name,
@@ -18,6 +19,7 @@ class Competition {
     required this.events,
     required this.themeColor,
     required this.id,
+    this.displayImageUrl,
   });
 
   Map<String, dynamic> toJson() => {
@@ -25,18 +27,20 @@ class Competition {
     'description': description,
     'createdAt': createdAt,
     'events': events,
-    'themeColor': '#${themeColor.toARGB32().toRadixString(16)}',
+    'displayImageUrl': displayImageUrl,
+    'themeColor': '#${themeColor.toARGB32().toRadixString(16).substring(2)}',
   };
 
   factory Competition.fromMap(Map data, String id) {
     try {
       return Competition(
-          name: data['name'],
-          description: data['description'],
-          createdAt: DateTime.fromMicrosecondsSinceEpoch((data['createdAt'] as Timestamp).microsecondsSinceEpoch),
-          events: List<String>.from(data['events'] as List<dynamic>),
-          themeColor: Color(int.parse(data['themeColor'].substring(1, 7), radix: 16)).withAlpha(255),
-          id: id
+        name: data['name'],
+        description: data['description'],
+        createdAt: DateTime.fromMicrosecondsSinceEpoch((data['createdAt'] as Timestamp).microsecondsSinceEpoch),
+        events: List<String>.from(data['events'] as List<dynamic>),
+        themeColor: Color(int.parse(data['themeColor'].substring(1, 7), radix: 16)).withAlpha(255),
+        displayImageUrl: data['displayImageUrl'],
+        id: id
       );
     } catch (e) {
       print('Error converting competition from JSON: ${e.toString()}');

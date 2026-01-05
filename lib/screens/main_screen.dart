@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dodecathlon/screens/submission_selection_screen.dart';
 import 'package:dodecathlon/screens/events_screen.dart';
-import 'package:dodecathlon/screens/leaderboard_screen.dart';
+import 'package:dodecathlon/screens/rankings_screen.dart';
 import 'package:dodecathlon/screens/social_screen.dart';
 import 'package:dodecathlon/screens/home_screen.dart';
 
@@ -215,7 +215,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           _scrollPhysics = ScrollPhysics();
         case 4:
           _currentPageIndex = index;
-          _currentScreen = LeaderboardScreen();
+          _currentScreen = RankingsScreen();
           _showAppBar = true;
           _useAppBarShadow = false;
           _appBarColor = Theme.of(context).colorScheme.primaryContainer;

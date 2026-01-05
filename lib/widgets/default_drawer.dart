@@ -6,6 +6,7 @@ import 'package:dodecathlon/screens/event_schedule_screen.dart';
 import 'package:dodecathlon/screens/faq_screen.dart';
 import 'package:dodecathlon/screens/feedback_screen.dart';
 import 'package:dodecathlon/screens/profile_screen.dart';
+import 'package:dodecathlon/widgets/change_competition_button.dart';
 import 'package:dodecathlon/widgets/vertical_icon_button.dart';
 import 'package:flutter/material.dart';
 
@@ -32,52 +33,51 @@ class DefaultDrawer extends StatelessWidget {
       child: ListView(
         children: [
           DrawerHeader(
-              child: GestureDetector(
-                onTapDown: (_) {
-                  _startOperation(context);
-                },
-                onTapUp: (_) {
-                  _timer!.cancel();
-                },
-                onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx) => EventScheduleScreen())
-                  );
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 50,
-                      child: Image.asset('assets/images/DodecathlonLogoOutline.png'),
+            child: GestureDetector(
+              onTapDown: (_) {
+                _startOperation(context);
+              },
+              onTapUp: (_) {
+                _timer!.cancel();
+              },
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => EventScheduleScreen())
+                );
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 50,
+                    child: Image.asset('assets/images/DodecathlonLogoOutline.png'),
+                  ),
+                  SizedBox(height: 20,),
+                  Text(
+                    'Competition:',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold
                     ),
-                    // Container(
-                    //   height: 50,
-                    //   width: 50,
-                    //   decoration: BoxDecoration(
-                    //       color: Colors.black12,
-                    //       borderRadius: BorderRadius.circular(5)
-                    //   ),
-                    // ),
-                    SizedBox(height: 20,),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (ctx) => CompetitionsScreen())
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Dodecathlon', style: TextStyle(fontSize: 10),),
-                          // Icon(Icons.expand_more, size: 15,),
-                        ],
-                      ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (ctx) => CompetitionsScreen())
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Dodecathlon', style: TextStyle(fontSize: 10),),
+                        // Icon(Icons.expand_more, size: 15,),
+                      ],
                     ),
-                    // Text('change', style: TextStyle(fontSize: 10, color: Colors.blue),)
-                  ],
-                ),
+                  ),
+                  ChangeCompetitionButton(),
+                ],
               ),
+            ),
           ),
           const SizedBox(height: 30,),
           VerticalIconButton(
