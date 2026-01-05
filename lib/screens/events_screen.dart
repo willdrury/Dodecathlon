@@ -52,7 +52,11 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
       return Center(child: CircularProgressIndicator(),);
     }
 
-    Competition currentCompetition = competitions.value!.firstWhere((c) => c.id == settings['current_competition']);
+    Competition? currentCompetition = competitions.value!.where((c) => c.id == settings['current_competition']).firstOrNull;
+    if (currentCompetition == null) {
+      return Center(child: Text('Join a competition to get started!'),); // TODO: Improve ui
+    }
+
     List<Event> competitionEvents = eventStream.value!.where((e) =>
       currentCompetition.events.contains(e.id)
     ).toList();
@@ -95,7 +99,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
     // Challenges
     AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
     List<Challenge> eventChallenges = [];
-    if (challenges.hasValue) {
+    if (challenges.hasValue) { // TODO: Logging and UI if unable to load challenges
       eventChallenges = challenges.value!.where((c) =>
         c.eventId == selectedEvent!.id &&
         c.startDate.isBefore(now) &&
@@ -109,17 +113,17 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
     if (hasSelectedDifficulty && challenges.hasValue) {
       bonusChallenges = eventChallenges.where((c) =>
       c.isBonus &&
-          !completedChallengeIds.contains(c.id) &&
-          c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&
-          c.prerequisiteChallenges.every((e) => completedChallengeIds.contains(e)) &&
-          (c.difficulty == currentUser.currentEventDifficulty || c.difficulty == Difficulty.all)
+        !completedChallengeIds.contains(c.id) &&
+        c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&
+        c.prerequisiteChallenges.every((e) => completedChallengeIds.contains(e)) &&
+        (c.difficulty == currentUser.currentEventDifficulty || c.difficulty == Difficulty.all)
       ).toList();
       mainChallenges = eventChallenges.where((c) =>
       !c.isBonus &&
-          !completedChallengeIds.contains(c.id) &&
-          c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&
-          c.prerequisiteChallenges.every((e) => completedChallengeIds.contains(e)) &&
-          (c.difficulty == currentUser.currentEventDifficulty || c.difficulty == Difficulty.all)
+        !completedChallengeIds.contains(c.id) &&
+        c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&
+        c.prerequisiteChallenges.every((e) => completedChallengeIds.contains(e)) &&
+        (c.difficulty == currentUser.currentEventDifficulty || c.difficulty == Difficulty.all)
       ).toList();
       completedChallenges = eventChallenges.where((c) =>
         completedChallengeIds.contains(c.id)
@@ -185,7 +189,16 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                               )
                             ),
                             CircleAvatar(
-                              backgroundImage: NetworkImage(selectedEvent!.displayImageUrl),
+                              backgroundColor: selectedEvent!.themeColor.withAlpha(50),
+                              backgroundImage: Image.network(
+                                selectedEvent!.displayImageUrl,
+                                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return Container(color: selectedEvent!.themeColor,);
+                                }
+                              ).image,
                               maxRadius: 50,
                             ),
                           ],
@@ -261,12 +274,12 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
             margin: EdgeInsets.symmetric(vertical: 80),
             alignment: Alignment.center,
             child: FilledButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx) => EventScheduleScreen())
-                  );
-                },
-                child: Text('View Full Competition Schedule')
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => EventScheduleScreen())
+                );
+              },
+              child: Text('View Full Competition Schedule')
             ),
           ),
         ],

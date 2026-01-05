@@ -1,3 +1,5 @@
+import 'package:dodecathlon/providers/competition_provider.dart';
+import 'package:dodecathlon/providers/events_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/main_screen.dart';
 import 'package:dodecathlon/utilities/custom_color_extension.dart';
@@ -10,6 +12,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:dodecathlon/utilities/color_utility.dart';
 
 import 'firebase_options.dart';
+import 'models/competition.dart';
+import 'models/event.dart';
 
 // final kColorScheme = ColorScheme.fromSeed(seedColor: Color(0xFF00A87F)).copyWith(
 //   surface: Colors.white,
@@ -23,13 +27,13 @@ import 'firebase_options.dart';
 //   secondary: Color(0xFFFED871),
 //   tertiary: Color(0xFFE6AD12),
 // );
-final kColorScheme = ColorScheme.fromSeed(seedColor: Color(0xFF6A4C93)).copyWith(
-  surface: Colors.white,
-  primary: Color(0xFF6A4C93),
-  secondary: Color(0xFFA580D7),
-  tertiary: Color(0xFF4D3370),
-);
-final kColorSchemeDark = ColorScheme.fromSeed(seedColor: Color(0xFF6A4C93), brightness: Brightness.dark);
+// final kColorScheme = ColorScheme.fromSeed(seedColor: Color(0xFF6A4C93)).copyWith(
+//   surface: Colors.white,
+//   primary: Color(0xFF6A4C93),
+//   secondary: Color(0xFFA580D7),
+//   tertiary: Color(0xFF4D3370),
+// );
+// final kColorSchemeDark = ColorScheme.fromSeed(seedColor: Color(0xFF6A4C93), brightness: Brightness.dark);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +55,38 @@ class MyApp extends ConsumerWidget {
     if (settings.isNotEmpty && settings['theme'] != null && settings['theme'] != 'system') {
       lightMode = settings['theme'] == 'light';
     }
+
+    AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
+    AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
+    if (!competitions.hasValue || !eventStream.hasValue || settings == null) {
+      return Center(child: CircularProgressIndicator(),);
+    }
+
+    Competition? currentCompetition = competitions.value!.where((c) => c.id == settings['current_competition']).firstOrNull;
+    List<Event>? competitionEvents = [];
+
+    if (currentCompetition != null) {
+      competitionEvents = eventStream.value!.where((e) =>
+          currentCompetition.events.contains(e.id)
+      ).toList();
+    }
+
+    DateTime now = DateTime.now();
+    Event? currentEvent = competitionEvents.isEmpty
+        ? null
+        : competitionEvents.where((e) =>
+            e.startDate.isBefore(now) & e.endDate.isAfter(now)
+         ).firstOrNull;
+
+    final kColorScheme = ColorScheme.fromSeed(
+      seedColor: currentEvent == null ? Color(0xFF6A4C93) : currentEvent!.themeColor,
+      dynamicSchemeVariant: DynamicSchemeVariant.tonalSpot
+    ).copyWith(surface: Colors.white);
+
+    final kColorSchemeDark = ColorScheme.fromSeed(
+      seedColor: currentEvent == null ? Color(0xFF6A4C93) : currentEvent!.themeColor,
+      brightness: Brightness.dark
+    );
 
     return MaterialApp(
       title: 'You Better',

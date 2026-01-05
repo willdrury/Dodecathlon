@@ -60,7 +60,7 @@ class EventDetailsScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular((2 * MediaQuery.widthOf(context) / 2.2) + 20),
                             boxShadow: [
                               BoxShadow(
-                                  color: Colors.black12,
+                                  color: event.themeColor.withAlpha(100),
                                   offset: Offset(0, 5),
                                   spreadRadius: 1,
                                   blurRadius: 5
@@ -69,7 +69,16 @@ class EventDetailsScreen extends ConsumerWidget {
                         )
                     ),
                     CircleAvatar(
-                      backgroundImage: NetworkImage(event!.displayImageUrl),
+                      backgroundColor: event.themeColor.withAlpha(50),
+                      backgroundImage: Image.network(
+                          event.displayImageUrl,
+                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            }
+                            return Container(color: event.themeColor,);
+                          }
+                      ).image,
                       maxRadius: MediaQuery.widthOf(context) / 4,
                     ),
                   ],

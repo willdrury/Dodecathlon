@@ -316,7 +316,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
             onDestinationSelected(index, context);
           },
           indicatorColor: Theme.of(context).colorScheme.primaryContainer,
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
           shadowColor: Colors.black,
           elevation: 10.0,
           selectedIndex: _currentPageIndex,

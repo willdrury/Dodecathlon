@@ -40,10 +40,20 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
   void initState() {
     _animationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: 4999));
-    _colorTween = ColorTween(begin: Color(0x78977CB7), end: Colors.blueGrey)
-        .animate(_animationController);
-    changeColors();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final Color primaryColor = Theme.of(context).colorScheme.primary.withAlpha(100);
+    final Color secondaryColor = Theme.of(context).colorScheme.secondary.withAlpha(100);
+
+    _colorTween = ColorTween(
+      begin: primaryColor,
+      end: secondaryColor,
+    ).animate(_animationController);
+    changeColors();
   }
 
   @override
@@ -53,7 +63,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
   }
 
   Future changeColors() async {
-    while (true) {
+    while (mounted) {
       await Future.delayed(const Duration(seconds: 5), () {
         if (_animationController.status == AnimationStatus.completed) {
           _animationController.reverse();
@@ -108,12 +118,14 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
       return Center(child: CircularProgressIndicator(),);
     }
 
-    Competition currentCompetition = competitions.value!.firstWhere((c) => c.id == settings['current_competition']);
+    Competition? currentCompetition = competitions.value!.where((c) => c.id == settings['current_competition']).firstOrNull;
+    if (currentCompetition == null) {
+      return Center(child: Text('Join a competition to get started!'),); // TODO: Improve ui
+    }
+
     List<Event> competitionEvents = eventStream.value!.where((e) =>
         currentCompetition.events.contains(e.id)
     ).toList();
-
-    competitionEvents.sort((a, b) => a.startDate.isBefore(b.startDate) ? 1 : 0);
 
     DateTime now = DateTime.now();
     Event? currentEvent = competitionEvents.isEmpty

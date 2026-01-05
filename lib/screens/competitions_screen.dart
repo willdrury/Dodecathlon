@@ -46,70 +46,72 @@ class CompetitionsScreen extends ConsumerWidget {
         ),
         body: Container(
           padding: EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Your Competitions',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              if (userCompetitions.isNotEmpty)
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: userCompetitions.length,
-                  itemBuilder: (ctx, i) {
-                    return CompetitionTile(
-                      competition: userCompetitions[i],
-                      onToggle: onToggle,
-                      isUserComp: true,
-                    );
-                  }),
-              if (userCompetitions.isEmpty)
-                Text(
-                  'Select a competition from below, or create your own to get started',
-                  style: TextStyle(
-                    color: Colors.grey
-                  )
-                ),
-              SizedBox(
-                height: 50,
-              ),
-              Row(
-                children: [
-                  Text(
-                    'User Competitions',
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Your Competitions',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  Spacer(),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (ctx) => CompetitionCreationScreen())
-                        );
-                      },
-                      icon: Icon(
-                        Icons.add,
-                        color: Colors.blue,
-                      )
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: nonUserCompetitions.length,
-                itemBuilder: (ctx, i) {
-                  return CompetitionTile(
-                    competition: nonUserCompetitions[i],
-                    onToggle: onToggle,
-                    isUserComp: false,
-                  );
-                }),
-            ],
+                ),
+                if (userCompetitions.isNotEmpty)
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: userCompetitions.length,
+                    itemBuilder: (ctx, i) {
+                      return CompetitionTile(
+                        competition: userCompetitions[i],
+                        onToggle: onToggle,
+                        isUserComp: true,
+                      );
+                    }),
+                if (userCompetitions.isEmpty)
+                  Text(
+                    'Select a competition from below, or create your own to get started',
+                    style: TextStyle(
+                      color: Colors.grey
+                    )
+                  ),
+                SizedBox(
+                  height: 50,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'User Competitions',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Spacer(),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (ctx) => CompetitionCreationScreen())
+                          );
+                        },
+                        icon: Icon(
+                          Icons.add,
+                          color: Colors.blue,
+                        )
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: nonUserCompetitions.length,
+                  itemBuilder: (ctx, i) {
+                    return CompetitionTile(
+                      competition: nonUserCompetitions[i],
+                      onToggle: onToggle,
+                      isUserComp: false,
+                    );
+                  }),
+              ],
+            ),
           ),
         )
     );

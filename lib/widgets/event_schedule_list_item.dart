@@ -3,6 +3,10 @@ import 'package:dodecathlon/models/event.dart';
 import 'package:dodecathlon/screens/event_details_screen.dart';
 import 'package:dodecathlon/utilities/color_utility.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+
+final formatter = DateFormat('MMM d');
 
 class EventScheduleListItem extends StatelessWidget {
   const EventScheduleListItem({
@@ -63,6 +67,16 @@ class EventScheduleListItem extends StatelessWidget {
                 children: [
                   Text(event.description, style: TextStyle(color: Colors.white, fontSize: 20), textAlign: textAlignment,),
                 ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Text(
+              '${formatter.format(event.startDate)} - ${formatter.format(event.endDate)}',
+              style: TextStyle(
+                color: Color.lerp(event.themeColor, Colors.black, .2),
+                fontWeight: FontWeight.bold
               ),
             ),
           ),

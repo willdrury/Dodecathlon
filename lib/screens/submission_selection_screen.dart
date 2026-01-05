@@ -104,17 +104,12 @@ class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionS
       return Center(child: CircularProgressIndicator());
     }
 
-    print('userSubmissions: $userSubmissions');
-
-
     List<String> completedChallengeIds = userSubmissions.value!.map((s) => s.challengeId).toList();
     AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
     List<Challenge> eventChallenges = [];
     if (challenges.hasValue) {
       eventChallenges = challenges.value!.where((c) => c.eventId == currentEvent.id).toList();
     }
-
-    print('completedChallengeIds: $completedChallengeIds');
 
     if (currentUser.currentEventDifficulty == null) {
       return Scaffold(
@@ -158,7 +153,7 @@ class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionS
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('Close', style: TextStyle(fontSize: 20, color: Colors.black)),
+                    child: Text('Close', style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.inversePrimary)),
                   ),
                   Spacer(),
                   TextButton(

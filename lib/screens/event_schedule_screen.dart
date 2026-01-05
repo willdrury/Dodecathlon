@@ -55,17 +55,28 @@ class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
       return Center(child: CircularProgressIndicator(),);
     }
 
-    Competition currentCompetition = competitions.value!.firstWhere((c) => c.id == settings['current_competition']);
+    Competition? currentCompetition = competitions.value!.where((c) => c.id == settings['current_competition']).firstOrNull;
+    if (currentCompetition == null) {
+      return Scaffold( // TODO: Improve UI
+        appBar: AppBar(
+          title: Text('Competition Schedule'),
+        ),
+        body: Center(
+          child: Text('Join a competition to get started!'),
+        ),
+      );
+    }
+
     List<Event> competitionEvents = eventStream.value!.where((e) =>
         currentCompetition.events.contains(e.id)
     ).toList();
-
+    competitionEvents.sort((a, b) => a.startDate.isAfter(b.startDate) ? 1 : 0);
 
     List<Color> backgroundColors = [];
     backgroundColors = competitionEvents.map((event) => event.themeColor).toList();
     backgroundColors.insert(0, Colors.white);
 
-    final List<CrossAxisAlignment> boxAlignments = [
+    final List<CrossAxisAlignment> boxAlignments = [ // TODO: Make this indefinite length which probably means avoiding altogether
       CrossAxisAlignment.center,
       CrossAxisAlignment.start,
       CrossAxisAlignment.end,
@@ -96,14 +107,14 @@ class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: _backgroundColor,
+      backgroundColor: Theme.of(context).brightness == Brightness.light ? _backgroundColor : Theme.of(context).colorScheme.surface,
       body: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) => _changeBackground(notification, backgroundColors, competitionEvents.length),
         child: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
-              SliverAppBar(backgroundColor: _backgroundColor,)
+              SliverAppBar(backgroundColor: Theme.of(context).brightness == Brightness.light ? _backgroundColor : Theme.of(context).colorScheme.surface,)
             ];
           },
           body: Builder(
@@ -119,7 +130,7 @@ class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
                       children: [
                         SizedBox(
                           width: double.infinity,
-                          child: Text('2025\nEVENT\nSCHEDULE', style: GoogleFonts.robotoMono(fontSize: 50), textAlign: TextAlign.left,)
+                          child: Text('${currentCompetition.name.toUpperCase()}\nEVENT\nSCHEDULE', style: GoogleFonts.robotoMono(fontSize: 50), textAlign: TextAlign.left,)
                         ),
                         SizedBox(height: 200,),
                         Icon(Icons.arrow_downward),
