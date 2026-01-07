@@ -17,7 +17,7 @@ class SocialFiltersCarousel extends StatefulWidget {
 class _SocialFiltersCarouselState extends State<SocialFiltersCarousel> {
 
   Map<String, bool> filters = {
-    'Needs Approval': false,
+    'Requires Approval': false,
     'Friends': false,
     'Event Submissions': false,
     'Non-Event Submissions': false

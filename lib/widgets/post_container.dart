@@ -4,7 +4,9 @@ import 'package:dodecathlon/models/submission.dart';
 import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/providers/post_comments_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
+import 'package:dodecathlon/screens/challenge_details_screen.dart';
 import 'package:dodecathlon/screens/post_details_screen.dart';
+import 'package:dodecathlon/screens/submission_approval_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -79,20 +81,47 @@ class _PostContainerState extends ConsumerState<PostContainer> {
       margin: EdgeInsets.symmetric(vertical: 10),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.black12)
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.black12
+          // color: widget.submission != null && !widget.submission!.isApproved
+          //   ? Theme.of(context).colorScheme.primaryContainer
+          //   : Colors.black12,
+          // width: widget.submission != null && !widget.submission!.isApproved
+          //     ? 3
+          //     : 1
+        ),
+
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (widget.submission != null && !widget.submission!.isApproved)
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => SubmissionApprovalScreen(submission: widget.submission!, post: widget.post))
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(5),
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: Text(
+                  'Requires Approval',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+                ),
+              ),
+            ),
           ListTile(
             leading: CircleAvatar(
               backgroundImage: NetworkImage(
-                  widget.post.user!.profileImageUrl != null
-                      ? widget.post.user!.profileImageUrl!
-                      : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
+                widget.post.user!.profileImageUrl != null
+                  ? widget.post.user!.profileImageUrl!
+                  : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
               ),
             ),
             title: Text(widget.post.user!.userName),
@@ -131,8 +160,9 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                     PopupMenuItem(
                       value: 'Approve',
                       onTap: () {
-                        widget.submission!.isApproved = true;
-                        widget.submission!.upload();
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (ctx) => SubmissionApprovalScreen(submission: widget.submission!, post: widget.post))
+                        );
                       },
                       child: ListTile(
                         title: Text('Approve'),
@@ -185,15 +215,15 @@ class _PostContainerState extends ConsumerState<PostContainer> {
               ));
             },
             child: Container(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.post.title, style: TextStyle(fontWeight: FontWeight.bold),),
-                    if (widget.post.description != null)
-                      Text(widget.post.description!)
-                  ],
-                )
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(widget.post.title, style: TextStyle(fontWeight: FontWeight.bold),),
+                  if (widget.post.description != null)
+                    Text(widget.post.description!)
+                ],
+              )
             ),
           ),
           SizedBox(
@@ -227,7 +257,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                 )
               ],
             ),
-          )
+          ),
         ],
       ),
     );

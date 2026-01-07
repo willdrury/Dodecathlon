@@ -59,7 +59,7 @@ class SubmissionTileMedium extends StatelessWidget {
                 Text('${submission.points.toString()} pts.'),
                 if (!submission.isApproved)
                   Text(
-                    ' (pending)',
+                    ' (pending approval)',
                     style: TextStyle(color: Colors.grey),
                   ),
                 Spacer(),

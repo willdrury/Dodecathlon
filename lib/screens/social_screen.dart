@@ -59,7 +59,7 @@ class _SocialScreenState extends ConsumerState<SocialScreen> {
             posts = posts.where((p) =>
                 currentUser!.friends.contains(p.userId)
             ).toList();
-          case 'Needs Approval':
+          case 'Requires Approval':
             posts = posts.where((p) =>
               submissionsMap[p] != null && submissionsMap[p]!.isApproved == false
             ).toList();
