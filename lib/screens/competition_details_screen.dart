@@ -4,13 +4,13 @@ import 'package:dodecathlon/models/event.dart';
 import 'package:dodecathlon/providers/events_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/add_event_screen.dart';
-import 'package:dodecathlon/widgets/add_event_tile.dart';
 import 'package:dodecathlon/widgets/event_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../models/user.dart';
+import 'event_schedule_screen.dart';
 
 final formatter = DateFormat('MMM d');
 
@@ -86,6 +86,7 @@ class _CompetitionDetailsScreenState extends ConsumerState<CompetitionDetailsScr
                   ),
                   CircleAvatar(
                     radius: 70,
+                    backgroundColor: widget.competition.themeColor,
                     backgroundImage: NetworkImage(
                       widget.competition.displayImageUrl != null
                         ? widget.competition.displayImageUrl!
@@ -96,7 +97,19 @@ class _CompetitionDetailsScreenState extends ConsumerState<CompetitionDetailsScr
               ),
             ),
             SizedBox(height: 30,),
-            Text(widget.competition.description),
+            Text(widget.competition.description, textAlign: TextAlign.center,),
+            SizedBox(height: 20,),
+            FilledButton(
+                style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(widget.competition.themeColor)
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => EventScheduleScreen())
+                  );
+                },
+                child: Text('View Schedule')
+            ),
             SizedBox(height: 20,),
             Divider(),
             SizedBox(height: 20,),

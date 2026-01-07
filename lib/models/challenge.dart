@@ -51,25 +51,31 @@ class Challenge {
   });
 
   factory Challenge.fromMap(Map data, String id) {
-    return Challenge(
-      name: data['name'],
-      description: data['description'],
-      eventId: data['eventId'],
-      difficulty: getDifficultyFromString(data['difficulty']),
-      maxPoints: data['maxPoints'],
-      scoringMechanism: getScoringMechanismFromString(data['scoringMechanism']),
-      submissionScreen: getSubmissionScreenFromString(data['submissionScreen']),
-      isBonus: data['isBonus'],
-      isRecurring: data['isRecurring'],
-      isEditable: data['isEditable'],
-      startDate: DateTime.parse((data['startDate'])),
-      endDate: DateTime.parse((data['endDate'])),
-      prerequisiteChallenges: List<String>.from(data['prerequisiteChallenges']),
-      conflictingChallenges: List<String>.from(data['conflictingChallenges']),
-      enforcement: getEnforcementFromString(data['enforcement']),
-      imageUrl: data['displayImageUrl'],
-      id: id
-    );
+    try {
+      return Challenge(
+        name: data['name'],
+        description: data['description'],
+        eventId: data['eventId'],
+        difficulty: getDifficultyFromString(data['difficulty']),
+        maxPoints: data['maxPoints'],
+        scoringMechanism: getScoringMechanismFromString(data['scoringMechanism']),
+        submissionScreen: getSubmissionScreenFromString(data['submissionScreen']),
+        isBonus: data['isBonus'],
+        isRecurring: data['isRecurring'],
+        isEditable: data['isEditable'],
+        startDate: DateTime.parse((data['startDate'])),
+        endDate: DateTime.parse((data['endDate'])),
+        prerequisiteChallenges: List<String>.from(data['prerequisiteChallenges']),
+        conflictingChallenges: List<String>.from(data['conflictingChallenges']),
+        enforcement: getEnforcementFromString(data['enforcement']),
+        imageUrl: data['displayImageUrl'],
+        id: id
+      );
+    } catch (e) { // TODO: add this to all parsers? Also, better logging
+      print('Error parsing challenge: ${e.toString()}');
+      print('Challenge data: ${data}');
+      throw('Error parsing challenge: ${e.toString()}');
+    }
   }
 
   Widget getSubmissionScreen(Map<dynamic, dynamic> args) {
@@ -106,9 +112,8 @@ enum ScoringMechanism {
 
 enum Enforcement {
   quiz,
-  link,
-  photo,
-  partner,
+  approval,
+  auto,
   none,
 }
 
@@ -151,12 +156,10 @@ Enforcement getEnforcementFromString(String? value) {
   switch(value) {
     case 'quiz':
       return Enforcement.quiz;
-    case 'partner':
-      return Enforcement.partner;
-    case 'link':
-      return Enforcement.link;
-    case 'photo':
-      return Enforcement.photo;
+    case 'approval':
+      return Enforcement.approval;
+    case 'auto':
+      return Enforcement.auto;
     case 'none':
       return Enforcement.none;
   }

@@ -55,10 +55,12 @@ class EventProgressContainer extends ConsumerWidget {
     int mainPoints = 0;
     int bonusPoints = 0;
     for (Submission s in userEventSubmissions) {
-      if (s.isBonus) {
-        bonusPoints += s.points;
-      } else {
-        mainPoints += s.points;
+      if (s.isApproved) {
+        if (s.isBonus) {
+          bonusPoints += s.points;
+        } else {
+          mainPoints += s.points;
+        }
       }
     }
 

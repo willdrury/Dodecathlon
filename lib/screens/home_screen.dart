@@ -1,4 +1,4 @@
-import 'package:dodecathlon/constants/boxShadows.dart';
+import 'package:dodecathlon/constants/box_shadows.dart';
 import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/providers/posts_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
@@ -170,61 +170,53 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
       });
     }
 
-    return Container(
-      child:
-      currentEvent == null
-        ? Container(
-          alignment: Alignment.center,
-          child: CircularProgressIndicator(),
-        )
-        : Stack(
-        children: [
-          // Background dodecahedron image
-          AnimatedBuilder(
-            animation: _colorTween,
-            builder: (context, child) => SvgPicture.asset(
-              'assets/images/AppBackground.svg',
-              colorFilter: ColorFilter.mode(_colorTween.value, BlendMode.srcIn),
-              height: double.infinity,
-              alignment: Alignment.bottomCenter,
-            ),
+    return Stack(
+      children: [
+        // Background dodecahedron image
+        AnimatedBuilder(
+          animation: _colorTween,
+          builder: (context, child) => SvgPicture.asset(
+            'assets/images/AppBackground.svg',
+            colorFilter: ColorFilter.mode(_colorTween.value, BlendMode.srcIn),
+            height: double.infinity,
+            alignment: Alignment.bottomCenter,
           ),
+        ),
 
-          // Main home page content
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Welcome back ${user.userName}!', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
-                    ],
-                  ),
+        // Main home page content
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Welcome back ${user.userName}!', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
+                  ],
                 ),
               ),
-              EventProgressContainer(onPageChange: widget.onPageChange,),
-              if (showDifficultySelectionButton && currentEvent != null)
-                Container(
-                  height: 100,
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  margin: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white70,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: BoxShadows.cardShadow,
-                  ),
-                  child: Text('Select a difficulty'),
+            ),
+            EventProgressContainer(onPageChange: widget.onPageChange,),
+            if (showDifficultySelectionButton && currentEvent != null)
+              Container(
+                height: 100,
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                margin: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white70,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: BoxShadows.cardShadow,
                 ),
-              // if (!showDifficultySelectionButton && mainChallenge != null)
-              //   HomeScreenEventSnapshot(challenge: mainChallenge,),
-            ],
-          ),
-        ],
-      ),
+                child: Text('Select a difficulty'),
+              ),
+            // if (!showDifficultySelectionButton && mainChallenge != null)
+            //   HomeScreenEventSnapshot(challenge: mainChallenge,),
+          ],
+        ),
+      ],
     );
   }
 }

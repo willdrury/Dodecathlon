@@ -208,8 +208,8 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
                   MaterialPageRoute(builder: (ctx) => PostCreationScreen())
               );
             },
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.black,
+            foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
+            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             child: const Icon(Icons.add),
           );
           _scrollPhysics = ScrollPhysics();

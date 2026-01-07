@@ -23,10 +23,10 @@ class _EventAttendanceSubmissionScreenState extends ConsumerState<EventAttendanc
   void uploadSubmission(BuildContext ctx) async {
     Submission submission = Submission(
       userId: currentUser!.id!,
-      points: 0,
+      points: widget.challenge.maxPoints,
       challengeId: widget.challenge.id,
-      isVerified: true,
       isBonus: widget.challenge.isBonus,
+      isApproved: widget.challenge.enforcement == Enforcement.none ? true : false,
     );
     String? error = await submission.upload();
     if (error != null) {

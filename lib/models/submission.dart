@@ -10,26 +10,26 @@ class Submission {
   final String challengeId;
   final DateTime createdDate;
   final String id;
-  bool isVerified;
   bool isBonus;
+  bool isApproved;
 
   Submission({
     required this.userId,
     required this.points,
     required this.challengeId,
-    required this.isVerified,
     required this.isBonus,
+    required this.isApproved,
   }) : createdDate = DateTime.now(),
-        id = uuid.v4();
+      id = uuid.v4();
 
   Submission.all({
     required this.userId,
     required this.points,
     required this.challengeId,
-    required this.isVerified,
     required this.createdDate,
     required this.id,
     required this.isBonus,
+    required this.isApproved,
   });
 
   Map<String, dynamic> toJson() => {
@@ -37,9 +37,9 @@ class Submission {
     'challengeId': challengeId,
     'createdDate': createdDate,
     'id': id,
-    'isVerified': isVerified,
     'points': points,
     'isBonus': isBonus,
+    'isApproved': isApproved,
   };
 
   factory Submission.fromMap(Map data) {
@@ -49,8 +49,8 @@ class Submission {
       challengeId: data['challengeId'],
       createdDate: DateTime.fromMicrosecondsSinceEpoch((data['createdDate'] as Timestamp).microsecondsSinceEpoch),
       id: data['id'],
-      isVerified: data['isVerified'],
       isBonus: data['isBonus'],
+      isApproved: data['isApproved'],
     );
   }
 

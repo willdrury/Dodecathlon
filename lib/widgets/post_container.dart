@@ -1,5 +1,6 @@
 import 'package:dodecathlon/models/post.dart';
 import 'package:dodecathlon/models/post_comment.dart';
+import 'package:dodecathlon/models/submission.dart';
 import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/providers/post_comments_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
@@ -13,9 +14,14 @@ import '../screens/user_details_screen.dart';
 final formatter = DateFormat('yMMMMd').add_jm();
 
 class PostContainer extends ConsumerStatefulWidget {
-  const PostContainer({super.key, required this.post});
+  const PostContainer({
+    super.key,
+    required this.post,
+    required this.submission,
+  });
 
   final Post post;
+  final Submission? submission;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -121,9 +127,13 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                         leading: Icon(Icons.flag),
                       )
                     ),
-                  if (widget.post.userId != user.id)
+                  if (widget.submission != null && !widget.submission!.isApproved)
                     PopupMenuItem(
                       value: 'Approve',
+                      onTap: () {
+                        widget.submission!.isApproved = true;
+                        widget.submission!.upload();
+                      },
                       child: ListTile(
                         title: Text('Approve'),
                         leading: Icon(Icons.thumbs_up_down),

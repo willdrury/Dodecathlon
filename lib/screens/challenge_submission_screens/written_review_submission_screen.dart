@@ -48,8 +48,8 @@ class _WrittenReviewSubmissionScreenState extends ConsumerState<WrittenReviewSub
       userId: currentUser!.id!,
       points: widget.challenge.maxPoints,
       challengeId: widget.challenge.id,
-      isVerified: true,
       isBonus: widget.challenge.isBonus,
+      isApproved: widget.challenge.enforcement == Enforcement.none ? true : false,
     );
 
     String? error = await submission.upload();

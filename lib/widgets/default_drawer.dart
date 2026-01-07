@@ -42,7 +42,7 @@ class DefaultDrawer extends StatelessWidget {
               },
               onTap: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => EventScheduleScreen())
+                    MaterialPageRoute(builder: (ctx) => CompetitionsScreen())
                 );
               },
               child: Column(

@@ -17,7 +17,7 @@ class SubmissionTileSmall extends StatelessWidget {
     return Container(
       height: 50,
       width: double.infinity,
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       margin: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -34,6 +34,11 @@ class SubmissionTileSmall extends StatelessWidget {
       child: Row(
         children: [
           Text('${submission.points.toString()} pts.'),
+          if (!submission.isApproved)
+            Text(
+              ' (pending)',
+              style: TextStyle(color: Colors.grey),
+            ),
           Spacer(),
           Text(formatter.format(submission.createdDate)),
         ],

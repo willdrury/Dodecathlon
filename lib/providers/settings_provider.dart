@@ -11,7 +11,6 @@ Future<Database?> _getDatabase() async {
   if (kIsWeb) {
     return null;
   } else {
-    print('getting DB');
     final dbPath = await sql.getDatabasesPath();
     return sql.openDatabase(path.join(dbPath, 'dodecathlon.db'),
         onCreate: (db, version) {
@@ -38,7 +37,6 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
 
   Future<void> loadSettings() async {
     final Database? db = await _getDatabase();
-    print('loading user settings');
 
     // Uncomment below to update table
     // String userId = FirebaseAuth.instance.currentUser!.uid;
@@ -71,11 +69,9 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
       };
     }).toList();
 
-    print('user settings: $settings');
     if (settings != null && settings.isNotEmpty) {
       state = settings[0];
     } else {
-      print('creating default settings');
       String userId = FirebaseAuth.instance.currentUser!.uid;
       Map<dynamic, dynamic> defaultSettings = {
         'theme': ThemeMode.system.name,
@@ -116,7 +112,6 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
     final Database? db = await _getDatabase();
     if (db == null) return;
 
-    // print('creating settings');
     // db.execute('DROP TABLE IF EXISTS user_settings');
     // db.execute('CREATE TABLE user_settings('
     //     'id TEXT PRIMARY KEY, '

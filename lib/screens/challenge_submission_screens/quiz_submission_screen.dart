@@ -24,10 +24,10 @@ class _QuizSubmissionScreenState extends ConsumerState<QuizSubmissionScreen> {
   void uploadSubmission(BuildContext ctx) async {
     Submission submission = Submission(
       userId: currentUser!.id!,
-      points: widget.challenge.maxPoints,
+      points: widget.challenge.maxPoints, // TODO: Change if being created at completion of quiz
       challengeId: widget.challenge.id,
-      isVerified: true,
       isBonus: widget.challenge.isBonus,
+      isApproved: widget.challenge.enforcement == Enforcement.none ? true : false,
     );
     String? error = await submission.upload();
     if (error != null) {

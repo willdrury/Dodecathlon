@@ -28,7 +28,7 @@ class SubmissionTileMedium extends StatelessWidget {
       child: Container(
         height: 70,
         width: double.infinity,
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         margin: EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -46,13 +46,22 @@ class SubmissionTileMedium extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              challenge.name,
-              style: TextStyle(fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                Text(
+                  challenge.name,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
             Row(
               children: [
                 Text('${submission.points.toString()} pts.'),
+                if (!submission.isApproved)
+                  Text(
+                    ' (pending)',
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 Spacer(),
                 Text(formatter.format(submission.createdDate)),
               ],

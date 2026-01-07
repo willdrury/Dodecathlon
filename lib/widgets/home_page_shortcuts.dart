@@ -21,8 +21,6 @@ class HomePageShortcuts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('nextColor: ${nextEvent.themeColor}');
-
     return GridView(
       physics: ClampingScrollPhysics(),
       shrinkWrap: true,

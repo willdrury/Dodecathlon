@@ -32,8 +32,6 @@ class _ChangeCompetitionButtonState extends ConsumerState<ChangeCompetitionButto
       user.competitions!.contains(c.id)
     ).toList();
 
-    print('current competition: ${_settings['current_competition']}');
-
     return GestureDetector(
       onTap: () {
         showModalBottomSheet<void>(

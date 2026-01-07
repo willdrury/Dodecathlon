@@ -30,9 +30,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     AsyncValue<List<Submission>> userSubmissions = ref.watch(submissionsProvider);
     AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
     AsyncValue<List<Event>> events = ref.watch(eventProvider);
-    AsyncValue<List<Post>> allPosts = ref.watch(postsProvider);
+    AsyncValue<List<Post>> postStream = ref.watch(postsProvider);
 
     Map<Event, List<(Submission, Challenge)>> eventMap = {};
+    Map<Post, Submission?> submissionsMap = {};
 
     if (challenges.hasValue && events.hasValue && userSubmissions.hasValue) {
       userSubmissions.value!.sort((a,b) =>
@@ -54,10 +55,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
 
     List<Post> posts = [];
-    if (allPosts.hasValue) {
-      posts = allPosts.value!.where((p) =>
-        p.userId == currentUser.id
-      ).toList();
+    if (postStream.hasValue) {
+      for (Post p in postStream.value!) {
+        if (p.userId == currentUser.id) {
+          posts.add(p);
+          if (p.submissionId != null) {
+            submissionsMap[p] = userSubmissions.value!.where((s) =>
+              s.id == p.submissionId
+            ).firstOrNull;
+          }
+        }
+      }
     }
 
     posts.sort((p1, p2) {
@@ -110,7 +118,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (ctx, i) {
-                            return PostContainer(post: posts[i]);
+                            return PostContainer(post: posts[i], submission: submissionsMap[posts[i]],);
                           }
                         )
                       ),

@@ -50,7 +50,7 @@ class UserCompetitionRankingsProvider extends AsyncNotifier<List<(String, int)>>
 
     Map<String, int> userIdEventPointMap = { for (var u in users) u.id! : 0 };
     List<Submission> eventSubmissions = submissions.where((s) =>
-        eventChallengeIds.contains(s.challengeId)
+        eventChallengeIds.contains(s.challengeId) && s.isApproved == true
     ).toList();
 
     for (Submission s in eventSubmissions) {

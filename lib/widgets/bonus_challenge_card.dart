@@ -22,37 +22,38 @@ class BonusChallengeCard extends StatelessWidget {
   Widget build(BuildContext context) {
 
     Widget displayImage = challenge.imageUrl == null
-        ? Expanded(
-      child: Container(
+      ? Expanded(
+        child: Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: event.themeColor,
           ),
           child: Icon(event.icon, size: 50, color: Colors.white,)
-      ),
-    )
-        : Expanded(
-      child: Stack(
-        children: [
-          Hero(
-            tag: challenge.id,
-            child: Image.network(
-              width: double.infinity,
-              challenge.imageUrl!,
-              fit: BoxFit.cover,
-              loadingBuilder: (BuildContext ctx, Widget child, ImageChunkEvent? loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Center(child: CircularProgressIndicator());
-              },
+        ),
+      )
+      : Expanded(
+        child: Stack(
+          children: [
+            Hero(
+              tag: challenge.id,
+              child: Image.network(
+                width: double.infinity,
+                challenge.imageUrl!,
+                fit: BoxFit.cover,
+                loadingBuilder: (BuildContext ctx, Widget child, ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(child: CircularProgressIndicator());
+                },
+              ),
             ),
-          ),
-          Positioned.fill(
-            child: Container(
-              color: Colors.black38, // 40% opaque black
-            ),
-          ),
-        ],
-      ),
+            if (isCompleted)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black38, // 40% opaque black
+                ),
+              ),
+          ],
+        ),
     );
 
     return Column(

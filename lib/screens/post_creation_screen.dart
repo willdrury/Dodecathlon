@@ -84,6 +84,13 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
   }
 
   void uploadPost(BuildContext ctx) async {
+    String? submissionId;
+    if (widget.challenge != null) {
+      if (ctx.mounted) {
+        submissionId = await uploadSubmission(ctx);
+      }
+    }
+
     Post newPost = Post(
       userId: currentUser!.id!,
       title: _titleController.text,
@@ -94,19 +101,15 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
       id: _postId,
       highlighted: false,
       reported: false,
-      submissionId: widget.challenge?.id,
+      submissionId: submissionId,
       likes: []
     );
-    
+
     String? error = await newPost.upload();
     if (error != null) {
       SnackBar snackBar = SnackBar(content: Text(error));
       if(ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
       return;
-    }
-
-    if (widget.challenge != null) {
-      if (ctx.mounted) uploadSubmission(ctx);
     }
 
     if(ctx.mounted) {
@@ -118,25 +121,26 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
   }
 
   // Only called if page was pushed by a challenge submission screen
-  void uploadSubmission(BuildContext ctx) async {
+  Future<String?> uploadSubmission(BuildContext ctx) async {
     Submission submission = Submission(
       userId: currentUser!.id!,
       points: widget.challenge!.maxPoints, // TODO: set this according to challenge scoring mechanism
       challengeId: widget.challenge!.id,
-      isVerified: true, // TODO: Set this based on verification mechanism
       isBonus: widget.challenge!.isBonus,
+      isApproved: widget.challenge!.enforcement == Enforcement.none ? true : false,
     );
     String? error = await submission.upload();
     if (error != null) {
       SnackBar snackBar = SnackBar(content: Text(error));
       if(ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
-      return;
+      return null;
     }
 
     currentUser!.currentCompetitionPoints[0] = currentUser!.currentCompetitionPoints[0] + widget.challenge!.maxPoints;
     currentUser!.currentEventPoints[0] = currentUser!.currentEventPoints[0] + widget.challenge!.maxPoints;
     currentUser!.submissions.add(submission.id);
     UserProvider().setUser(currentUser!);
+    return submission.id;
   }
 
   @override

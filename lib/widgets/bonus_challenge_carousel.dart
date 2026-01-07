@@ -51,25 +51,26 @@ class _BonusChallengeCarouselState extends State<BonusChallengeCarousel> with Si
       child: SizedBox(
         height: 180,
         child: CarouselView(
-            elevation: 5,
-            padding: EdgeInsets.all(10),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            itemExtent: 180,
-            shrinkExtent: 180,
-            onTap: (int valueChanged) {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(
-                    challenge: widget.challenges[valueChanged],
-                    isCompleted: widget.isCompleted,
-                  ))
-              );
-            },
-            children: [
-              for (Challenge challenge in widget.challenges)
-                BonusChallengeCard(challenge: challenge, event: widget.event, isCompleted: widget.isCompleted)
-            ]
+          elevation: 5,
+          itemSnapping: false,
+          padding: EdgeInsets.all(10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          itemExtent: 180,
+          shrinkExtent: 180,
+          onTap: (int valueChanged) {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(
+                  challenge: widget.challenges[valueChanged],
+                  isCompleted: widget.isCompleted,
+                ))
+            );
+          },
+          children: [
+            for (Challenge challenge in widget.challenges)
+              BonusChallengeCard(challenge: challenge, event: widget.event, isCompleted: widget.isCompleted)
+          ]
         ),
       ),
       builder: (context, child) => SlideTransition(

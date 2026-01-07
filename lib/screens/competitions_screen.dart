@@ -1,4 +1,5 @@
 import 'package:dodecathlon/providers/competition_provider.dart';
+import 'package:dodecathlon/providers/settings_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/competition_creation_screen.dart';
 import 'package:dodecathlon/widgets/competition_tile.dart';
@@ -14,9 +15,10 @@ class CompetitionsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<List<Competition>> competitionsStream = ref.watch(competitionProvider);
+    var settings = ref.watch(settingsProvider);
     User? user = ref.watch(userProvider);
 
-    if (!competitionsStream.hasValue || user == null) {
+    if (!competitionsStream.hasValue || user == null || settings == null) {
       // TODO: Logging
       return Center(child: CircularProgressIndicator(),);
     }
@@ -30,11 +32,15 @@ class CompetitionsScreen extends ConsumerWidget {
       await user.update();
     }
 
-    List<Competition> userCompetitions = [];
+    String? currentCompetitionId = settings['current_competition'];
+    Competition? currentCompetition;
+    List<Competition> nonActiveUserCompetitions = [];
     List<Competition> nonUserCompetitions = [];
     for (Competition c in competitionsStream.value!) {
-      if (user.competitions.contains(c.id)) {
-        userCompetitions.add(c);
+      if (user.competitions.contains(c.id) && c.id != currentCompetitionId) {
+        nonActiveUserCompetitions.add(c);
+      } else if (user.competitions.contains(c.id) && c.id == currentCompetitionId) {
+        currentCompetition = c;
       } else {
         nonUserCompetitions.add(c);
       }
@@ -48,26 +54,42 @@ class CompetitionsScreen extends ConsumerWidget {
           padding: EdgeInsets.all(20),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Your Competitions',
-                    style: Theme.of(context).textTheme.titleLarge,
+                if (currentCompetition != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Active Competition',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      CompetitionTile(
+                        competition: currentCompetition,
+                        onToggle: onToggle,
+                        isUserComp: true,
+                      ),
+                      SizedBox(
+                        height: 50,
+                      ),
+                    ],
                   ),
+                Text(
+                  'Non-Active Competitions',
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-                if (userCompetitions.isNotEmpty)
+                if (nonActiveUserCompetitions.isNotEmpty)
                   ListView.builder(
                     shrinkWrap: true,
-                    itemCount: userCompetitions.length,
+                    itemCount: nonActiveUserCompetitions.length,
                     itemBuilder: (ctx, i) {
                       return CompetitionTile(
-                        competition: userCompetitions[i],
+                        competition: nonActiveUserCompetitions[i],
                         onToggle: onToggle,
                         isUserComp: true,
                       );
                     }),
-                if (userCompetitions.isEmpty)
+                if (nonActiveUserCompetitions.isEmpty && currentCompetition == null)
                   Text(
                     'Select a competition from below, or create your own to get started',
                     style: TextStyle(
@@ -96,9 +118,6 @@ class CompetitionsScreen extends ConsumerWidget {
                         )
                     )
                   ],
-                ),
-                SizedBox(
-                  height: 20,
                 ),
                 ListView.builder(
                   shrinkWrap: true,
