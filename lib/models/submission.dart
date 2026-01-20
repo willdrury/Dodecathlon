@@ -63,4 +63,13 @@ class Submission {
     return null;
   }
 
+  Future<String?> delete() async {
+    try {
+      await FirebaseFirestore.instance.collection('submissions').doc(id).delete();
+    } catch (error) {
+      return error.toString();
+    }
+    return null;
+  }
+
 }

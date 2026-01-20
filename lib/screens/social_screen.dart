@@ -1,6 +1,7 @@
 import 'package:dodecathlon/providers/posts_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/providers/users_provider.dart';
+import 'package:dodecathlon/screens/social_search_screen.dart';
 import 'package:dodecathlon/widgets/post_container.dart';
 import 'package:dodecathlon/widgets/social_filters_carousel.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +96,29 @@ class _SocialScreenState extends ConsumerState<SocialScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+                  SocialSearchScreen()
+                ));
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 20, right: 20, left: 20),
+                padding: EdgeInsets.all(15),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Colors.black38)
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.search, color: Colors.black38,),
+                    SizedBox(width: 10,),
+                    Text('Find Users', style: TextStyle(color: Colors.black38),),
+                  ],
+                ),
+              ),
+            ),
             SocialFiltersCarousel(toggleFilter: toggleFilter),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),

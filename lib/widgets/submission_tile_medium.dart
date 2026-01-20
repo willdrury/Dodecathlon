@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/challenge.dart';
+import '../screens/submission_details_screen.dart';
 
 final formatter = DateFormat('EEE, MMM d, hh:mm');
 
@@ -22,7 +23,7 @@ class SubmissionTileMedium extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
-            ChallengeDetailsScreen(challenge: challenge, isCompleted: true,)
+            SubmissionDetailsScreen(submission: submission)
         ));
       },
       child: Container(

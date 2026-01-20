@@ -27,7 +27,7 @@ class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: backgroundColor,
       surfaceTintColor: Colors.transparent,
       shadowColor: Colors.black26,
-      shape: useShadow ? Border.all(color: Colors.black.withAlpha(20)) : null,
+      shape: useShadow ? Border(bottom: BorderSide(color: Colors.black.withAlpha(20))) : null,
       elevation: useShadow ? 5.0 : 0,
       actions: [
         IconButton(

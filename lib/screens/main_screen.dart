@@ -221,7 +221,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           _appBarColor = Theme.of(context).colorScheme.primaryContainer;
           _appBarLabel = 'Leaderboard';
           _appBarTextColor = Theme.of(context).colorScheme.tertiary;
-          _scaffoldBackgroundColor = Theme.of(context).colorScheme.surface;
+          _scaffoldBackgroundColor = Theme.of(context).colorScheme.primaryContainer;
           _floatingActionButton = null;
           _scrollPhysics = ScrollPhysics();
       }
@@ -285,22 +285,24 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
       backgroundColor: _scaffoldBackgroundColor,
       endDrawer: DefaultDrawer(),
       floatingActionButton: _floatingActionButton,
-      body: NestedScrollView(
-        controller: _scrollController,
-        physics: _scrollPhysics,
-        floatHeaderSlivers: true,
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            if (_showAppBar)
-              DefaultAppBar(
-                label: _appBarLabel,
-                useShadow: _useAppBarShadow,
-                backgroundColor: appBarColor,
-                textColor: _appBarTextColor,
-              ),
-          ];
-        },
-        body: _currentScreen
+      body: SafeArea(
+        child: NestedScrollView(
+          controller: _scrollController,
+          physics: _scrollPhysics,
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              if (_showAppBar)
+                DefaultAppBar(
+                  label: _appBarLabel,
+                  useShadow: _useAppBarShadow,
+                  backgroundColor: appBarColor,
+                  textColor: _appBarTextColor,
+                ),
+            ];
+          },
+          body: _currentScreen
+        ),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
