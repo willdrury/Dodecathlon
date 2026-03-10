@@ -4,7 +4,6 @@ import 'package:dodecathlon/models/submission.dart';
 import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/providers/post_comments_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
-import 'package:dodecathlon/screens/challenge_details_screen.dart';
 import 'package:dodecathlon/screens/post_details_screen.dart';
 import 'package:dodecathlon/screens/submission_approval_screen.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +72,11 @@ class _PostContainerState extends ConsumerState<PostContainer> {
 
   @override
   Widget build(BuildContext context) {
-    User user = ref.read(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User user = userStream.value!;
     bool isLiked = user.likedPostIds.contains(widget.post.id);
     AsyncValue<List<PostComment>> comments = ref.watch(postCommentsProvider);
 

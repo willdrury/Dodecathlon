@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user.dart';
 
 class SocialSearchScreen extends ConsumerStatefulWidget {
-  SocialSearchScreen({
+  const SocialSearchScreen({
     super.key,
   });
 
@@ -39,14 +39,18 @@ class _SocialSearchScreenState extends ConsumerState<SocialSearchScreen> {
   Widget build(BuildContext context) {
     AsyncValue<List<Post>> postStream = ref.watch(postsProvider);
     AsyncValue<List<User>> usersStream = ref.watch(usersProvider);
-    User? currentUser = ref.watch(userProvider);
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User currentUser = userStream.value!;
 
-    if (!postStream.hasValue || !usersStream.hasValue || currentUser ==  null) {
+    if (!postStream.hasValue || !usersStream.hasValue) {
       return (Center(child: CircularProgressIndicator(),));
     }
 
     List<User> filteredUsers = usersStream.value!.where((u) =>
-      u.id != currentUser!.id &&
+      u.id != currentUser.id &&
       u.userName.toLowerCase().contains(_searchController.text.toLowerCase())
     ).toList();
 

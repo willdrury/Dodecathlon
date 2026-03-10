@@ -1,13 +1,11 @@
 import 'dart:math';
 
-import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/post.dart';
 import 'package:dodecathlon/models/post_comment.dart';
 import 'package:dodecathlon/providers/post_comments_provider.dart';
 import 'package:dodecathlon/providers/users_provider.dart';
 import 'package:dodecathlon/widgets/post_comment_details_footer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 

@@ -1,4 +1,3 @@
-import 'package:dodecathlon/models/submission.dart';
 import 'package:dodecathlon/screens/competition_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -49,7 +48,7 @@ class CompetitionTile extends StatelessWidget {
                 CompetitionDetailsScreen(competition: competition)
               ));
             },
-            child: Container(
+            child: SizedBox(
               width: 250,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

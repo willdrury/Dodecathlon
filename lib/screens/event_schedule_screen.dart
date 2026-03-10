@@ -46,7 +46,7 @@ class _EventScheduleScreenState extends ConsumerState<EventScheduleScreen> {
     AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
 
     var settings = ref.watch(settingsProvider);
-    if (settings == null || settings['current_competition'] == null) {
+    if (settings['current_competition'] == null) {
       return Center(child: CircularProgressIndicator(),);
     }
 

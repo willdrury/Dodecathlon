@@ -2,7 +2,6 @@ import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/providers/user_event_rankings_provider.dart';
 import 'package:dodecathlon/providers/users_provider.dart';
-import 'package:dodecathlon/screens/rankings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,11 +14,15 @@ class EventRankSnapshot extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    User user = ref.read(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User user = userStream.value!;
     AsyncValue<List<User>> users = ref.read(usersProvider);
     AsyncValue<List<(String, int)>> userRankings = ref.watch(userEventRankingsProvider);
 
-    if (user == null || !userRankings.hasValue || !users.hasValue) {
+    if (!userRankings.hasValue || !users.hasValue) {
       return Center(child: CircularProgressIndicator(),); // TODO: Replace with better loading
     }
 

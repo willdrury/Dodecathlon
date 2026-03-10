@@ -1,9 +1,7 @@
 import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/submission.dart';
 import 'package:dodecathlon/providers/challenges_provider.dart';
-import 'package:dodecathlon/providers/submission_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
-import 'package:dodecathlon/widgets/submission_tile_small.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,9 +21,7 @@ class SubmissionApprovalScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<List<Challenge>> challengeStream = ref.read(challengesProvider);
-    User? user = ref.read(userProvider);
-
-    if (!challengeStream.hasValue || user == null) {
+    if (!challengeStream.hasValue) {
       return Center(child: CircularProgressIndicator(),);
     }
 

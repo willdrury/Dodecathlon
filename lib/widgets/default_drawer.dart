@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dodecathlon/screens/admin_login_screen.dart';
 import 'package:dodecathlon/screens/competitions_screen.dart';
-import 'package:dodecathlon/screens/event_schedule_screen.dart';
 import 'package:dodecathlon/screens/faq_screen.dart';
 import 'package:dodecathlon/screens/feedback_screen.dart';
 import 'package:dodecathlon/screens/profile_screen.dart';

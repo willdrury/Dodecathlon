@@ -24,7 +24,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
     } else {
       currentUser.friends.add(widget.user.id!);
     }
-    UserProvider().setUser(currentUser);
+    currentUser.update();
     setState(() {
 
     });
@@ -33,7 +33,11 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
   @override
   Widget build(BuildContext context) {
 
-    User currentUser = ref.watch(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User currentUser = userStream.value!;
     AsyncValue<List<User>> users = ref.watch(usersProvider);
 
     List<User> usersByCompetition = [];

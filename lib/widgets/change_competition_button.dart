@@ -6,7 +6,6 @@ import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/competition_creation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../screens/competitions_screen.dart';
 
 class ChangeCompetitionButton extends ConsumerStatefulWidget {
   const ChangeCompetitionButton({super.key});
@@ -20,16 +19,20 @@ class ChangeCompetitionButton extends ConsumerStatefulWidget {
 class _ChangeCompetitionButtonState extends ConsumerState<ChangeCompetitionButton> {
   @override
   Widget build(BuildContext context) {
-    User user = ref.read(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User user = userStream.value!;
     AsyncValue<List<Competition>> competitionsStream = ref.watch(competitionProvider);
-    var _settings = ref.watch(settingsProvider);
+    var settings = ref.watch(settingsProvider);
 
-    if (user == null || !competitionsStream.hasValue) {
+    if (!competitionsStream.hasValue) {
       return SizedBox(height: 10,); // TODO: Logging and or loading icon?
     }
 
     List<Competition> competitions = competitionsStream.value!.where((c) =>
-      user.competitions!.contains(c.id)
+      user.competitions.contains(c.id)
     ).toList();
 
     return GestureDetector(
@@ -62,8 +65,8 @@ class _ChangeCompetitionButtonState extends ConsumerState<ChangeCompetitionButto
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              _settings = {..._settings, 'current_competition': competitions[i].id};
-                              ref.read(settingsProvider.notifier).updateSettings(_settings);
+                              settings = {...settings, 'current_competition': competitions[i].id};
+                              ref.read(settingsProvider.notifier).updateSettings(settings);
                             });
                           },
                           child: Row(
@@ -83,7 +86,7 @@ class _ChangeCompetitionButtonState extends ConsumerState<ChangeCompetitionButto
                                 overflow: TextOverflow.ellipsis,
                               ),
                               Spacer(),
-                              if (_settings['current_competition'] == competitions[i].id)
+                              if (settings['current_competition'] == competitions[i].id)
                                 Icon(Icons.check, color: Colors.blue,)
                             ],
                           ),

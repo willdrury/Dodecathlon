@@ -1,4 +1,3 @@
-import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/competition.dart';
 import 'package:dodecathlon/models/event.dart';
 import 'package:dodecathlon/providers/events_provider.dart';
@@ -34,11 +33,10 @@ class _CompetitionDetailsScreenState extends ConsumerState<CompetitionDetailsScr
   @override
   Widget build(BuildContext context) {
 
-    User? user = ref.watch(userProvider);
     AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
 
-    if (!eventStream.hasValue || user == null) {
-      return Center(child: CircularProgressIndicator(),);
+    if (!eventStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
     }
 
     List<Event> events = eventStream.value!.where((e) =>
@@ -64,7 +62,7 @@ class _CompetitionDetailsScreenState extends ConsumerState<CompetitionDetailsScr
           children: [
             SizedBox(height: 20,),
             Hero(
-              tag: widget.competition.id!,
+              tag: widget.competition.id,
               child: Stack(
                 alignment: Alignment.center,
                 children: [

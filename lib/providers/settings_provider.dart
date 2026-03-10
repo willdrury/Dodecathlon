@@ -54,6 +54,7 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
     // await createSettings(defaultSettings);
     // End update section
 
+    if (db == null) return;
     final data = await db!.query('user_settings');
     final settings = data.map((row) {
       return {
@@ -69,23 +70,27 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
       };
     }).toList();
 
-    if (settings != null && settings.isNotEmpty) {
+    if (settings.isNotEmpty) {
       state = settings[0];
     } else {
-      String userId = FirebaseAuth.instance.currentUser!.uid;
-      Map<dynamic, dynamic> defaultSettings = {
-        'theme': ThemeMode.system.name,
-        'comment_notifications': 1,
-        'like_notifications': 1,
-        'new_challenge_notifications': 1,
-        'leaderboard_update_notifications': 1,
-        'challenge_reminders': 1,
-        'last_login_date': DateTime.now().microsecondsSinceEpoch,
-        'current_competition': '',
-        'id': userId,
-      };
-      await createSettings(defaultSettings);
-      state = defaultSettings;
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        String userId = currentUser.uid;
+        Map<dynamic, dynamic> defaultSettings = {
+          'theme': ThemeMode.system.name,
+          'comment_notifications': 1,
+          'like_notifications': 1,
+          'new_challenge_notifications': 1,
+          'leaderboard_update_notifications': 1,
+          'challenge_reminders': 1,
+          'last_login_date': DateTime.now().microsecondsSinceEpoch,
+          'current_competition': '',
+          'id': userId,
+        };
+
+        await createSettings(defaultSettings);
+        state = defaultSettings;
+      }
     }
   }
 
@@ -93,17 +98,23 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     final Database? db = await _getDatabase();
 
-    await db!.update('user_settings', {
-      'theme': settings['theme'],
-      'comment_notifications': settings['comment_notifications'] ? 1 : 0,
-      'like_notifications': settings['like_notifications'] ? 1 : 0,
-      'new_challenge_notifications': settings['new_challenge_notifications'] ? 1 : 0,
-      'leaderboard_update_notifications': settings['leaderboard_update_notifications'] ? 1 : 0,
-      'challenge_reminders': settings['challenge_reminders'] ? 1 : 0,
-      'last_login_date': DateTime.now().microsecondsSinceEpoch,
-      'current_competition': settings['current_competition'],
-      'id': userId,
-    }, where: 'id = ?', whereArgs: [userId]);
+    try {
+      await db!.update('user_settings', {
+        'theme': settings['theme'],
+        'comment_notifications': settings['comment_notifications'] ? 1 : 0,
+        'like_notifications': settings['like_notifications'] ? 1 : 0,
+        'new_challenge_notifications': settings['new_challenge_notifications'] ? 1 : 0,
+        'leaderboard_update_notifications': settings['leaderboard_update_notifications'] ? 1 : 0,
+        'challenge_reminders': settings['challenge_reminders'] ? 1 : 0,
+        'last_login_date': DateTime.now().subtract(Duration(days: 30)).microsecondsSinceEpoch,
+        // 'last_login_date': DateTime.now().microsecondsSinceEpoch,
+        'current_competition': settings['current_competition'],
+        'id': userId,
+      }, where: 'id = ?', whereArgs: [userId]);
+    } catch (e) {
+      print('error updating settings: ${e.toString()}');
+    }
+
     state = settings;
   }
 

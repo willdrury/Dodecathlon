@@ -19,7 +19,11 @@ class EventProgressContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    User user = ref.read(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User user = userStream.value!;
     AsyncValue<List<Submission>> submissions = ref.watch(submissionsProvider);
     AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
     AsyncValue<List<Event>> events = ref.watch(eventProvider);

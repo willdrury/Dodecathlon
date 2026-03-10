@@ -27,7 +27,11 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
   @override
   Widget build(BuildContext context) {
 
-    dd.User currentUser = ref.watch(userProvider)!;
+    AsyncValue<dd.User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    dd.User currentUser = userStream.value!;
     AsyncValue<List<dd.User>> users = ref.watch(usersProvider);
     Map<dynamic, dynamic> settings = ref.watch(settingsProvider);
 

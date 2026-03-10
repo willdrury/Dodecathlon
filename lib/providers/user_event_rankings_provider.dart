@@ -42,7 +42,7 @@ class UserEventRankingsProvider extends AsyncNotifier<List<(String, int)>> {
     }
 
     List<Challenge> eventChallenge = challenges.where((c) =>
-      c.eventId == currentEvent!.id
+      c.eventId == currentEvent.id
     ).toList();
     List<String> eventChallengeIds = eventChallenge.map((c) => c.id).toList();
 

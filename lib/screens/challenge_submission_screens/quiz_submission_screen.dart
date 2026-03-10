@@ -1,9 +1,10 @@
 import 'package:dodecathlon/models/challenge.dart';
-import 'package:dodecathlon/screens/main_screen.dart';
+import 'package:dodecathlon/providers/quiz_provider.dart';
+import 'package:dodecathlon/screens/quiz_start_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/submission.dart';
+import '../../models/quiz.dart';
 import '../../models/user.dart';
 import '../../providers/user_provider.dart';
 
@@ -18,40 +19,21 @@ class QuizSubmissionScreen extends ConsumerStatefulWidget {
 
 class _QuizSubmissionScreenState extends ConsumerState<QuizSubmissionScreen> {
 
-  bool _shareEnabled = false;
+  final bool _shareEnabled = false;
   User? currentUser;
-
-  void uploadSubmission(BuildContext ctx) async {
-    Submission submission = Submission(
-      userId: currentUser!.id!,
-      points: widget.challenge.maxPoints, // TODO: Change if being created at completion of quiz
-      challengeId: widget.challenge.id,
-      isBonus: widget.challenge.isBonus,
-      isApproved: widget.challenge.enforcement == Enforcement.none ? true : false,
-    );
-    String? error = await submission.upload();
-    if (error != null) {
-      SnackBar snackBar = SnackBar(content: Text(error));
-      if(ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
-      return;
-    }
-
-    currentUser!.currentCompetitionPoints[0] = currentUser!.currentCompetitionPoints[0] + widget.challenge.maxPoints;
-    currentUser!.currentEventPoints[0] = currentUser!.currentEventPoints[0] + widget.challenge.maxPoints;
-    currentUser!.submissions.add(submission.id);
-    UserProvider().setUser(currentUser!);
-
-    if(ctx.mounted) {
-      Navigator.of(ctx).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (ctx) => MainScreen()),
-            (Route<dynamic> route) => false,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    currentUser = ref.read(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+
+    AsyncValue<List<Quiz>> quizStream = ref.watch(quizProvider);
+
+    if (!quizStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
 
     return Scaffold(
       body: Container(
@@ -69,29 +51,17 @@ class _QuizSubmissionScreenState extends ConsumerState<QuizSubmissionScreen> {
                       },
                       child: Text('Back', style: TextStyle(fontSize: 20, color: Colors.black)),
                     ),
-                    Spacer(),
-                    TextButton(
-                      onPressed: () {
-                        uploadSubmission(context);
-                      },
-                      child: Text(
-                          'Upload', style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.primary)),
-                    ),
                   ],
                 ),
                 SizedBox(height: 30,),
                 Text('Answer the following questions', style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
-                ListTile(
-                  leading: const Icon(Icons.groups),
-                  title: const Text('Share to feed'),
-                  trailing: Switch(
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _shareEnabled = value!;
-                      });
-                    },
-                    value: _shareEnabled,
-                  ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (ctx) =>
+                      QuizStartScreen(quiz: quizStream.value![0]) // TODO: Use quiz ID tied to challenge
+                    ));
+                  },
+                  child: Text('Begin')
                 )
               ],
             ),

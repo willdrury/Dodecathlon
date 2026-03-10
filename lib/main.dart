@@ -36,6 +36,7 @@ class MyApp extends ConsumerWidget {
   // Root of the application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final userStream = ref.watch(userProvider);
     final settings = ref.watch(settingsProvider);
     var brightness = MediaQuery.platformBrightnessOf(context);
     bool lightMode = brightness == Brightness.light;
@@ -45,8 +46,12 @@ class MyApp extends ConsumerWidget {
 
     AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
     AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
-    if (!competitions.hasValue || !eventStream.hasValue || settings == null) {
-      return Center(child: CircularProgressIndicator(),);
+    if (!competitions.hasValue || !eventStream.hasValue) {
+      return MaterialApp(
+        home: const Center(
+          child: CircularProgressIndicator()
+        )
+      );
     }
 
     Competition? currentCompetition = competitions.value!.where((c) => c.id == settings['current_competition']).firstOrNull;
@@ -66,12 +71,12 @@ class MyApp extends ConsumerWidget {
          ).firstOrNull;
 
     final kColorScheme = ColorScheme.fromSeed(
-      seedColor: currentEvent == null ? Color(0xFF6A4C93) : currentEvent!.themeColor,
+      seedColor: currentEvent == null ? Color(0xFF6A4C93) : currentEvent.themeColor,
       dynamicSchemeVariant: DynamicSchemeVariant.tonalSpot
     ).copyWith(surface: Colors.white);
 
     final kColorSchemeDark = ColorScheme.fromSeed(
-      seedColor: currentEvent == null ? Color(0xFF6A4C93) : currentEvent!.themeColor,
+      seedColor: currentEvent == null ? Color(0xFF6A4C93) : currentEvent.themeColor,
       brightness: Brightness.dark
     );
 
@@ -99,9 +104,12 @@ class MyApp extends ConsumerWidget {
                 child: CircularProgressIndicator(),
               );
             }
-            if (snapshot.hasData) {
-              ref.read(userProvider);
-              return MainScreen();
+            if (snapshot.hasData) { // User is logged in
+              userStream.when(
+                data: (user) => user != null ? const MainScreen() : const AuthScreen(),
+                loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+                error: (err, stack) => Scaffold(body: Center(child: Text('Error: $err'))),
+              );
             }
             return const AuthScreen();
           }

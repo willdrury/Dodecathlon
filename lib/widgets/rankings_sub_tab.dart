@@ -36,13 +36,16 @@ class _RankingsSubTabState extends ConsumerState<RankingsSubTab> with SingleTick
 
   @override
   Widget build(BuildContext context) {
-    User? currentUser = ref.watch(userProvider);
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User currentUser = userStream.value!;
     AsyncValue<List<User>> usersStream = ref.watch(usersProvider);
     AsyncValue<List<(String, int)>> userIdsByEventStream = ref.watch(userEventRankingsProvider);
     AsyncValue<List<(String, int)>> userIdsByCompetitionStream = ref.watch(userCompetitionRankingsProvider);
 
-    if (currentUser == null
-        || !usersStream.hasValue
+    if (!usersStream.hasValue
         || !userIdsByEventStream.hasValue
         || !userIdsByCompetitionStream.hasValue
     ) {

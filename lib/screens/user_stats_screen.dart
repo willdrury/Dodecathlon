@@ -20,7 +20,11 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    User user = ref.watch(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User user = userStream.value!;
     List<String> achievements = [];
 
     return Scaffold(

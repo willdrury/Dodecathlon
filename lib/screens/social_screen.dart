@@ -24,12 +24,18 @@ class _SocialScreenState extends ConsumerState<SocialScreen> {
 
   @override
   Widget build(BuildContext context) {
-    User? currentUser = ref.watch(userProvider);
+
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User currentUser = userStream.value!;
+
     AsyncValue<List<User>> users = ref.watch(usersProvider);
     AsyncValue<List<Post>> postStream = ref.watch(postsProvider);
     AsyncValue<List<Submission>> submissions = ref.watch(submissionsProvider);
 
-    if (!postStream.hasValue || currentUser == null) {
+    if (!postStream.hasValue) {
       return Center(child: CircularProgressIndicator(),);
     }
 
@@ -58,7 +64,7 @@ class _SocialScreenState extends ConsumerState<SocialScreen> {
         switch (filterName) {
           case 'Friends':
             posts = posts.where((p) =>
-                currentUser!.friends.contains(p.userId)
+                currentUser.friends.contains(p.userId)
             ).toList();
           case 'Requires Approval':
             posts = posts.where((p) =>
@@ -127,7 +133,7 @@ class _SocialScreenState extends ConsumerState<SocialScreen> {
                 context: context,
                 child:
                   posts.isEmpty
-                  ? Container(
+                  ? SizedBox(
                       height: 300,
                       child: Center(
                           child: Text('Looks like theres nothing here...')

@@ -44,7 +44,7 @@ class _CompetitionCreationScreenState extends ConsumerState<CompetitionCreationS
         return AlertDialog(
           backgroundColor: Colors.white,
           title: const Text('Select a theme color'),
-          content: Container(
+          content: SizedBox(
             height: 500,
             width: 300,
             child: ColorPicker(
@@ -156,6 +156,7 @@ class _CompetitionCreationScreenState extends ConsumerState<CompetitionCreationS
                       if (_imageUrl == null) {
                         return 'Select a display image';
                       }
+                      return null;
                     },
                     builder: (state) {
                       return Column(

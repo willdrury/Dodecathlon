@@ -61,7 +61,7 @@ class _DifficultySelectionScreenState extends ConsumerState<DifficultySelectionS
               child: const Text('Continue'),
               onPressed: () {
                 currentUser.currentEventDifficulty = difficulty;
-                UserProvider().setUser(currentUser);
+                currentUser.update();
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (ctx) => MainScreen()),
                       (Route<dynamic> route) => false,
@@ -77,7 +77,11 @@ class _DifficultySelectionScreenState extends ConsumerState<DifficultySelectionS
   @override
   Widget build(BuildContext context) {
 
-    User currentUser = ref.watch(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User currentUser = userStream.value!;
 
     return Scaffold(
       appBar: AppBar(

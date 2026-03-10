@@ -4,7 +4,6 @@ import 'package:dodecathlon/providers/posts_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/difficulty_selection_screen.dart';
 import 'package:dodecathlon/widgets/event_progress_container.dart';
-import 'package:dodecathlon/widgets/home_screen_event_snapshot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -108,13 +107,18 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
 
-    User user = ref.watch(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+
+    User user = userStream.value!;
     var settings = ref.watch(settingsProvider);
     AsyncValue<List<User>> users = ref.watch(usersProvider);
     AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
     AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
 
-    if (!competitions.hasValue || !eventStream.hasValue || settings == null || settings['current_competition'] == null) {
+    if (!competitions.hasValue || !eventStream.hasValue || settings['current_competition'] == null) {
       return Center(child: CircularProgressIndicator(),);
     }
 
@@ -141,7 +145,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
     AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
     Challenge? mainChallenge;
     if (currentEvent.mainChallengeId != null && currentEvent.mainChallengeId!.isNotEmpty && challenges.hasValue) {
-      mainChallenge = challenges.value!.firstWhere((c) => c.id == currentEvent!.mainChallengeId!);
+      mainChallenge = challenges.value!.firstWhere((c) => c.id == currentEvent.mainChallengeId!);
     }
 
     // Only show posts within the last week that have been highlighted
@@ -160,8 +164,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
     }
 
     bool showDifficultySelectionButton =
-      currentEvent != null
-        && currentEvent.hasMultipleDifficulties
+      currentEvent.hasMultipleDifficulties
         && user.currentEventDifficulty == null;
 
     if (!hasDismissedNewEventNotification && showDifficultySelectionButton && !newEventNotificationPopupIsVisible) {
@@ -199,7 +202,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
               ),
             ),
             EventProgressContainer(onPageChange: widget.onPageChange,),
-            if (showDifficultySelectionButton && currentEvent != null)
+            if (showDifficultySelectionButton)
               Container(
                 height: 100,
                 width: double.infinity,

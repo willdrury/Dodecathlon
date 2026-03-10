@@ -20,11 +20,12 @@ class EventDetailsScreen extends ConsumerWidget {
 
     String statusText = '';
     DateTime now = DateTime.now();
-    User? user = ref.watch(userProvider);
 
-    if (user == null) {
-      return Center(child: CircularProgressIndicator(),);
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
     }
+    User user = userStream.value!;
 
     if (DateTime.now().isAfter(event.startDate) && DateTime.now().isBefore(event.endDate)) {
       statusText = 'In Progress';
@@ -84,18 +85,6 @@ class EventDetailsScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              // SizedBox(height: 30,),
-              // Center(
-              //   child: Container(
-              //     height: 60,
-              //     width: 60,
-              //     decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(20),
-              //       color: event.themeColor,
-              //     ),
-              //     child: Icon(event.icon, color: Colors.white,),
-              //   ),
-              // ),
               SizedBox(height: 30,),
               Text(
                 '${formatter.format(event.startDate)} - ${formatter.format(event.endDate)}',
@@ -165,12 +154,6 @@ class EventDetailsScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-              // SizedBox(height: 10,),
-              // Container(
-              //   width: double.infinity,
-              //   color: Colors.white,
-              //   child: Text('Prizes:\n${event.prize}'),
-              // ),
             ],
           ),
         ),

@@ -2,7 +2,6 @@ import 'package:dodecathlon/models/challenge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/submission.dart';
 import '../../models/user.dart';
 import '../../providers/user_provider.dart';
 import '../post_creation_screen.dart';
@@ -33,7 +32,10 @@ class _PhotoUploadSubmissionScreenState extends ConsumerState<PhotoUploadSubmiss
 
   @override
   Widget build(BuildContext context) {
-    currentUser = ref.read(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
 
     return Scaffold(
       body: Container(

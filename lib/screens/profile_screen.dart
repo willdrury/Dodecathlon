@@ -26,7 +26,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    dd.User currentUser = ref.watch(userProvider)!;
+    AsyncValue<dd.User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+
+    dd.User currentUser = userStream.value!;
     AsyncValue<List<Submission>> userSubmissions = ref.watch(submissionsProvider);
     AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
     AsyncValue<List<Event>> events = ref.watch(eventProvider);
@@ -46,7 +51,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         Event? e = events.value!.where((e1) => e1.id == c.eventId).firstOrNull;
         if (e == null) continue;
 
-        if (eventMap.containsKey(e!)) {
+        if (eventMap.containsKey(e)) {
           eventMap[e]!.add((s, c));
         } else {
           eventMap[e] = [(s,c)];

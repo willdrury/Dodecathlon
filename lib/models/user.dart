@@ -86,6 +86,8 @@ class User {
 
   Future<String?> update() async {
     try {
+      currentEventPoints[0] = currentEventPoints[0].clamp(0, 100);
+      currentCompetitionPoints[0] = currentCompetitionPoints[0].clamp(0, 100);
       await FirebaseFirestore.instance.collection('users').doc(id).update(toJson());
     } catch (e) {
       print('Error updating user: ${e.toString()}');

@@ -16,7 +16,9 @@ import 'package:dodecathlon/screens/rankings_screen.dart';
 import 'package:dodecathlon/screens/social_screen.dart';
 import 'package:dodecathlon/screens/home_screen.dart';
 
+import '../models/competition.dart';
 import '../models/event.dart';
+import '../providers/competition_provider.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -51,6 +53,8 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
   late AsyncValue<List<User>> users;
   Event? _currentEvent;
   List<(String, int)>? _userRankings;
+  Competition? _currentCompetition;
+  bool _hasShownNewEventModal = false;
 
   @override
   void initState() {
@@ -97,16 +101,12 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           ),
           actions: <Widget>[
             TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme
-                    .of(context)
-                    .textTheme
-                    .labelLarge,
-              ),
               child: const Text('Return Home'),
               onPressed: () {
                 setState(() {
                   _currentPageIndex = 0;
+                  _showNewEventStartedButton = false;
+                  Navigator.of(context).pop();
                 });
               },
             ),
@@ -117,13 +117,13 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
   }
 
   void _refreshContent() {
-    if (currentUser == null || _events == null || _userSettings == null) {
-      return;
-    }
-    if (_events!.isEmpty) {
-      return;
-    }
-    if (_currentEvent == null) {
+    if (
+      currentUser == null ||
+      _events == null ||
+      _userSettings == null ||
+      _events!.isEmpty ||
+      _currentEvent == null
+    ) {
       return;
     }
 
@@ -131,6 +131,19 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
     DateTime now = DateTime.now();
     DateTime lastLoginDate = _userSettings!['last_login_date'] as DateTime;
     if (lastLoginDate.day != now.day || lastLoginDate.month != now.month || lastLoginDate.year != now.year) {
+
+      // Check if new event has started
+      Event? prevEvent = _events!.where((e) =>
+        e.startDate.isAfter(now) && e.endDate.isBefore(lastLoginDate) && _currentCompetition!.events.contains(e.id)
+      ).firstOrNull;
+
+      if (prevEvent != _currentEvent) {
+        if (_currentPageIndex != 0) {
+          _showNewEventStartedButton = true;
+        }
+
+        _newEventStarted = true;
+      }
 
       // Update user event rank
       if (_userRankings != null && _userRankings!.isNotEmpty) {
@@ -141,19 +154,6 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           currentUser!.update();
         }
       }
-    }
-
-    // Check if new event has started
-    if (!currentUser!.currentEventIndexes.contains(_currentEvent!.id)) {
-
-      // Navigate user to home page
-      if (_currentPageIndex != 0) {
-        _showNewEventStartedButton = true;
-      }
-
-      setState(() {
-        _newEventStarted = true;
-      });
     }
   }
 
@@ -230,16 +230,30 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    currentUser = ref.watch(userProvider);
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    currentUser = userStream.value!;
     users = ref.watch(usersProvider);
     _userSettings = ref.watch(settingsProvider);
     AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
     AsyncValue<List<(String, int)>> userRankingsStream = ref.watch(userEventRankingsProvider);
+    AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
+
+    if (!competitions.hasValue || !eventStream.hasValue || _userSettings == null || _userSettings!['current_competition'] == null) {
+      return Center(child: CircularProgressIndicator(),);
+    }
+
+    _currentCompetition = competitions.value!.where((c) => c.id == _userSettings!['current_competition']).firstOrNull;
+
 
     var now = DateTime.now();
     if (eventStream.hasValue) {
       _events = eventStream.value!;
-      _currentEvent = _events!.where((e) => e.startDate.isBefore(now) & e.endDate.isAfter(now)).firstOrNull;
+      _currentEvent = _events!.where(
+        (e) => e.startDate.isBefore(now) & e.endDate.isAfter(now) && _currentCompetition!.events.contains(e.id)
+      ).firstOrNull;
     }
 
     if (userRankingsStream.hasValue) {
@@ -257,24 +271,23 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
 
       // Update user if new event has started
       if (_newEventStarted) {
-        if (_showNewEventStartedButton) {
-          _dialogBuilder(context);
+        if (_showNewEventStartedButton && !_hasShownNewEventModal) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            setState(() {
+              _hasShownNewEventModal = true;
+            });
+            _dialogBuilder(context);
+          });
         }
-        // TODO: Move this to utility function on user? (user.startNewEvent?)
         currentUser!.currentEventIndexes = [_currentEvent!.id!];
         currentUser!.currentEventDifficulty = null;
         currentUser!.currentEventPoints = [0];
-        UserProvider().setUser(currentUser!);
+        currentUser!.update();
       }
 
       // Update last login date
       ref.read(settingsProvider.notifier).updateSettings(_userSettings!);
       onDestinationSelected(_currentPageIndex, context);
-
-      setState(() {
-        _newEventStarted = false;
-        _showNewEventStartedButton = false;
-      });
     }
 
     Color appBarColor = _appBarColor != null

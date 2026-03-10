@@ -1,6 +1,5 @@
 import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/event.dart';
-import 'package:dodecathlon/widgets/upcoming_challenges_carousel.dart';
 import 'package:flutter/material.dart';
 import 'bonus_challenge_carousel.dart';
 

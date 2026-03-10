@@ -83,7 +83,11 @@ class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionS
   Widget build(BuildContext context) {
 
     final DateTime now = DateTime.now();
-    User currentUser = ref.watch(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User currentUser = userStream.value!;
     AsyncValue<List<Event>> events = ref.watch(eventProvider);
     if (!events.hasValue) {
       return Center(child: CircularProgressIndicator());

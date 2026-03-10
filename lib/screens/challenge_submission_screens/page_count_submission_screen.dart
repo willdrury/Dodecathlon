@@ -54,7 +54,7 @@ class _PageCountSubmissionScreenState extends ConsumerState<PageCountSubmissionS
     currentUser!.currentCompetitionPoints[0] = currentUser!.currentCompetitionPoints[0] + widget.challenge.maxPoints;
     currentUser!.currentEventPoints[0] = currentUser!.currentEventPoints[0] + widget.challenge.maxPoints;
     currentUser!.submissions.add(submission.id);
-    UserProvider().setUser(currentUser!);
+    currentUser!.update();
 
     if (_shareEnabled && ctx.mounted) {
       Navigator.of(ctx).push(
@@ -74,7 +74,10 @@ class _PageCountSubmissionScreenState extends ConsumerState<PageCountSubmissionS
 
   @override
   Widget build(BuildContext context) {
-    currentUser = ref.watch(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
 
     return Scaffold(
       body: Container(

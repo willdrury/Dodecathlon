@@ -3,7 +3,6 @@ import 'package:dodecathlon/models/post_comment.dart';
 import 'package:dodecathlon/models/user.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:flutter/Material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PostCommentDetailsFooter extends ConsumerStatefulWidget {
@@ -50,11 +49,11 @@ class _PostCommentDetailsFooterState extends ConsumerState<PostCommentDetailsFoo
 
   @override
   Widget build(BuildContext context) {
-    User? currentUser = ref.watch(userProvider);
-
-    if (currentUser == null) {
-      return Center(child: CircularProgressIndicator(),);
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
     }
+    User currentUser = userStream.value!;
 
     return Container(
       color: Colors.white,

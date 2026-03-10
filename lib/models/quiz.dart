@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dodecathlon/models/quiz_question.dart';
 
 class Quiz {
 

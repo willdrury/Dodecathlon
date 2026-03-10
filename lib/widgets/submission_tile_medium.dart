@@ -1,5 +1,4 @@
 import 'package:dodecathlon/models/submission.dart';
-import 'package:dodecathlon/screens/challenge_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

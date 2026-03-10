@@ -21,10 +21,15 @@ class ChallengeDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<List<Submission>> submissions = ref.read(submissionsProvider);
-    User? user = ref.read(userProvider);
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+
+    User user = userStream.value!;
 
     List<Submission> challengeSubmissions = [];
-    if (submissions.hasValue && user != null) {
+    if (submissions.hasValue) {
       challengeSubmissions = submissions.value!.where((s) =>
           s.userId == user.id && s.challengeId == challenge.id
       ).toList();

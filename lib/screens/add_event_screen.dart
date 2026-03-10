@@ -1,16 +1,9 @@
-import 'package:dodecathlon/models/challenge.dart';
-import 'package:dodecathlon/models/submission.dart';
 import 'package:dodecathlon/providers/events_provider.dart';
-import 'package:dodecathlon/providers/submission_provider.dart';
-import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/widgets/add_event_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/competition.dart';
 import '../models/event.dart';
-import '../models/user.dart';
-import '../providers/challenges_provider.dart';
-import '../widgets/select_difficulty_container.dart';
 
 class AddEventScreen extends ConsumerStatefulWidget {
   const AddEventScreen({super.key, required this.competition});

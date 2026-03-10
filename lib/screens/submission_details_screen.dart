@@ -93,19 +93,9 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
       c.id == widget.submission.challengeId
     );
 
-    if (post == null || challenge == null) {
-      // TODO: Logging
-      return Center(child: CircularProgressIndicator(),);
-    }
-
     Event? event = eventStream.value!.firstWhere((e) =>
       e.id == challenge.eventId
     );
-
-    if (event == null) {
-      // TODO: Logging
-      return Center(child: CircularProgressIndicator(),);
-    }
 
     return Scaffold(
       backgroundColor: Color.lerp(Colors.white, Theme.of(context).colorScheme.primaryContainer, 0.1),

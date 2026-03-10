@@ -199,7 +199,11 @@ class _InPersonEventCreationScreenState extends ConsumerState<InPersonEventCreat
 
   @override
   Widget build(BuildContext context) {
-    currentUser = ref.read(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    currentUser = userStream.value!;
 
     return Scaffold(
       body: Container(

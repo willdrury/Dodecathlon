@@ -16,10 +16,15 @@ class CompetitionsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<List<Competition>> competitionsStream = ref.watch(competitionProvider);
     var settings = ref.watch(settingsProvider);
-    User? user = ref.watch(userProvider);
 
-    if (!competitionsStream.hasValue || user == null || settings == null) {
-      // TODO: Logging
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+
+    User user = userStream.value!;
+
+    if (!competitionsStream.hasValue) {
       return Center(child: CircularProgressIndicator(),);
     }
 

@@ -73,7 +73,7 @@ class Challenge {
       );
     } catch (e) { // TODO: add this to all parsers? Also, better logging
       print('Error parsing challenge: ${e.toString()}');
-      print('Challenge data: ${data}');
+      print('Challenge data: $data');
       throw('Error parsing challenge: ${e.toString()}');
     }
   }
@@ -167,6 +167,7 @@ Enforcement getEnforcementFromString(String? value) {
 }
 
 SubmissionScreen getSubmissionScreenFromString(String? value) {
+  print('value: $value');
   switch(value) {
     case 'photoUpload':
       return SubmissionScreen.photoUpload;

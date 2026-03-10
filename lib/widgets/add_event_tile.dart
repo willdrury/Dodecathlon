@@ -1,10 +1,7 @@
-import 'package:dodecathlon/models/submission.dart';
-import 'package:dodecathlon/screens/competition_details_screen.dart';
 import 'package:dodecathlon/screens/event_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../models/competition.dart';
 import '../models/event.dart';
 
 final formatter = DateFormat('EEE, MMM d, hh:mm');

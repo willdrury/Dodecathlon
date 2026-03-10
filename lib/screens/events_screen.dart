@@ -41,7 +41,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
 
     // Settings
     var settings = ref.watch(settingsProvider);
-    if (settings == null || settings['current_competition'] == null) {
+    if (settings['current_competition'] == null) {
       return Center(child: CircularProgressIndicator(),);
     }
 
@@ -70,11 +70,15 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
     }
 
     selectedEvent = selectedEvent ?? currentEvent;
-    int currentEventIndex = competitionEvents.indexOf(currentEvent!);
+    int currentEventIndex = competitionEvents.indexOf(currentEvent);
     int selectedEventIndex = competitionEvents.indexOf(selectedEvent!);
 
     // User
-    User currentUser = ref.read(userProvider)!;
+    AsyncValue<User?> userStream = ref.watch(userProvider);
+    if (!userStream.hasValue) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    User currentUser = userStream.value!;
     bool hasSelectedDifficulty = currentUser.currentEventDifficulty != null;
 
     // Submissions
