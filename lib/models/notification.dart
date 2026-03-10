@@ -24,12 +24,17 @@ class Notification {
   };
 
   factory Notification.fromMap(Map data) {
-    return Notification(
-      title: data['title'],
-      body: data['body'],
-      user: data['user'],
-      createdAt: DateTime.fromMicrosecondsSinceEpoch((data['createdDate'] as Timestamp).microsecondsSinceEpoch),
-      isRead: data['isRead'],
-    );
+    try {
+      return Notification(
+        title: data['title'],
+        body: data['body'],
+        user: data['user'],
+        createdAt: DateTime.fromMicrosecondsSinceEpoch((data['createdDate'] as Timestamp).microsecondsSinceEpoch),
+        isRead: data['isRead'],
+      );
+    } catch (e) {
+      print('Error converting Notification from JSON: ${e.toString()}');
+      rethrow;
+    }
   }
 }

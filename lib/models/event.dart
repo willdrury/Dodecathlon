@@ -37,20 +37,25 @@ class Event {
   });
 
   factory Event.fromMap(Map data, String id) {
-    return Event(
-        name: data['name'],
-        description: data['description'],
-        hasMultipleDifficulties: data['hasMultipleDifficulties'],
-        themeColor: Color(int.parse(data['themeColor'].substring(1, 7), radix: 16)).withAlpha(255),
-        icon: materialIconMap[data['icon']] ?? Icons.emoji_events,
-        startDate: DateTime.parse((data['startDate'])),
-        endDate: DateTime.parse((data['endDate'])),
-        displayImageUrl: data['displayImageUrl'],
-        beginnerDescription: data['beginnerDescription'],
-        intermediateDescription: data['intermediateDescription'],
-        advancedDescription: data['advancedDescription'],
-        mainChallengeId: data['mainChallengeId'],
-        id: id
-    );
+    try {
+      return Event(
+          name: data['name'],
+          description: data['description'],
+          hasMultipleDifficulties: data['hasMultipleDifficulties'],
+          themeColor: Color(int.parse(data['themeColor'].substring(1, 7), radix: 16)).withAlpha(255),
+          icon: materialIconMap[data['icon']] ?? Icons.emoji_events,
+          startDate: DateTime.parse((data['startDate'])),
+          endDate: DateTime.parse((data['endDate'])),
+          displayImageUrl: data['displayImageUrl'],
+          beginnerDescription: data['beginnerDescription'],
+          intermediateDescription: data['intermediateDescription'],
+          advancedDescription: data['advancedDescription'],
+          mainChallengeId: data['mainChallengeId'],
+          id: id
+      );
+    } catch (e) {
+      print('Error converting Event from JSON: ${e.toString()}');
+      rethrow;
+    }
   }
 }

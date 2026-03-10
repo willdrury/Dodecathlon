@@ -14,12 +14,17 @@ class PostComment {
   });
 
   factory PostComment.fromMap(Map data) {
-    return PostComment(
-      body: data['body'],
-      createdAt: DateTime.fromMicrosecondsSinceEpoch((data['createdAt'] as Timestamp).microsecondsSinceEpoch),
-      userId: data['userId'],
-      postId: data['postId'],
-    );
+    try {
+      return PostComment(
+        body: data['body'],
+        createdAt: DateTime.fromMicrosecondsSinceEpoch((data['createdAt'] as Timestamp).microsecondsSinceEpoch),
+        userId: data['userId'],
+        postId: data['postId'],
+      );
+    } catch (e) {
+      print('Error converting PostComment from JSON: ${e.toString()}');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() => {

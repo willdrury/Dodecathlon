@@ -58,22 +58,27 @@ class User {
   };
 
   factory User.fromMap(Map data) {
-    return User(
-      userName: data['userName'],
-      email: data['email'],
-      currentEventIndexes: List<String>.from(data['currentEventIndexes'] as List<dynamic>),
-      currentEventPoints: List<int>.from(data['currentEventPoints'] as List<dynamic>),
-      currentEventRank: List<int>.from(data['currentEventRank'] as List<dynamic>),
-      currentCompetitionPoints: List<int>.from(data['currentCompetitionPoints'] as List<dynamic>),
-      friends: List<String>.from(data['friends'] as List<dynamic>),
-      currentEventDifficulty: getDifficultyFromString(data['currentEventDifficulty']),
-      profileImageUrl: data['profileImageUrl'],
-      submissions: List<String>.from(data['submissions'] as List<dynamic>),
-      competitions: List<String>.from(data['competitions'] as List<dynamic>),
-      id: data['id'],
-      likedPostIds: List<String>.from(data['likedPostIds'] as List<dynamic>),
-      createdDate: DateTime.fromMicrosecondsSinceEpoch((data['createdDate'] as Timestamp).microsecondsSinceEpoch),
-    );
+    try {
+      return User(
+        userName: data['userName'],
+        email: data['email'],
+        currentEventIndexes: List<String>.from(data['currentEventIndexes'] as List<dynamic>),
+        currentEventPoints: List<int>.from(data['currentEventPoints'] as List<dynamic>),
+        currentEventRank: List<int>.from(data['currentEventRank'] as List<dynamic>),
+        currentCompetitionPoints: List<int>.from(data['currentCompetitionPoints'] as List<dynamic>),
+        friends: List<String>.from(data['friends'] as List<dynamic>),
+        currentEventDifficulty: getDifficultyFromString(data['currentEventDifficulty']),
+        profileImageUrl: data['profileImageUrl'],
+        submissions: List<String>.from(data['submissions'] as List<dynamic>),
+        competitions: List<String>.from(data['competitions'] as List<dynamic>),
+        id: data['id'],
+        likedPostIds: List<String>.from(data['likedPostIds'] as List<dynamic>),
+        createdDate: DateTime.fromMicrosecondsSinceEpoch((data['createdDate'] as Timestamp).microsecondsSinceEpoch),
+      );
+    } catch (e) {
+      print('Error converting User from JSON: ${e.toString()}');
+      rethrow;
+    }
   }
 
   int get eventRank {

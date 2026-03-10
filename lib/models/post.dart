@@ -42,18 +42,23 @@ class Post {
   };
 
   factory Post.fromMap(Map data) {
-    return Post(
-      userId: data['userId'],
-      title: data['title'],
-      createdAt: DateTime.fromMicrosecondsSinceEpoch((data['createdAt'] as Timestamp).microsecondsSinceEpoch),
-      description: data['description'],
-      imageUrl: data['imageUrl'],
-      submissionId: data['submissionId'],
-      id: data['id'],
-      highlighted: data['highlighted'],
-      reported: data['reported'],
-      likes: List<String>.from(data['likes'] as List<dynamic>),
-    );
+    try {
+      return Post(
+        userId: data['userId'],
+        title: data['title'],
+        createdAt: DateTime.fromMicrosecondsSinceEpoch((data['createdAt'] as Timestamp).microsecondsSinceEpoch),
+        description: data['description'],
+        imageUrl: data['imageUrl'],
+        submissionId: data['submissionId'],
+        id: data['id'],
+        highlighted: data['highlighted'],
+        reported: data['reported'],
+        likes: List<String>.from(data['likes'] as List<dynamic>),
+      );
+    } catch (e) {
+      print('Error converting Post from JSON: ${e.toString()}');
+      rethrow;
+    }
   }
 
   Future<String?> upload() async {

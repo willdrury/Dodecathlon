@@ -71,10 +71,9 @@ class Challenge {
         imageUrl: data['displayImageUrl'],
         id: id
       );
-    } catch (e) { // TODO: add this to all parsers? Also, better logging
-      print('Error parsing challenge: ${e.toString()}');
-      print('Challenge data: $data');
-      throw('Error parsing challenge: ${e.toString()}');
+    } catch (e) {
+      print('Error converting Competition from JSON: ${e.toString()}');
+      rethrow;
     }
   }
 

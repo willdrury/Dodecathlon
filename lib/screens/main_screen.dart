@@ -230,6 +230,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
+    print('building main');
     AsyncValue<User?> userStream = ref.watch(userProvider);
     if (!userStream.hasValue) {
       return const Center(child: CircularProgressIndicator(),);
@@ -238,15 +239,30 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
     users = ref.watch(usersProvider);
     _userSettings = ref.watch(settingsProvider);
     AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
-    AsyncValue<List<(String, int)>> userRankingsStream = ref.watch(userEventRankingsProvider);
     AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
+    AsyncValue<List<(String, int)>> userRankingsStream = ref.watch(userEventRankingsProvider);
 
-    if (!competitions.hasValue || !eventStream.hasValue || _userSettings == null || _userSettings!['current_competition'] == null) {
+    print('competitions value: ${competitions.value}');
+    print('events value: ${eventStream.value}');
+
+    if (!competitions.hasValue || !eventStream.hasValue) {
+      print('loading competitions');
       return Center(child: CircularProgressIndicator(),);
     }
 
-    _currentCompetition = competitions.value!.where((c) => c.id == _userSettings!['current_competition']).firstOrNull;
+    if (_userSettings == null) {
+      print('loading settings');
+      return Center(child: CircularProgressIndicator(),);
+    }
 
+    if (_userSettings!['current_competition'] == null) {
+      print('no current competition');
+      return Center(child: CircularProgressIndicator(),);
+    }
+
+    print('got here man...');
+
+    _currentCompetition = competitions.value!.where((c) => c.id == _userSettings!['current_competition']).firstOrNull;
 
     var now = DateTime.now();
     if (eventStream.hasValue) {

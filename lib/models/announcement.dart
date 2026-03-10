@@ -12,11 +12,16 @@ class Announcement {
   });
 
   factory Announcement.fromMap(Map data) {
-    return Announcement(
-      title: data['title'],
-      body: data['body'],
-      createdAt: DateTime.fromMicrosecondsSinceEpoch((data['createdAt'] as Timestamp).microsecondsSinceEpoch),
-    );
+    try {
+      return Announcement(
+        title: data['title'],
+        body: data['body'],
+        createdAt: DateTime.fromMicrosecondsSinceEpoch((data['createdAt'] as Timestamp).microsecondsSinceEpoch),
+      );
+    } catch (e) {
+      print('Error converting Announcement from JSON: ${e.toString()}');
+      rethrow;
+    }
   }
 
 }

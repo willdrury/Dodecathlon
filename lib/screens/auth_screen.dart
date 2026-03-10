@@ -65,7 +65,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
     } on FirebaseAuthException catch (error) {
       if (error.code == 'email-already-in-use') {
-        //   ... show some error message
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? 'Email already in use')));
       }
       if (context.mounted) {
         if (mounted) ScaffoldMessenger.of(context).clearSnackBars();

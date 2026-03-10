@@ -74,3 +74,5 @@ app.*.map.json
 # Lib files
 /lib/firebase_options.dart
 
+/android/kotlin/new.properties
+/macos/Podfile.lock

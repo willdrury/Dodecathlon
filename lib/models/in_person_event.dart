@@ -35,7 +35,8 @@ class InPersonEvent {
   };
 
   factory InPersonEvent.fromMap(Map data, String id) {
-    return InPersonEvent(
+    try {
+      return InPersonEvent(
         name: data['name'],
         description: data['description'],
         location: data['location'],
@@ -45,7 +46,11 @@ class InPersonEvent {
         attending: List<String>.from(data['attending'] as List<dynamic>),
         displayImageUrl: data['displayImageUrl'],
         id: id
-    );
+      );
+    } catch (e) {
+      print('Error converting InPersonEvent from JSON: ${e.toString()}');
+      rethrow;
+    }
   }
 
   Future<String?> upload() async {

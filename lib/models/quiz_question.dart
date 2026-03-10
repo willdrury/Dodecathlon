@@ -28,7 +28,7 @@ class QuizQuestion {
       );
     } catch (e) {
       print('Error converting QuizQuestion from JSON: ${e.toString()}');
+      rethrow;
     }
-    throw Exception(); // TODO: Better exception handling, or handle somewhere else
   }
 }

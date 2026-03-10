@@ -45,19 +45,14 @@ class MyApp extends ConsumerWidget {
     }
 
     AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
-    AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
-    if (!competitions.hasValue || !eventStream.hasValue) {
-      return MaterialApp(
-        home: const Center(
-          child: CircularProgressIndicator()
-        )
-      );
-    }
+    AsyncValue<List<Competition>> competitionStream = ref.watch(competitionProvider);
 
-    Competition? currentCompetition = competitions.value!.where((c) => c.id == settings['current_competition']).firstOrNull;
+    Competition? currentCompetition = competitionStream.hasValue
+      ? competitionStream.value!.where((c) => c.id == settings['current_competition']).firstOrNull
+      : null;
     List<Event>? competitionEvents = [];
 
-    if (currentCompetition != null) {
+    if (currentCompetition != null && eventStream.hasValue) {
       competitionEvents = eventStream.value!.where((e) =>
           currentCompetition.events.contains(e.id)
       ).toList();
@@ -105,7 +100,7 @@ class MyApp extends ConsumerWidget {
               );
             }
             if (snapshot.hasData) { // User is logged in
-              userStream.when(
+              return userStream.when(
                 data: (user) => user != null ? const MainScreen() : const AuthScreen(),
                 loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
                 error: (err, stack) => Scaffold(body: Center(child: Text('Error: $err'))),

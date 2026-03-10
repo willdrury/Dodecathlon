@@ -43,15 +43,20 @@ class Submission {
   };
 
   factory Submission.fromMap(Map data) {
-    return Submission.all(
-      userId: data['userId'],
-      points: data['points'],
-      challengeId: data['challengeId'],
-      createdDate: DateTime.fromMicrosecondsSinceEpoch((data['createdDate'] as Timestamp).microsecondsSinceEpoch),
-      id: data['id'],
-      isBonus: data['isBonus'],
-      isApproved: data['isApproved'],
-    );
+    try {
+      return Submission.all(
+        userId: data['userId'],
+        points: data['points'],
+        challengeId: data['challengeId'],
+        createdDate: DateTime.fromMicrosecondsSinceEpoch((data['createdDate'] as Timestamp).microsecondsSinceEpoch),
+        id: data['id'],
+        isBonus: data['isBonus'],
+        isApproved: data['isApproved'],
+      );
+    } catch (e) {
+      print('Error converting Submission from JSON: ${e.toString()}');
+      rethrow;
+    }
   }
 
   Future<String?> upload() async {

@@ -43,9 +43,9 @@ class Competition {
         id: id
       );
     } catch (e) {
-      print('Error converting competition from JSON: ${e.toString()}');
+      print('Error converting Competition from JSON: ${e.toString()}');
+      rethrow;
     }
-    throw Exception(); // TODO: Better exception handling, or handle somewhere else
   }
 
   Future<String?> upload() async {

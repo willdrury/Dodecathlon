@@ -8,6 +8,7 @@ final competitionProvider = StreamProvider<List<Competition>>((ref) {
   if (user == null) {
     return Stream.value([]);
   }
+  print('loading comps now');
   return FirebaseFirestore.instance
       .collection('competitions')
       .snapshots()
