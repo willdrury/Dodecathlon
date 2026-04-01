@@ -4,15 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/challenge.dart';
+import '../models/event.dart';
 import '../models/submission.dart';
 import '../providers/submission_provider.dart';
 import '../screens/challenge_details_screen.dart';
 
 class HomeScreenEventSnapshot extends ConsumerWidget {
 
-  const HomeScreenEventSnapshot({super.key, required this.challenge});
+  const HomeScreenEventSnapshot({
+    super.key,
+    required this.challenge,
+    required this.event,
+  });
 
   final Challenge challenge;
+  final Event event;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,6 +40,7 @@ class HomeScreenEventSnapshot extends ConsumerWidget {
           MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(
             challenge: challenge,
             isCompleted: false,
+            event: event,
           ))
         );
       },

@@ -4,6 +4,7 @@ import 'package:dodecathlon/providers/settings_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/providers/user_event_rankings_provider.dart';
 import 'package:dodecathlon/providers/users_provider.dart';
+import 'package:dodecathlon/screens/competitions_screen.dart';
 import 'package:dodecathlon/screens/loading_screen.dart';
 import 'package:dodecathlon/screens/post_creation_screen.dart';
 import 'package:dodecathlon/widgets/default_app_bar.dart';
@@ -36,8 +37,6 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
   int _currentPageIndex = 0;
   bool _showAppBar = true;
   bool _useAppBarShadow = false;
-  bool _newEventStarted = false;
-  bool _showNewEventStartedButton = false;
   Color? _appBarColor;
   String _appBarLabel = '';
   Color _appBarTextColor = Colors.black;
@@ -45,6 +44,10 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
   Widget? _floatingActionButton;
   ScrollPhysics _scrollPhysics = NeverScrollableScrollPhysics();
   late ScrollController _scrollController;
+
+  bool _newEventStarted = false;
+  bool _showNewEventStartedButton = false;
+  bool _hasShownNewEventModal = false;
 
   // Data variables
   Map<dynamic, dynamic>? _userSettings;
@@ -54,7 +57,6 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
   Event? _currentEvent;
   List<(String, int)>? _userRankings;
   Competition? _currentCompetition;
-  bool _hasShownNewEventModal = false;
 
   @override
   void initState() {
@@ -74,26 +76,26 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
   void didChangeAppLifecycleState(final AppLifecycleState state) {
     switch(state) {
       case AppLifecycleState.resumed:
-        print("APP STATE RESUMED");
+        print("Debugging Step: APP STATE RESUMED");
         setState(() {
           _refreshContent();
         });
         break;
       case AppLifecycleState.inactive:
-        print("APP STATE INACTIVE");
+        print("Debugging Step: APP STATE INACTIVE");
         break;
       case AppLifecycleState.paused:
-        print("APP STATE PAUSED");
+        print("Debugging Step: APP STATE PAUSED");
         break;
       default:
         break;
     }
   }
 
-  Future<void> _dialogBuilder(BuildContext context) {
+  Future<void> _newEventDialogBuilder(BuildContext context) {
     return showDialog<void>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext ctx) {
         return AlertDialog(
           title: const Text('A new event has begun'),
           content: Text(
@@ -103,11 +105,15 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
             TextButton(
               child: const Text('Return Home'),
               onPressed: () {
-                setState(() {
-                  _currentPageIndex = 0;
-                  _showNewEventStartedButton = false;
-                  Navigator.of(context).pop();
-                });
+                if (mounted) {
+                  setState(() {
+                    _currentPageIndex = 0;
+                    _showNewEventStartedButton = false;
+                  });
+                  if (ctx.mounted) {
+                    Navigator.of(ctx).pop();
+                  }
+                }
               },
             ),
           ],
@@ -130,7 +136,10 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
     // Detect date chance since last login
     DateTime now = DateTime.now();
     DateTime lastLoginDate = _userSettings!['last_login_date'] as DateTime;
+    print('Debugging Step: Last login date: ${lastLoginDate.toString()}');
     if (lastLoginDate.day != now.day || lastLoginDate.month != now.month || lastLoginDate.year != now.year) {
+
+      print('Debugging Step: New date detected');
 
       // Check if new event has started
       Event? prevEvent = _events!.where((e) =>
@@ -155,6 +164,10 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
         }
       }
     }
+
+    // Update last login date
+    print('Debugging Step: updating login date');
+    ref.read(settingsProvider.notifier).updateSettings(_userSettings!);
   }
 
   void onDestinationSelected(int index, BuildContext ctx) async {
@@ -230,7 +243,6 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    print('building main');
     AsyncValue<User?> userStream = ref.watch(userProvider);
     if (!userStream.hasValue) {
       return const Center(child: CircularProgressIndicator(),);
@@ -242,9 +254,6 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
     AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
     AsyncValue<List<(String, int)>> userRankingsStream = ref.watch(userEventRankingsProvider);
 
-    print('competitions value: ${competitions.value}');
-    print('events value: ${eventStream.value}');
-
     if (!competitions.hasValue || !eventStream.hasValue) {
       print('loading competitions');
       return Center(child: CircularProgressIndicator(),);
@@ -255,17 +264,10 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
       return Center(child: CircularProgressIndicator(),);
     }
 
-    if (_userSettings!['current_competition'] == null) {
-      print('no current competition');
-      return Center(child: CircularProgressIndicator(),);
-    }
-
-    print('got here man...');
-
     _currentCompetition = competitions.value!.where((c) => c.id == _userSettings!['current_competition']).firstOrNull;
 
     var now = DateTime.now();
-    if (eventStream.hasValue) {
+    if (eventStream.hasValue && _currentCompetition != null) {
       _events = eventStream.value!;
       _currentEvent = _events!.where(
         (e) => e.startDate.isBefore(now) & e.endDate.isAfter(now) && _currentCompetition!.events.contains(e.id)
@@ -283,16 +285,17 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
     } else {
 
       // Check if date has changed and reload events
-      _refreshContent();
+      // _refreshContent();
 
       // Update user if new event has started
       if (_newEventStarted) {
         if (_showNewEventStartedButton && !_hasShownNewEventModal) {
+          print('Debugging Step: Detected new event started');
           WidgetsBinding.instance.addPostFrameCallback((_) {
             setState(() {
               _hasShownNewEventModal = true;
             });
-            _dialogBuilder(context);
+            _newEventDialogBuilder(context);
           });
         }
         currentUser!.currentEventIndexes = [_currentEvent!.id!];
@@ -301,9 +304,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
         currentUser!.update();
       }
 
-      // Update last login date
-      ref.read(settingsProvider.notifier).updateSettings(_userSettings!);
-      onDestinationSelected(_currentPageIndex, context);
+      // onDestinationSelected(_currentPageIndex, context);
     }
 
     Color appBarColor = _appBarColor != null
@@ -347,7 +348,9 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
             onDestinationSelected(index, context);
           },
           indicatorColor: Theme.of(context).colorScheme.primaryContainer,
-          backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+          backgroundColor: Colors.white,
+          // indicatorColor: Theme.of(context).colorScheme.primaryContainer,
+          // backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
           shadowColor: Colors.black,
           elevation: 10.0,
           selectedIndex: _currentPageIndex,

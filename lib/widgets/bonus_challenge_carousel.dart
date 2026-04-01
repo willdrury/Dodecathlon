@@ -64,6 +64,7 @@ class _BonusChallengeCarouselState extends State<BonusChallengeCarousel> with Si
                 MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(
                   challenge: widget.challenges[valueChanged],
                   isCompleted: widget.isCompleted,
+                  event: widget.event,
                 ))
             );
           },

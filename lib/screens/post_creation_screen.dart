@@ -57,9 +57,7 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
     });
 
     _imageUrl = await ImageUtility().uploadImage(pickedImage.path, _selectedImage!);
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override

@@ -138,29 +138,32 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (post.imageUrl != null)
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: 500,
-                        ),
-                        child: Image.network(
-                          post.imageUrl!,
-                          fit: BoxFit.fitWidth,
-                          frameBuilder: (_, image, loadingBuilder, __) {
-                            if (loadingBuilder == null) {
+                      Align(
+                        alignment: Alignment.center,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 500,
+                          ),
+                          child: Image.network(
+                            post.imageUrl!,
+                            fit: BoxFit.fitWidth,
+                            frameBuilder: (_, image, loadingBuilder, __) {
+                              if (loadingBuilder == null) {
+                                return const SizedBox(
+                                  height: 300,
+                                  child: Center(child: CircularProgressIndicator()),
+                                );
+                              }
+                              return image;
+                            },
+                            loadingBuilder: (BuildContext ctx, Widget child, ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) return child;
                               return const SizedBox(
                                 height: 300,
                                 child: Center(child: CircularProgressIndicator()),
                               );
-                            }
-                            return image;
-                          },
-                          loadingBuilder: (BuildContext ctx, Widget child, ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return const SizedBox(
-                              height: 300,
-                              child: Center(child: CircularProgressIndicator()),
-                            );
-                          },
+                            },
+                          ),
                         ),
                       ),
                     Padding(
@@ -193,17 +196,18 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
                     )
                   ),
                   Spacer(),
-                  TextButton(
-                      onPressed: () {
-                        // TODO: Show popup
-                      },
-                      child: Text(
-                        'Assign to User',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary
-                        ),
-                      )
-                  )
+                  if (!widget.submission.isApproved)
+                    TextButton(
+                        onPressed: () {
+                          // TODO: Show popup
+                        },
+                        child: Text(
+                          'Assign to User',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary
+                          ),
+                        )
+                    )
                 ],
               ),
               Align(

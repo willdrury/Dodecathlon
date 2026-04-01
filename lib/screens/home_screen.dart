@@ -17,6 +17,7 @@ import '../providers/competition_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/users_provider.dart';
 import '../providers/events_provider.dart';
+import '../widgets/home_screen_main_challenge_snapshot.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key, required this.onPageChange});
@@ -64,7 +65,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
   Future changeColors() async {
     while (mounted) {
       await Future.delayed(const Duration(seconds: 5), () {
-        if (_animationController.status == AnimationStatus.completed) {
+        if (_animationController.status == AnimationStatus.completed && mounted) {
           _animationController.reverse();
         } else if (mounted) {
           _animationController.forward();
@@ -215,8 +216,9 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
                 ),
                 child: Text('Select a difficulty'),
               ),
-            // if (!showDifficultySelectionButton && mainChallenge != null)
-            //   HomeScreenEventSnapshot(challenge: mainChallenge,),
+            Spacer(),
+            if (!showDifficultySelectionButton && mainChallenge != null)
+              HomeScreenMainChallengeSnapshot(challenge: mainChallenge, user: user, event: currentEvent,)
           ],
         ),
       ],

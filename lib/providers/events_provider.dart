@@ -8,7 +8,6 @@ final eventProvider = StreamProvider<List<Event>>((ref) {
   if (user == null) {
     return Stream.value([]);
   }
-  print('loading events now');
   return FirebaseFirestore.instance
       .collection('events')
       .snapshots()

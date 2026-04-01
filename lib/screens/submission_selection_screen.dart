@@ -122,9 +122,9 @@ class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionS
       );
     }
 
-    List<Challenge> bonusChallenges = eventChallenges.where((c) =>
+    List<Challenge> bonusChallenges = eventChallenges.where((c) => // TODO: Move this list and other lists to a provider
       c.isBonus &&
-      !completedChallengeIds.contains(c.id) &&
+      (!completedChallengeIds.contains(c.id) || c.isRecurring) && // TODO: allow only one per day or set recurring window
       c.startDate.isBefore(now) &&
       c.endDate.isAfter(now) &&
       c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&
@@ -133,7 +133,7 @@ class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionS
     ).toList();
     List<Challenge> mainChallenges = eventChallenges.where((c) =>
       !c.isBonus &&
-      !completedChallengeIds.contains(c.id) &&
+      (!completedChallengeIds.contains(c.id) || c.isRecurring) && // TODO: allow only one per day or set recurring window
       c.startDate.isBefore(now) &&
       c.endDate.isAfter(now) &&
       c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&

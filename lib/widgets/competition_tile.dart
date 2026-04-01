@@ -26,19 +26,19 @@ class CompetitionTile extends StatelessWidget {
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        color: competition.themeColor.withAlpha(10),
+        color: Color.lerp(competition.themeColor.withAlpha(10), Colors.white, .8),
         borderRadius: BorderRadius.all(Radius.circular(20)),
-        border: Border.all(
-          color: competition.themeColor
-        ),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: competition.themeColor.withAlpha(50),
-        //     offset: Offset(0, 5),
-        //     spreadRadius: 1,
-        //     blurRadius: 5
-        //   )
-        // ]
+        // border: Border.all(
+        //   color: competition.themeColor
+        // ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            offset: Offset(0, 5),
+            spreadRadius: 1,
+            blurRadius: 5
+          )
+        ]
       ),
       child: Row(
         children: [

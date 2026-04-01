@@ -101,24 +101,6 @@ class _PostContainerState extends ConsumerState<PostContainer> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.submission != null && !widget.submission!.isApproved)
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => SubmissionApprovalScreen(submission: widget.submission!, post: widget.post))
-                );
-              },
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(5),
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: Text(
-                  'Requires Approval',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
-                ),
-              ),
-            ),
           ListTile(
             leading: CircleAvatar(
               backgroundImage: NetworkImage(
@@ -207,6 +189,23 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                         child: Center(child: CircularProgressIndicator()),
                       );
                     },
+                    errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                      return SizedBox(
+                        height: 200,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text('Failed to load image: $exception', style: TextStyle(color: Colors.grey),),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {});
+                              },
+                              icon: Icon(Icons.refresh)
+                            )
+                          ],
+                        ),
+                      );
+                    }
                   ),
                 ),
               ),
@@ -261,6 +260,24 @@ class _PostContainerState extends ConsumerState<PostContainer> {
               ],
             ),
           ),
+          if (widget.submission != null && !widget.submission!.isApproved)
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => SubmissionApprovalScreen(submission: widget.submission!, post: widget.post))
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(5),
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: Text(
+                  'Requires Approval',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+                ),
+              ),
+            ),
         ],
       ),
     );

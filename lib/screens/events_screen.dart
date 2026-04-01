@@ -80,6 +80,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
     }
     User currentUser = userStream.value!;
     bool hasSelectedDifficulty = currentUser.currentEventDifficulty != null;
+    print('Debugging Step: User has selected difficulty: ${currentUser.currentEventDifficulty}');
 
     // Submissions
     AsyncValue<List<Submission>> submissions = ref.watch(submissionsProvider);
@@ -116,21 +117,21 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
     List<Challenge> completedChallenges = [];
     if (hasSelectedDifficulty && challenges.hasValue) {
       bonusChallenges = eventChallenges.where((c) =>
-      c.isBonus &&
-        !completedChallengeIds.contains(c.id) &&
+        c.isBonus &&
+        (!completedChallengeIds.contains(c.id) || c.isRecurring) &&
         c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&
         c.prerequisiteChallenges.every((e) => completedChallengeIds.contains(e)) &&
         (c.difficulty == currentUser.currentEventDifficulty || c.difficulty == Difficulty.all)
       ).toList();
       mainChallenges = eventChallenges.where((c) =>
-      !c.isBonus &&
-        !completedChallengeIds.contains(c.id) &&
+        !c.isBonus &&
+        (!completedChallengeIds.contains(c.id) || c.isRecurring) &&
         c.conflictingChallenges.every((e) => !completedChallengeIds.contains(e)) &&
         c.prerequisiteChallenges.every((e) => completedChallengeIds.contains(e)) &&
         (c.difficulty == currentUser.currentEventDifficulty || c.difficulty == Difficulty.all)
       ).toList();
       completedChallenges = eventChallenges.where((c) =>
-        completedChallengeIds.contains(c.id)
+        completedChallengeIds.contains(c.id) && !c.isRecurring
       ).toList();
     }
     
@@ -181,7 +182,6 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(100),
-                                // border: Border.all(color: selectedEvent!.themeColor.withAlpha(100)),
                                 boxShadow: [
                                   BoxShadow(
                                       color: selectedEvent!.themeColor.withAlpha(100),

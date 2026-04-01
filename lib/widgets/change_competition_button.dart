@@ -64,10 +64,12 @@ class _ChangeCompetitionButtonState extends ConsumerState<ChangeCompetitionButto
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: GestureDetector(
                           onTap: () {
-                            setState(() {
-                              settings = {...settings, 'current_competition': competitions[i].id};
-                              ref.read(settingsProvider.notifier).updateSettings(settings);
-                            });
+                            if (mounted) {
+                              setState(() {
+                                settings = {...settings, 'current_competition': competitions[i].id};
+                                ref.read(settingsProvider.notifier).updateSettings(settings);
+                              });
+                            }
                           },
                           child: Row(
                             children: [

@@ -162,9 +162,10 @@ class SubmissionApprovalScreen extends ConsumerWidget {
                             label: Text(
                               'Approve',
                               style: TextStyle(fontSize: 20, color: Colors.green),),
-                            onPressed: () {
+                            onPressed: () async {
                               submission.isApproved = true;
-                              submission.upload();
+                              await submission.upload();
+                              if (context.mounted) Navigator.of(context).pop();
                             },
                             icon: Icon(
                               Icons.thumb_up_rounded,

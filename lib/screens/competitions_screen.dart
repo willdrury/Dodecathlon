@@ -28,15 +28,6 @@ class CompetitionsScreen extends ConsumerWidget {
       return Center(child: CircularProgressIndicator(),);
     }
 
-    void onToggle(String id) async {
-      if (user.competitions.contains(id)) {
-        user.competitions.remove(id);
-      } else {
-        user.competitions.add(id);
-      }
-      await user.update();
-    }
-
     String? currentCompetitionId = settings['current_competition'];
     Competition? currentCompetition;
     List<Competition> nonActiveUserCompetitions = [];
@@ -49,6 +40,23 @@ class CompetitionsScreen extends ConsumerWidget {
       } else {
         nonUserCompetitions.add(c);
       }
+    }
+
+    void onToggle(String id) async {
+      if (user.competitions.contains(id)) {
+        user.competitions.remove(id);
+        if (currentCompetitionId == id) {
+          settings = {...settings, 'current_competition': ''};
+          await ref.read(settingsProvider.notifier).updateSettings(settings);
+        }
+      } else {
+        user.competitions.add(id);
+        if (currentCompetitionId == null || currentCompetitionId == '') {
+          settings = {...settings, 'current_competition': id};
+          await ref.read(settingsProvider.notifier).updateSettings(settings);
+        }
+      }
+      await user.update();
     }
     
     return Scaffold(

@@ -2,10 +2,12 @@ import 'package:dodecathlon/models/challenge.dart';
 import 'package:dodecathlon/models/submission.dart';
 import 'package:dodecathlon/providers/submission_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
+import 'package:dodecathlon/widgets/streak_calendar.dart';
 import 'package:dodecathlon/widgets/submission_tile_small.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../models/event.dart';
 import '../models/user.dart';
 
 class ChallengeDetailsScreen extends ConsumerWidget {
@@ -13,10 +15,12 @@ class ChallengeDetailsScreen extends ConsumerWidget {
     super.key,
     required this.challenge,
     required this.isCompleted,
+    required this.event,
   });
 
   final Challenge challenge;
   final bool isCompleted;
+  final Event event;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,11 +52,21 @@ class ChallengeDetailsScreen extends ConsumerWidget {
                     tag: challenge.id,
                     child: Image.network(challenge.imageUrl!, fit: BoxFit.fitWidth, height: 250, width: double.infinity,),
                 ),
+              if (challenge.imageUrl == null)
+                Container(
+                  height: 250,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: event.themeColor,
+                  ),
+                  child: Icon(event.icon, size: 50, color: Colors.white,)
+                ),
               Container(
                 padding: EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text('Description', style: TextStyle(color: Colors.grey, fontSize: 10),),
                     Text(challenge.description),
                     SizedBox(height: 20,),
                     if (!isCompleted)
@@ -66,7 +80,28 @@ class ChallengeDetailsScreen extends ConsumerWidget {
                         },
                         child: Text('Submit now!')
                       ),
-                    if (isCompleted)
+                    if (challenge.isRecurring)
+                      Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 20,),
+                            Divider(),
+                            SizedBox(height: 20,),
+                            ExpansionTile(
+                              title: Text('Submission History'),
+                              shape: Border(),
+                              children: [
+                                SizedBox(height: 50,),
+                                StreakCalendar(challenge: challenge, challengeSubmissions: challengeSubmissions),
+                                SizedBox(height: 50,),
+                              ],
+                            ),
+                          ],
+                        )
+                      ),
+                    if (isCompleted && !challenge.isRecurring)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [

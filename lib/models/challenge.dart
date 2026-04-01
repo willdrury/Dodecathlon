@@ -126,13 +126,18 @@ enum SubmissionScreen {
 }
 
 Difficulty getDifficultyFromString(String? value) {
-  switch(value) {
-    case 'beginner':
-      return Difficulty.beginner;
-    case 'intermediate':
-      return Difficulty.intermediate;
-    case 'advanced':
-      return Difficulty.advanced;
+  print('Debugging Step: Converting from difficulty string: $value');
+  try {
+    switch(value) {
+      case 'beginner':
+        return Difficulty.beginner;
+      case 'intermediate':
+        return Difficulty.intermediate;
+      case 'advanced':
+        return Difficulty.advanced;
+    }
+  } catch (e) {
+    print('Debugging Step: Error converting difficulty from string: ${e.toString()}');
   }
   return Difficulty.all;
 }
@@ -166,7 +171,6 @@ Enforcement getEnforcementFromString(String? value) {
 }
 
 SubmissionScreen getSubmissionScreenFromString(String? value) {
-  print('value: $value');
   switch(value) {
     case 'photoUpload':
       return SubmissionScreen.photoUpload;

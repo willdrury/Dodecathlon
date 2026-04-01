@@ -38,22 +38,6 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
   Future<void> loadSettings() async {
     final Database? db = await _getDatabase();
 
-    // Uncomment below to update table
-    // String userId = FirebaseAuth.instance.currentUser!.uid;
-    // Map<dynamic, dynamic> defaultSettings = {
-    //   'theme': ThemeMode.system.name,
-    //   'comment_notifications': 1,
-    //   'like_notifications': 1,
-    //   'new_challenge_notifications': 1,
-    //   'leaderboard_update_notifications': 1,
-    //   'challenge_reminders': 1,
-    //   'last_login_date': DateTime.now().microsecondsSinceEpoch,
-    //   'current_competition': '',
-    //   'id': userId,
-    // };
-    // await createSettings(defaultSettings);
-    // End update section
-
     if (db == null) return;
     final data = await db!.query('user_settings');
     final settings = data.map((row) {
@@ -98,6 +82,7 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     final Database? db = await _getDatabase();
 
+    print('updating settings');
     try {
       await db!.update('user_settings', {
         'theme': settings['theme'],
@@ -106,8 +91,7 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
         'new_challenge_notifications': settings['new_challenge_notifications'] ? 1 : 0,
         'leaderboard_update_notifications': settings['leaderboard_update_notifications'] ? 1 : 0,
         'challenge_reminders': settings['challenge_reminders'] ? 1 : 0,
-        'last_login_date': DateTime.now().subtract(Duration(days: 30)).microsecondsSinceEpoch,
-        // 'last_login_date': DateTime.now().microsecondsSinceEpoch,
+        'last_login_date': DateTime.now().microsecondsSinceEpoch,
         'current_competition': settings['current_competition'],
         'id': userId,
       }, where: 'id = ?', whereArgs: [userId]);
@@ -122,20 +106,6 @@ class SettingsProvider extends StateNotifier<Map<dynamic, dynamic>> {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     final Database? db = await _getDatabase();
     if (db == null) return;
-
-    // db.execute('DROP TABLE IF EXISTS user_settings');
-    // db.execute('CREATE TABLE user_settings('
-    //     'id TEXT PRIMARY KEY, '
-    //     'theme TEXT, '
-    //     'comment_notifications INTEGER, '
-    //     'like_notifications INTEGER, '
-    //     'new_challenge_notifications INTEGER, '
-    //     'leaderboard_update_notifications INTEGER, '
-    //     'challenge_reminders INTEGER, '
-    //     'last_login_date INTEGER, '
-    //     'current_competition TEXT'
-    //     ')'
-    // );
 
     await db.insert('user_settings', {
       'theme': settings['theme'],

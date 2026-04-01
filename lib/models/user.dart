@@ -58,6 +58,7 @@ class User {
   };
 
   factory User.fromMap(Map data) {
+    print('Debugging Step: Converting User ${data['userName']} from JSON');
     try {
       return User(
         userName: data['userName'],
