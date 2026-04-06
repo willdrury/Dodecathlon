@@ -84,9 +84,10 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
 
     // Submissions
     AsyncValue<List<Submission>> submissions = ref.watch(submissionsProvider);
+    List<Submission> userSubmissions = [];
     List<String> completedChallengeIds = [];
     if (submissions.hasValue) {
-      List<Submission> userSubmissions = submissions.value!.where((s) =>
+      userSubmissions = submissions.value!.where((s) =>
         s.userId == currentUser.id
       ).toList();
       completedChallengeIds = userSubmissions.map((s) => s.challengeId).toList();
@@ -104,11 +105,9 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
     // Challenges
     AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
     List<Challenge> eventChallenges = [];
-    if (challenges.hasValue) { // TODO: Logging and UI if unable to load challenges
+    if (challenges.hasValue) {
       eventChallenges = challenges.value!.where((c) =>
-        c.eventId == selectedEvent!.id &&
-        c.startDate.isBefore(now) &&
-        c.endDate.isAfter(now)
+        c.eventId == selectedEvent!.id
       ).toList();
     }
 
@@ -269,23 +268,26 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
             ),
           if (selectedEventIndex < currentEventIndex)
             PreviousEventDetails(
-              currentEvent: currentEvent,
+              currentEvent: selectedEvent!,
               challenges: eventChallenges,
+              submissions: submissions.value!,
+              currentUser: currentUser,
             ),
           if (selectedEventIndex > currentEventIndex)
             NextEventDetails(currentEvent: currentEvent),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 80),
-            alignment: Alignment.center,
-            child: FilledButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => EventScheduleScreen())
-                );
-              },
-              child: Text('View Full Competition Schedule')
+          if (inPersonEvents.hasValue && selectedEventIndex >= currentEventIndex)
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 80),
+              alignment: Alignment.center,
+              child: FilledButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => EventScheduleScreen())
+                  );
+                },
+                child: Text('View Full Competition Schedule')
+              ),
             ),
-          ),
         ],
       ),
     );

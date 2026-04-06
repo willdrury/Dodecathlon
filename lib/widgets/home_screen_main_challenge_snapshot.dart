@@ -53,11 +53,12 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
     ).toList();
 
     int startDay = DateTime.now().weekday;
-    int numVisibleDays = min(7, DateTime.now().difference(challenge.startDate).inDays);
+    int numVisibleDays = min(7, DateTime.now().difference(challenge.startDate).inDays + 1);
+    int numDaysInChallenge = challenge.endDate.difference(challenge.startDate).inDays + 1;
     Map<int, bool> completedSubmissionMap = {};
 
-    for (int i = numVisibleDays - 1; i >= 0; i--) {
-      completedSubmissionMap[(startDay + i) % 7] = false;
+    for (int i = 0; i < numVisibleDays; i++) {
+      completedSubmissionMap[(startDay - i) % 7] = false;
     }
 
     List<Submission> userSubmissionsByDate = submissions.value!.where((s) =>
@@ -68,7 +69,6 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
       s.createdDate.isAfter(challenge.startDate)
     ).toList()..sort((a,b) => a.createdDate.isAfter(b.createdDate) ? 0 : 1);
 
-    // TODO: Verify this is sorting and counting correctly. May also want to move elsewhere and/or make more efficient
     int tempStreak = 0;
     int currentStreak = 0;
     int maxStreak = 0;
@@ -76,7 +76,7 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
     DateTime prevDay = DateTime.now();
     bool inStreak = true;
     for (Submission s in userSubmissionsByDate) {
-      completedSubmissionMap[s.createdDate.weekday] = true;
+      completedSubmissionMap[s.createdDate.weekday % 7] = true;
 
       if (s.createdDate.day == currentDay.day) {
         if (inStreak) currentStreak++;
@@ -92,6 +92,52 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
       }
     }
 
+    List<Widget> streakIndicatorWidgets = [];
+    for (int offset = 0; offset < numVisibleDays; offset++) {
+      streakIndicatorWidgets.add(
+        Column(
+          children: [
+            Container(
+              width: 25,
+              height: 25,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: ((startDay - offset) % 7) == DateTime.now().weekday
+                      ? Border.all(color: Theme.of(context).colorScheme.primary)
+                      : null
+              ),
+              child: completedSubmissionMap[((startDay - offset) % 7)]!
+                  ? Icon(Icons.check, color: Colors.green,)
+                  : ((startDay - offset) % 7)  == DateTime.now().weekday
+                    ? null
+                    : Icon(Icons.close, color: Theme.of(context).colorScheme.primary),
+            ),
+            Text(toWeekday(((startDay - offset) % 7) ), style: TextStyle(fontSize: 10),)
+          ],
+        )
+      );
+    }
+
+    streakIndicatorWidgets = streakIndicatorWidgets.reversed.toList();
+
+    for (int i = 1; i <= min(7 - numVisibleDays, numDaysInChallenge - numVisibleDays); i++) {
+      streakIndicatorWidgets.add(
+        Column(
+          children: [
+            Container(
+              width: 25,
+              height: 25,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: Colors.black26)
+              ),
+            ),
+            Text(toWeekday((startDay + i) % 7), style: TextStyle(fontSize: 10),)
+          ],
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -103,7 +149,7 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
         );
       },
       child: Container(
-        height: 80,
+        height: 85,
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
@@ -125,7 +171,7 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(challenge.name),
+                Text('${challenge.name} Counter'),
                 Spacer(),
                 Text(
                   'Current Streak: $currentStreak',
@@ -136,29 +182,7 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
             Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                for (int day = 1; day <= 7; day++)
-                  Column(
-                    children: [
-                      Container(
-                        width: 25,
-                        height: 25,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: ((day + startDay) % 7) == DateTime.now().weekday
-                            ? Border.all(color: Theme.of(context).colorScheme.primary)
-                            : null
-                        ),
-                        child: completedSubmissionMap[((day + startDay) % 7) ]!
-                          ? Icon(Icons.check, color: Colors.green,)
-                          : ((day + startDay) % 7)  == DateTime.now().weekday
-                            ? null
-                            : Icon(Icons.close, color: Theme.of(context).colorScheme.primary),
-                      ),
-                      Text(toWeekday(((day + startDay) % 7) ), style: TextStyle(fontSize: 10),)
-                    ],
-                  ),
-              ],
+              children: streakIndicatorWidgets,
             )
           ],
         ),

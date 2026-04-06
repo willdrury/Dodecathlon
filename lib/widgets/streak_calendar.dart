@@ -60,15 +60,52 @@ class StreakCalendar extends StatelessWidget {
           itemBuilder: (ctx, i) {
 
             Widget child;
+
+            // Weekday labels
             if (i < 7) {
               child = dayLabels[i];
             }
+
+            // Blank spaces before month start and after month end
             else if (i + startDay - 7 <= 0 || i + startDay - 7 > DateUtils.getDaysInMonth(year, month)) {
               child = Text('');
             }
-            else if (completedSubmissionMap.containsKey(i + startDay - 7)) {
-              bool extendLeft = completedSubmissionMap.containsKey(i + startDay - 8);
-              bool extendRight = completedSubmissionMap.containsKey(i + startDay - 6);
+
+            // User submission not approved
+            else if (
+              completedSubmissionMap.containsKey(i + startDay - 7) &&
+              !completedSubmissionMap[i + startDay - 7]!.isApproved
+            ) {
+              child =  GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (ctx) => SubmissionDetailsScreen(submission: completedSubmissionMap[i + startDay - 7]!))
+                    );
+                  },
+                  child: Container(
+                      height: 30,
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Text((i + startDay - 7).toString(), style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),)
+                  )
+              );
+            }
+
+            // User submission approved
+            else if (
+              completedSubmissionMap.containsKey(i + startDay - 7) &&
+              completedSubmissionMap[i + startDay - 7]!.isApproved
+            ) {
+              bool extendLeft =
+                completedSubmissionMap.containsKey(i + startDay - 8) &&
+                completedSubmissionMap[i + startDay - 8]!.isApproved;
+              bool extendRight =
+                completedSubmissionMap.containsKey(i + startDay - 6) &&
+                completedSubmissionMap[i + startDay - 6]!.isApproved;
               child =  GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
@@ -80,18 +117,22 @@ class StreakCalendar extends StatelessWidget {
                     width: double.infinity,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
+                      color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.horizontal(
                         left: extendLeft ? Radius.circular(0) : Radius.circular(15),
                         right: extendRight ? Radius.circular(0) : Radius.circular(15)
                       ),
                     ),
-                    child: Text((i + startDay - 7).toString(), style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),)
+                    child: Text((i + startDay - 7).toString(), style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),)
                   )
               );
             }
+
+            // No user submission, and day is in future
             else if (i + startDay - 7 > now.day && now.month >= month && now.year >= year){
               child = Text((i + startDay - 7).toString(), style: TextStyle(color: Colors.grey),);
+
+            // No user submission and day is in past
             } else {
               child = Text((i + startDay - 7).toString(),);
             }
@@ -113,6 +154,39 @@ class StreakCalendar extends StatelessWidget {
 
     return Column(
       children: [
+        Row(
+          children: [
+            Container(
+              height: 15,
+              width: 15,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            Text(
+              ' = Submitted, Approved',
+              style: TextStyle(color: Colors.grey),
+            )
+          ]
+        ),
+        Row(
+          children: [
+            Container(
+              height: 15,
+              width: 15,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            Text(
+              ' = Submitted, Pending Approval',
+              style: TextStyle(color: Colors.grey),
+            )
+          ]
+        ),
+        SizedBox(height: 40,),
         for (int i = 0; i < numMonths; i++)
           generateMonth(
             DateUtils.addMonthsToMonthDate(challenge.startDate, i).month,

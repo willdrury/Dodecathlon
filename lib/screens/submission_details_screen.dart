@@ -140,13 +140,15 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
                     if (post.imageUrl != null)
                       Align(
                         alignment: Alignment.center,
-                        child: ConstrainedBox(
+                        child: Container(
+                          color: Colors.black12,
+                          width: double.infinity,
                           constraints: BoxConstraints(
                             maxHeight: 500,
                           ),
                           child: Image.network(
                             post.imageUrl!,
-                            fit: BoxFit.fitWidth,
+                            fit: BoxFit.fitHeight,
                             frameBuilder: (_, image, loadingBuilder, __) {
                               if (loadingBuilder == null) {
                                 return const SizedBox(

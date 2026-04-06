@@ -10,15 +10,12 @@ class ImageUtility {
     final imageRef = storageRef.child("images/$path");
     try {
       // Check if image with specified path already exists
-      String? imageUrl = await imageRef.getMetadata()
+      String? imageUrl;
+      await imageRef.getMetadata()
         .then((metadata) async {
-          print('Found existing file with specified path');
-          final String imageUrl = await imageRef.getDownloadURL();
-          return imageUrl;
-        })
-        .catchError((error) {
-          print('No existing file with specified path');
-          return null;
+          imageUrl = await imageRef.getDownloadURL();
+        }).catchError((error) {
+          imageUrl = null;
         });
 
       if (imageUrl != null) {

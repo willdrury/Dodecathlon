@@ -62,7 +62,8 @@ class EventRankSnapshot extends ConsumerWidget {
                 height: 50,
                 width: 50,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  color: Theme.of(context).colorScheme.surface,
+                  // color: Theme.of(context).colorScheme.surfaceContainer,
                   borderRadius: BorderRadius.circular(50),
                   boxShadow: [
                     BoxShadow(
@@ -71,7 +72,7 @@ class EventRankSnapshot extends ConsumerWidget {
                         spreadRadius: 1,
                         blurRadius: 5
                     )
-                    ]
+                  ]
                 ),
                 child: Text(
                   currRank.toString(),

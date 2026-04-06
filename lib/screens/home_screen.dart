@@ -202,7 +202,8 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
                 ),
               ),
             ),
-            EventProgressContainer(onPageChange: widget.onPageChange,),
+            if (!showDifficultySelectionButton)
+              EventProgressContainer(onPageChange: widget.onPageChange,),
             if (showDifficultySelectionButton)
               Container(
                 height: 100,

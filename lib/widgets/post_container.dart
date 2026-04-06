@@ -38,6 +38,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Are you sure you want to delete this post?'),
+          content: const Text('Doing so will delete any submissions associated with this post. This action cannot be undone.'),
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
@@ -58,6 +59,9 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                   for (PostComment c in comments) {
                     await c.delete();
                   }
+                }
+                if (widget.submission != null) {
+                  await widget.submission!.delete();
                 }
                 String? error = await widget.post.delete();
                 if (context.mounted) Navigator.of(context).pop();
@@ -160,7 +164,9 @@ class _PostContainerState extends ConsumerState<PostContainer> {
           ),
           if (widget.post.imageUrl !=  null)
             Center(
-              child: ConstrainedBox(
+              child: Container(
+                width: double.infinity,
+                color: Colors.black12,
                 constraints: BoxConstraints(
                   maxHeight: 500,
                 ),
@@ -172,7 +178,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
                   },
                   child: Image.network(
                     widget.post.imageUrl!,
-                    fit: BoxFit.fitWidth,
+                    fit: BoxFit.fitHeight,
                     frameBuilder: (_, image, loadingBuilder, __) {
                       if (loadingBuilder == null) {
                         return const SizedBox(

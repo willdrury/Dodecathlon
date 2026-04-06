@@ -93,7 +93,7 @@ class ChallengeDetailsScreen extends ConsumerWidget {
                               title: Text('Submission History'),
                               shape: Border(),
                               children: [
-                                SizedBox(height: 50,),
+                                SizedBox(height: 20,),
                                 StreakCalendar(challenge: challenge, challengeSubmissions: challengeSubmissions),
                                 SizedBox(height: 50,),
                               ],

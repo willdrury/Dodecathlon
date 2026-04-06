@@ -108,7 +108,8 @@ class EventProgressContainer extends ConsumerWidget {
                     child: CircularProgressContainer(
                       currentPoints: mainPoints,
                       maxPoints: maxMainPoints,
-                      circleColor: Theme.of(context).colorScheme.surfaceContainer,
+                      circleColor: Theme.of(context).colorScheme.surface,
+                      // circleColor: Theme.of(context).colorScheme.surfaceContainer,
                       indicatorColor: Theme.of(context).colorScheme.primary,
                       upperTextColor: Theme.of(context).colorScheme.primary,
                       lowerTextColor: Theme.of(context).colorScheme.onSurface,
@@ -141,7 +142,8 @@ class EventProgressContainer extends ConsumerWidget {
                     child: CircularProgressContainer(
                       currentPoints: bonusPoints,
                       maxPoints: 20,
-                      circleColor: Theme.of(context).colorScheme.surfaceContainer,
+                      circleColor: Theme.of(context).colorScheme.surface,
+                      // circleColor: Theme.of(context).colorScheme.surfaceContainer,
                       indicatorColor: Colors.blue,
                       upperTextColor: Colors.blue,
                       lowerTextColor: Theme.of(context).colorScheme.onSurface,
