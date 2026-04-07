@@ -1,5 +1,6 @@
 import 'package:dodecathlon/constants/box_shadows.dart';
 import 'package:dodecathlon/models/challenge.dart';
+import 'package:dodecathlon/providers/notification_provider.dart';
 import 'package:dodecathlon/providers/posts_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/difficulty_selection_screen.dart';
@@ -12,6 +13,7 @@ import '../models/competition.dart';
 import '../models/post.dart';
 import '../models/user.dart';
 import '../models/event.dart';
+import '../models/notification.dart' as dd;
 import '../providers/challenges_provider.dart';
 import '../providers/competition_provider.dart';
 import '../providers/settings_provider.dart';
@@ -114,7 +116,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
     }
 
     User user = userStream.value!;
-    var settings = ref.watch(settingsProvider);
+    Map<dynamic, dynamic> settings = ref.watch(settingsProvider);
     AsyncValue<List<User>> users = ref.watch(usersProvider);
     AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
     AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);

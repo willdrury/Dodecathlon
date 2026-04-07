@@ -3,21 +3,25 @@ import 'package:dodecathlon/models/post.dart';
 import 'package:dodecathlon/providers/challenges_provider.dart';
 import 'package:dodecathlon/providers/events_provider.dart';
 import 'package:dodecathlon/providers/posts_provider.dart';
+import 'package:dodecathlon/screens/submission_assignment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/event.dart';
 import '../models/submission.dart';
 import 'package:intl/intl.dart';
 
+import '../models/user.dart';
+import '../providers/users_provider.dart';
+
 final formatter = DateFormat('yMMMMd').add_jm();
 
 class SubmissionDetailsScreen extends ConsumerStatefulWidget {
-  SubmissionDetailsScreen({
+  const SubmissionDetailsScreen({
     super.key,
     required this.submission,
   });
 
-  Submission submission;
+  final Submission submission;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -29,8 +33,8 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
 
   bool _showDetails = false;
 
-  // Delete post confirmation modal
-  Future<void> _dialogBuilder(BuildContext context, Post post) async {
+  // Delete submission confirmation modal
+  Future<void> _deleteSubmissionDialogBuilder(BuildContext context, Post post) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -63,6 +67,31 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
     );
   }
 
+  Future<void> _unableToAssignUserDialogBuilder(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('Unable to assign user'),
+          content: const Text('A user has already been assigned to this submission. '
+              'Please wait 24 hours before attempting to assign another user.'),
+          actions: <Widget>[
+            FilledButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void deletePost(Post post, BuildContext ctx) async { // TODO: Show popup button and whatnot
     try {
       await post.delete();
@@ -76,26 +105,38 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
     }
   }
 
+  // TODO: add button to update assigned user and assigned user date
+  // TODO: add ability to update submission if challange is marked as editable
+
   @override
   Widget build(BuildContext context) {
     AsyncValue<List<Post>> postStream = ref.watch(postsProvider);
     AsyncValue<List<Challenge>> challengeStream = ref.watch(challengesProvider);
     AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
+    AsyncValue<List<User>> usersStream = ref.watch(usersProvider);
 
-    if (!postStream.hasValue || !challengeStream.hasValue || !eventStream.hasValue) {
+    if (!postStream.hasValue || !challengeStream.hasValue || !eventStream.hasValue || !usersStream.hasValue) {
       return Center(child: CircularProgressIndicator(),);
     }
 
-    Post? post = postStream.value!.firstWhere((p) =>
+    Post? post = postStream.value!.where((p) =>
       p.submissionId == widget.submission.id
-    );
-    Challenge? challenge = challengeStream.value!.firstWhere((c) =>
+    ).firstOrNull;
+    Challenge? challenge = challengeStream.value!.where((c) =>
       c.id == widget.submission.challengeId
-    );
+    ).firstOrNull;
 
-    Event? event = eventStream.value!.firstWhere((e) =>
+    if (challenge == null || post == null) {
+      // TODO: Better error handling
+      return Center(child: CircularProgressIndicator(),);
+    }
+
+    Event? event = eventStream.value!.where((e) =>
       e.id == challenge.eventId
-    );
+    ).firstOrNull;
+    User? assignedUser = usersStream.value!.where((u) =>
+      u.id == widget.submission.approverId
+    ).firstOrNull;
 
     return Scaffold(
       backgroundColor: Color.lerp(Colors.white, Theme.of(context).colorScheme.primaryContainer, 0.1),
@@ -190,7 +231,7 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
                 children: [
                   TextButton(
                     onPressed: () {
-                      _dialogBuilder(context, post);
+                      _deleteSubmissionDialogBuilder(context, post);
                     },
                     child: Text(
                       'Delete',
@@ -200,15 +241,28 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
                   Spacer(),
                   if (!widget.submission.isApproved)
                     TextButton(
-                        onPressed: () {
-                          // TODO: Show popup
-                        },
-                        child: Text(
-                          'Assign to User',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary
-                          ),
-                        )
+                      onPressed: () async {
+                        // Validate the submission has not been assigned in the last 24 hours to prevent spam
+                        if (widget.submission.approverAddedAt != null &&
+                            DateTime.now().difference(widget.submission.approverAddedAt!).inDays < 1
+                        ) {
+                          await _unableToAssignUserDialogBuilder(context);
+                        } else {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (ctx) => SubmissionAssignmentScreen(
+                                submission: widget.submission,
+                              ))
+                          );
+                        }
+                      },
+                      child: Text(
+                        assignedUser == null
+                          ? 'Assign to User'
+                          : 'Assigned to: ${assignedUser.userName}',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary
+                        ),
+                      )
                     )
                 ],
               ),
@@ -257,7 +311,7 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
                         children: [
                           Text('Event:', style: TextStyle(fontWeight: FontWeight.bold),),
                           Spacer(),
-                          Text(event.name),
+                          Text(event!.name),
                         ],
                       ),
                       SizedBox(height: 100,)

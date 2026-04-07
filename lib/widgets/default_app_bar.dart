@@ -8,12 +8,14 @@ class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.useShadow,
     required this.backgroundColor,
     required this.textColor,
+    required this.hasUnread,
   });
 
   final String label;
   final Color backgroundColor;
   final Color textColor;
   final bool useShadow;
+  final bool hasUnread;
 
   @override
   Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
@@ -30,13 +32,28 @@ class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
       shape: useShadow ? Border(bottom: BorderSide(color: Colors.black.withAlpha(20))) : null,
       elevation: useShadow ? 5.0 : 0,
       actions: [
-        IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const NotificationsScreen())
-              );
-            },
-            icon: Icon(Icons.notifications)
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (ctx) => const NotificationsScreen())
+            );
+          },
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(Icons.notifications),
+              if (hasUnread)
+                Container(
+                  height: 10,
+                  width: 10,
+                  margin: EdgeInsets.only(bottom: 15, left: 15),
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                ),
+            ],
+          ),
         ),
         IconButton(
             onPressed: () {

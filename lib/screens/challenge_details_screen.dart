@@ -92,6 +92,7 @@ class ChallengeDetailsScreen extends ConsumerWidget {
                             ExpansionTile(
                               title: Text('Submission History'),
                               shape: Border(),
+                              initiallyExpanded: true,
                               children: [
                                 SizedBox(height: 20,),
                                 StreakCalendar(challenge: challenge, challengeSubmissions: challengeSubmissions),

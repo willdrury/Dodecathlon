@@ -19,7 +19,9 @@ import 'package:dodecathlon/screens/home_screen.dart';
 
 import '../models/competition.dart';
 import '../models/event.dart';
+import '../models/notification.dart' as dd;
 import '../providers/competition_provider.dart';
+import '../providers/notification_provider.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -253,6 +255,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
     AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
     AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
     AsyncValue<List<(String, int)>> userRankingsStream = ref.watch(userEventRankingsProvider);
+    AsyncValue<List<dd.Notification>> notificationsStream = ref.watch(notificationProvider);
 
     if (!competitions.hasValue || !eventStream.hasValue) {
       print('loading competitions');
@@ -311,6 +314,17 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
         ? _appBarColor!
         : Colors.transparent;
 
+    int numUnreadNotifications = 0;
+    List<dd.Notification> notifications = notificationsStream.value != null
+      ? notificationsStream.value!.where((n) {
+          if (n.user == currentUser?.id) {
+            if (!n.isRead) numUnreadNotifications++;
+            return true;
+          }
+          return false;
+        }).toList()
+      : [];
+
     return Scaffold(
       backgroundColor: _scaffoldBackgroundColor,
       endDrawer: DefaultDrawer(),
@@ -328,6 +342,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
                   useShadow: _useAppBarShadow,
                   backgroundColor: appBarColor,
                   textColor: _appBarTextColor,
+                  hasUnread: numUnreadNotifications > 0,
                 ),
             ];
           },

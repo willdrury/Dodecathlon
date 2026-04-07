@@ -16,7 +16,10 @@ class NotificationDetailsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            Text(notification.body),
+            if (notification.template != null && notification.getWidgetFromNotificationTemplate() != null)
+              notification.getWidgetFromNotificationTemplate()!,
+            if (notification.template == null)
+              Text(notification.body),
           ]
         ),
       ),

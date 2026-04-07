@@ -48,6 +48,11 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     AsyncValue<List<Submission>> submissions = ref.watch(submissionsProvider);
+    if (!submissions.hasValue) {
+      // TODO: Better error handling
+      return Center(child: CircularProgressIndicator(),);
+    }
+
     List<Submission> challengeSubmissions = submissions.value!.where((s) =>
       s.challengeId == challenge.id && s.userId == user.id
     ).toList();
@@ -55,16 +60,15 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
     int startDay = DateTime.now().weekday;
     int numVisibleDays = min(7, DateTime.now().difference(challenge.startDate).inDays + 1);
     int numDaysInChallenge = challenge.endDate.difference(challenge.startDate).inDays + 1;
-    Map<int, bool> completedSubmissionMap = {};
+    Map<int, Submission?> completedSubmissionMap = {};
 
     for (int i = 0; i < numVisibleDays; i++) {
-      completedSubmissionMap[(startDay - i) % 7] = false;
+      completedSubmissionMap[(startDay - i) % 7] = null;
     }
 
     List<Submission> userSubmissionsByDate = submissions.value!.where((s) =>
       s.challengeId == challenge.id &&
       s.userId == user.id &&
-      s.isApproved &&
       s.createdDate.isAfter(DateTime.now().subtract(Duration(days: 7))) &&
       s.createdDate.isAfter(challenge.startDate)
     ).toList()..sort((a,b) => a.createdDate.isAfter(b.createdDate) ? 0 : 1);
@@ -76,9 +80,9 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
     DateTime prevDay = DateTime.now();
     bool inStreak = true;
     for (Submission s in userSubmissionsByDate) {
-      completedSubmissionMap[s.createdDate.weekday % 7] = true;
+      completedSubmissionMap[s.createdDate.weekday % 7] = s;
 
-      if (s.createdDate.day == currentDay.day) {
+      if (s.createdDate.day == currentDay.day && s.isApproved) {
         if (inStreak) currentStreak++;
         tempStreak++;
         prevDay = currentDay;
@@ -106,8 +110,10 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
                       ? Border.all(color: Theme.of(context).colorScheme.primary)
                       : null
               ),
-              child: completedSubmissionMap[((startDay - offset) % 7)]!
-                  ? Icon(Icons.check, color: Colors.green,)
+              child: completedSubmissionMap[((startDay - offset) % 7)] != null
+                  ? completedSubmissionMap[((startDay - offset) % 7)]!.isApproved
+                    ? Icon(Icons.check, color: Colors.green,)
+                    : Icon(Icons.check, color: Colors.orange,)
                   : ((startDay - offset) % 7)  == DateTime.now().weekday
                     ? null
                     : Icon(Icons.close, color: Theme.of(context).colorScheme.primary),

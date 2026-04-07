@@ -134,7 +134,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
       ).toList();
     }
     
-    return SingleChildScrollView(
+    return SingleChildScrollView( // TODO: Consider wrapping in gesture detector or something to allow swiping between events
       physics: NeverScrollableScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

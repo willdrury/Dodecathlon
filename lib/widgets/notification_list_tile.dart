@@ -16,15 +16,25 @@ class _NotificationListTileState extends State<NotificationListTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(widget.notification.title, style: widget.notification.isRead ? null : TextStyle(fontWeight: FontWeight.bold),),
-      subtitle: Text(widget.notification.body, overflow: TextOverflow.ellipsis,),
-      onTap: () {
-        setState(() {
-          widget.notification.isRead = true;
-        });
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (ctx) => NotificationDetailsScreen(notification: widget.notification))
-        );
+      title: Text(
+        widget.notification.title,
+        style: widget.notification.isRead ? null : TextStyle(fontWeight: FontWeight.bold),
+      ),
+      subtitle: Text(
+        widget.notification.body,
+        overflow: TextOverflow.ellipsis,
+        style: widget.notification.isRead ? null : TextStyle(fontWeight: FontWeight.bold),
+      ),
+      shape: Border.symmetric(horizontal: BorderSide(color: Colors.black, width: .1)),
+      onTap: () async {
+        widget.notification.isRead = true;
+        await widget.notification.upload();
+        setState(() {});
+        if (context.mounted) {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (ctx) => NotificationDetailsScreen(notification: widget.notification))
+          );
+        }
       },
     );
   }

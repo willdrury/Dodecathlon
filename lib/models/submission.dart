@@ -10,6 +10,8 @@ class Submission {
   final String challengeId;
   final DateTime createdDate;
   final String id;
+  String? approverId;
+  DateTime? approverAddedAt;
   bool isBonus;
   bool isApproved;
 
@@ -19,6 +21,8 @@ class Submission {
     required this.challengeId,
     required this.isBonus,
     required this.isApproved,
+    this.approverId,
+    this.approverAddedAt,
   }) : createdDate = DateTime.now(),
       id = uuid.v4();
 
@@ -30,6 +34,8 @@ class Submission {
     required this.id,
     required this.isBonus,
     required this.isApproved,
+    this.approverId,
+    this.approverAddedAt,
   });
 
   Map<String, dynamic> toJson() => {
@@ -40,10 +46,16 @@ class Submission {
     'points': points,
     'isBonus': isBonus,
     'isApproved': isApproved,
+    'approverId': approverId,
+    'approverAddedAt': approverAddedAt,
   };
 
   factory Submission.fromMap(Map data) {
     try {
+      DateTime? approverAddedAt;
+      if (data['approverAddedAt'] != null) {
+        approverAddedAt = DateTime.fromMicrosecondsSinceEpoch((data['approverAddedAt'] as Timestamp).microsecondsSinceEpoch);
+      }
       return Submission.all(
         userId: data['userId'],
         points: data['points'],
@@ -52,9 +64,12 @@ class Submission {
         id: data['id'],
         isBonus: data['isBonus'],
         isApproved: data['isApproved'],
+        approverId: data['approverId'],
+        approverAddedAt: approverAddedAt,
       );
     } catch (e) {
       print('Error converting Submission from JSON: ${e.toString()}');
+      print('Data: $data');
       rethrow;
     }
   }
