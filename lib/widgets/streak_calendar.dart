@@ -58,7 +58,6 @@ class StreakCalendar extends StatelessWidget {
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (ctx, i) {
-
             Widget child;
 
             // Weekday labels

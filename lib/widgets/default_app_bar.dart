@@ -41,7 +41,7 @@ class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Icon(Icons.notifications),
+              Icon(Icons.notifications, color: Theme.of(context).colorScheme.onSurface,),
               if (hasUnread)
                 Container(
                   height: 10,
@@ -59,7 +59,7 @@ class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
             onPressed: () {
               Scaffold.of(context).openEndDrawer();
             },
-            icon: Icon(Icons.menu)
+            icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.onSurface,)
         ),
       ],
     );

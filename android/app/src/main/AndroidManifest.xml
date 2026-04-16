@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="YouBetter"
+        android:label="Athlon"
         android:name="${applicationName}"
         android:roundIcon="@mipmap/dodecathlon_logo_circular"
         android:icon="@mipmap/dodecathlon_logo">

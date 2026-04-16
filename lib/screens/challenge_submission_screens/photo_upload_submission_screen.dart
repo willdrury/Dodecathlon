@@ -52,7 +52,7 @@ class _PhotoUploadSubmissionScreenState extends ConsumerState<PhotoUploadSubmiss
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text('Back', style: TextStyle(fontSize: 20, color: Colors.black)),
+                      child: Text('Back', style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                     ),
                     Spacer(),
                     TextButton(

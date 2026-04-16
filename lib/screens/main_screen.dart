@@ -39,10 +39,8 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
   int _currentPageIndex = 0;
   bool _showAppBar = true;
   bool _useAppBarShadow = false;
-  Color? _appBarColor;
   String _appBarLabel = '';
   Color _appBarTextColor = Colors.black;
-  Color _scaffoldBackgroundColor = Colors.white;
   Widget? _floatingActionButton;
   ScrollPhysics _scrollPhysics = NeverScrollableScrollPhysics();
   late ScrollController _scrollController;
@@ -62,9 +60,9 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
 
   @override
   void initState() {
+    super.initState();
     _scrollController = ScrollController();
     WidgetsBinding.instance.addObserver(this);
-    super.initState();
   }
 
   @override
@@ -181,9 +179,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           _showAppBar = true;
           _appBarLabel = '';
           _useAppBarShadow = false;
-          _appBarColor = Colors.transparent;
           _appBarTextColor = Theme.of(context).colorScheme.onSurface;
-          _scaffoldBackgroundColor = Theme.of(context).colorScheme.surface;
           _floatingActionButton = null;
           _scrollPhysics = NeverScrollableScrollPhysics();
           if (_scrollController.hasClients) {
@@ -199,9 +195,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           _showAppBar = true;
           _appBarLabel = 'Events';
           _useAppBarShadow = true;
-          _appBarColor = Colors.transparent;
           _appBarTextColor = Theme.of(context).colorScheme.onSurface;
-          _scaffoldBackgroundColor = Theme.of(context).colorScheme.surface;
           _floatingActionButton = null;
           _scrollPhysics = ScrollPhysics();
         case 2:
@@ -214,9 +208,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           _showAppBar = true;
           _appBarLabel = 'Social';
           _useAppBarShadow = true;
-          _appBarColor = Theme.of(context).colorScheme.surface;
           _appBarTextColor = Theme.of(context).colorScheme.onSurface;
-          _scaffoldBackgroundColor = Theme.of(context).colorScheme.surface;
           _floatingActionButton = FloatingActionButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -233,10 +225,8 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           _currentScreen = RankingsScreen();
           _showAppBar = true;
           _useAppBarShadow = false;
-          _appBarColor = Theme.of(context).colorScheme.primaryContainer;
           _appBarLabel = 'Leaderboard';
           _appBarTextColor = Theme.of(context).colorScheme.tertiary;
-          _scaffoldBackgroundColor = Theme.of(context).colorScheme.primaryContainer;
           _floatingActionButton = null;
           _scrollPhysics = ScrollPhysics();
       }
@@ -245,6 +235,17 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
+
+    Color scaffoldBackgroundColor;
+    Color appBarColor;
+    if (_currentPageIndex == 4) { // Rankings
+      scaffoldBackgroundColor = Theme.of(context).colorScheme.primaryContainer;
+      appBarColor = Theme.of(context).colorScheme.primaryContainer;
+    } else {
+      scaffoldBackgroundColor = Theme.of(context).colorScheme.surface;
+      appBarColor = Colors.transparent;
+    }
+
     AsyncValue<User?> userStream = ref.watch(userProvider);
     if (!userStream.hasValue) {
       return const Center(child: CircularProgressIndicator(),);
@@ -310,10 +311,6 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
       // onDestinationSelected(_currentPageIndex, context);
     }
 
-    Color appBarColor = _appBarColor != null
-        ? _appBarColor!
-        : Colors.transparent;
-
     int numUnreadNotifications = 0;
     List<dd.Notification> notifications = notificationsStream.value != null
       ? notificationsStream.value!.where((n) {
@@ -326,7 +323,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
       : [];
 
     return Scaffold(
-      backgroundColor: _scaffoldBackgroundColor,
+      backgroundColor: scaffoldBackgroundColor,
       endDrawer: DefaultDrawer(),
       floatingActionButton: _floatingActionButton,
       body: SafeArea(
@@ -363,7 +360,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
             onDestinationSelected(index, context);
           },
           indicatorColor: Theme.of(context).colorScheme.primaryContainer,
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           // indicatorColor: Theme.of(context).colorScheme.primaryContainer,
           // backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
           shadowColor: Colors.black,

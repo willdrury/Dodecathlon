@@ -87,7 +87,7 @@ class EventProgressContainer extends ConsumerWidget {
               SizedBox(height: 20,),
               Align(
                 alignment: Alignment.center,
-                child: Text('Current Points', style: TextStyle(fontSize: 25,),)
+                child: Text('Current Event Points', style: TextStyle(fontSize: 25,),)
               ),
               SizedBox(height: 20,),
               Row(
@@ -95,11 +95,11 @@ class EventProgressContainer extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                      child: Text(
-                        'Main:',
-                        textAlign: TextAlign.end,
-                        style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onSurface),
-                      )
+                    child: Text(
+                      'Main:',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onSurface),
+                    )
                   ),
                   GestureDetector(
                     onTap: () {

@@ -69,7 +69,7 @@ class BonusChallengeCard extends StatelessWidget {
             width: double.infinity,
             height: 60,
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black87,

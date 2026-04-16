@@ -27,7 +27,7 @@ class SubmissionTileSmall extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         margin: EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.all(Radius.circular(20)),
           boxShadow: [
             BoxShadow(

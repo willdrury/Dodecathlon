@@ -36,24 +36,22 @@ class _ThemeSelectionScreen extends ConsumerState<ThemeSelectionScreen> {
               title: const Text('System Default'),
               value: dd.ThemeMode.system,
               groupValue: _currentTheme,
-              onChanged: (dd.ThemeMode? value) {
-                setState(() {
-                  _currentTheme = value;
-                  settings = {...settings, 'theme': 'system'};
-                  ref.read(settingsProvider.notifier).updateSettings(settings);
-                });
+              onChanged: (dd.ThemeMode? value) async {
+                _currentTheme = value;
+                settings = {...settings, 'theme': 'system'};
+                await ref.read(settingsProvider.notifier).updateSettings(settings);
+                setState(() {});
               },
             ),
             RadioListTile<dd.ThemeMode>(
               title: const Text('Light'),
               value: dd.ThemeMode.light,
               groupValue: _currentTheme,
-              onChanged: (dd.ThemeMode? value) {
-                setState(() {
-                  _currentTheme = value;
-                  settings = {...settings, 'theme': 'light'};
-                  ref.read(settingsProvider.notifier).updateSettings(settings);
-                });
+              onChanged: (dd.ThemeMode? value) async {
+                _currentTheme = value;
+                settings = {...settings, 'theme': 'light'};
+                await ref.read(settingsProvider.notifier).updateSettings(settings);
+                setState(() {});
               },
             ),
             RadioListTile<dd.ThemeMode>(
@@ -61,11 +59,10 @@ class _ThemeSelectionScreen extends ConsumerState<ThemeSelectionScreen> {
               value: dd.ThemeMode.dark,
               groupValue: _currentTheme,
               onChanged: (dd.ThemeMode? value) async {
+                _currentTheme = value;
                 settings = {...settings, 'theme': 'dark'};
-                ref.read(settingsProvider.notifier).updateSettings(settings);
-                setState(() {
-                  _currentTheme = value;
-                });
+                await ref.read(settingsProvider.notifier).updateSettings(settings);
+                setState(() {});
               },
             ),
           ],

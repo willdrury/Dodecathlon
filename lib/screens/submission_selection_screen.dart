@@ -157,7 +157,7 @@ class _SubmissionSelectionScreenState extends ConsumerState<SubmissionSelectionS
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('Close', style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.inversePrimary)),
+                    child: Text('Close', style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                   ),
                   Spacer(),
                   TextButton(

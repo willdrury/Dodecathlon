@@ -32,30 +32,36 @@ class _SocialFiltersCarouselState extends State<SocialFiltersCarousel> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            for (String s in filters.keys)
+            for (String filterName in filters.keys)
               Row(
                 children: [
                   Container(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     child: InkWell(
                       onTap: () {
                         setState(() {
-                          filters[s] = !filters[s]!;
-                          widget.toggleFilter(s);
+                          filters[filterName] = !filters[filterName]!;
+                          widget.toggleFilter(filterName);
                         });
                       },
                       borderRadius: BorderRadius.circular(30),
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
-                          color: filters[s]! ? Theme.of(context).colorScheme.secondaryContainer : Colors.transparent,
+                          color: filters[filterName]! ? Theme.of(context).colorScheme.secondaryContainer : Colors.transparent,
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: filters[s]! ? Colors.transparent : Colors.black12)
+                          border: Border.all(
+                            color: filters[filterName]!
+                              ? Colors.transparent
+                              : Theme.of(context).colorScheme.outline.withAlpha(100)
+                          )
                         ),
                         child: Text(
-                          s,
+                          filterName,
                           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: filters[s]! ? Theme.of(context).colorScheme.onPrimaryContainer : Colors.black38,
+                            color: filters[filterName]!
+                              ? Theme.of(context).colorScheme.onPrimaryContainer 
+                              : Theme.of(context).colorScheme.onSurface.withAlpha(100),
                           ),
                         ),
                       ),

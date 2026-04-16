@@ -49,7 +49,7 @@ class HomeScreenEventSnapshot extends ConsumerWidget {
           margin: EdgeInsets.all(20),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               boxShadow: [
                 BoxShadow(
                     color: Colors.black12,

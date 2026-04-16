@@ -116,7 +116,7 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
                     : Icon(Icons.check, color: Colors.orange,)
                   : ((startDay - offset) % 7)  == DateTime.now().weekday
                     ? null
-                    : Icon(Icons.close, color: Theme.of(context).colorScheme.primary),
+                    : Icon(Icons.close, color: Colors.redAccent),
             ),
             Text(toWeekday(((startDay - offset) % 7) ), style: TextStyle(fontSize: 10),)
           ],
@@ -160,7 +160,7 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(

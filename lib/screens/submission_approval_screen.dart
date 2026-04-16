@@ -30,7 +30,7 @@ class SubmissionApprovalScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      backgroundColor: Color.lerp(Colors.white, Theme.of(context).colorScheme.primaryContainer, 0.1),
+      backgroundColor: Color.lerp(Theme.of(context).colorScheme.surface, Theme.of(context).colorScheme.primaryContainer, 0.1),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
@@ -59,9 +59,9 @@ class SubmissionApprovalScreen extends ConsumerWidget {
                         margin: EdgeInsets.only(top: 20, bottom: 70),
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.black12),
+                          border: Border.all(color: Theme.of(context).colorScheme.outline.withAlpha(100)),
                           boxShadow: [
                             BoxShadow(
                                 color: Colors.black12,
@@ -89,9 +89,9 @@ class SubmissionApprovalScreen extends ConsumerWidget {
                         margin: EdgeInsets.only(top: 20, bottom: 70),
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.black12),
+                          border: Border.all(color: Theme.of(context).colorScheme.outline.withAlpha(100)),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black12,
@@ -173,7 +173,7 @@ class SubmissionApprovalScreen extends ConsumerWidget {
                               size: 20,
                             ),
                             style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(Colors.white),
+                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.surface),
                               shadowColor: WidgetStatePropertyAll(Colors.black38),
                               elevation: WidgetStatePropertyAll(5)
                             ),
@@ -194,7 +194,7 @@ class SubmissionApprovalScreen extends ConsumerWidget {
                               size: 20,
                             ),
                             style: ButtonStyle(
-                                backgroundColor: WidgetStatePropertyAll(Colors.white),
+                                backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.surface),
                                 shadowColor: WidgetStatePropertyAll(Colors.black38),
                                 elevation: WidgetStatePropertyAll(5)
                             ),
@@ -207,7 +207,7 @@ class SubmissionApprovalScreen extends ConsumerWidget {
                         child: FilledButton.icon(
                           label: Text(
                             'Not enough info',
-                            style: TextStyle(fontSize: 20, color: Colors.grey),
+                            style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.onSurface),
                           ),
                           onPressed: () {
                             // TODO: handle better
@@ -216,10 +216,10 @@ class SubmissionApprovalScreen extends ConsumerWidget {
                           icon: Icon(
                             Icons.question_mark,
                             size: 20,
-                            color: Colors.grey,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                           style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(Colors.white),
+                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.surface),
                               shadowColor: WidgetStatePropertyAll(Colors.black38),
                               elevation: WidgetStatePropertyAll(5)
                           ),

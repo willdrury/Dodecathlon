@@ -166,7 +166,7 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
                               (Route<dynamic> route) => false,
                         );
                       },
-                      child: Text('Back', style: TextStyle(fontSize: 20, color: Colors.black)),
+                      child: Text('Back', style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                     ),
                     Spacer(),
                     TextButton(
@@ -184,7 +184,7 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black12),
+                    border: Border.all(color: Theme.of(context).colorScheme.outline.withAlpha(100)),
                   ),
                   child: Column(
                     children: [
@@ -198,39 +198,46 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
                         ),
                         title: Text(currentUser!.userName),
                       ),
-                      if (_imageUrl !=  null)
-                        GestureDetector(
-                          onTap: _takePicture,
-                          child: Stack(
-                            alignment: Alignment.topRight,
-                            children: [
-                              Image.network(_imageUrl!, fit: BoxFit.fill,
-                                frameBuilder: (_, image, loadingBuilder, __) {
-                                  if (loadingBuilder == null) {
+                      if (_imageUrl != null)
+                        Container(
+                          width: double.infinity,
+                          color: Colors.grey,
+                          constraints: BoxConstraints(
+                            maxHeight: 500,
+                          ),
+                          child: GestureDetector(
+                            onTap: _takePicture,
+                            child: Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                Image.network(_imageUrl!, width: double.infinity, fit: BoxFit.contain,
+                                  frameBuilder: (_, image, loadingBuilder, __) {
+                                    if (loadingBuilder == null) {
+                                      return const SizedBox(
+                                        height: 300,
+                                        child: Center(child: CircularProgressIndicator()),
+                                      );
+                                    }
+                                    return image;
+                                  },
+                                  loadingBuilder: (BuildContext ctx, Widget child, ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) return child;
                                     return const SizedBox(
                                       height: 300,
                                       child: Center(child: CircularProgressIndicator()),
                                     );
-                                  }
-                                  return image;
-                                },
-                                loadingBuilder: (BuildContext ctx, Widget child, ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return const SizedBox(
-                                    height: 300,
-                                    child: Center(child: CircularProgressIndicator()),
-                                  );
-                                },
-                              ),
-                              IconButton(
+                                  },
+                                ),
+                                IconButton.filled(
                                   onPressed: () {
                                     setState(() {
                                       _imageUrl = null;
                                     });
                                   },
                                   icon: Icon(Icons.delete),
-                              )
-                            ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       Padding(
@@ -240,7 +247,7 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
                           maxLines: 1,
                           decoration: InputDecoration(
                             hintText: 'Give it a title...',
-                            hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black45),
+                            hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
                             border: InputBorder.none,
                           ),
                           style: TextStyle(fontWeight: FontWeight.bold),
@@ -253,7 +260,7 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
                           maxLines: null,
                           decoration: InputDecoration(
                             hintText: 'Description...',
-                            hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black45),
+                            hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
                             border: InputBorder.none,
                           ),
                         ),

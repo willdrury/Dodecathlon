@@ -67,7 +67,7 @@ class EventRankSnapshot extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(50),
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black12,
+                        color: Theme.of(context).colorScheme.primary.withAlpha(50),
                         offset: Offset(0, 5),
                         spreadRadius: 1,
                         blurRadius: 5

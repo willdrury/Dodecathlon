@@ -91,15 +91,8 @@ class _PostContainerState extends ConsumerState<PostContainer> {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: Colors.black12
-          // color: widget.submission != null && !widget.submission!.isApproved
-          //   ? Theme.of(context).colorScheme.primaryContainer
-          //   : Colors.black12,
-          // width: widget.submission != null && !widget.submission!.isApproved
-          //     ? 3
-          //     : 1
+          color: Theme.of(context).colorScheme.outline.withAlpha(100)
         ),
-
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -166,7 +159,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
             Center(
               child: Container(
                 width: double.infinity,
-                color: Colors.black12,
+                color: Colors.grey,
                 constraints: BoxConstraints(
                   maxHeight: 500,
                 ),

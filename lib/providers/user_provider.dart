@@ -1,20 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 
 import '../models/user.dart' as dd;
 
+final authStateProvider = StreamProvider<User?>((ref) {
+  return FirebaseAuth.instance.authStateChanges();
+});
+
 final userProvider = StreamProvider<dd.User?>((ref) {
-  final user = FirebaseAuth.instance.currentUser;
+  final authState = ref.watch(authStateProvider);
+  final user = authState.value;
+
   if (user == null) {
     return Stream.value(null);
   }
+
   return FirebaseFirestore.instance
       .collection('users')
       .doc(user.uid)
       .snapshots()
       .map((snapshot) {
-        return dd.User.fromMap(snapshot.data()!);
+        final data = snapshot.data();
+        if (data == null) return null;
+        return dd.User.fromMap(data);
       });
 });

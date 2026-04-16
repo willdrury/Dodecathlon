@@ -41,7 +41,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
   @override
   void initState() {
     _animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 4999));
+      vsync: this, duration: Duration(milliseconds: 4999));
     super.initState();
   }
 
@@ -49,7 +49,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
   void didChangeDependencies() {
     super.didChangeDependencies();
     final Color primaryColor = Theme.of(context).colorScheme.primary.withAlpha(100);
-    final Color secondaryColor = Theme.of(context).colorScheme.secondary.withAlpha(100);
+    final Color secondaryColor = Theme.of(context).colorScheme.primary.withAlpha(200);
 
     _colorTween = ColorTween(
       begin: primaryColor,

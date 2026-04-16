@@ -76,7 +76,7 @@ class MyApp extends ConsumerWidget {
     );
 
     return MaterialApp(
-      title: 'You Better',
+      title: 'Athlon',
       theme: ThemeData(
         brightness: Brightness.light,
         colorScheme: kColorScheme,

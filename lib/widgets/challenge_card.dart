@@ -21,11 +21,6 @@ class ChallengeCard extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: event.themeColor,
-            // gradient: LinearGradient(
-            //   colors: [event.themeColor, event.themeColor.withAlpha(100)],
-            //   begin: Alignment.topCenter,
-            //   end: Alignment.bottomCenter
-            // )
           ),
           child: Icon(event.icon, size: 50, color: Colors.white,)
         ),
@@ -53,7 +48,7 @@ class ChallengeCard extends StatelessWidget {
           width: double.infinity,
           height: 100,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             boxShadow: [
               BoxShadow(
                 color: Colors.black87,

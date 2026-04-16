@@ -114,13 +114,13 @@ class _SocialScreenState extends ConsumerState<SocialScreen> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
-                  border: Border.all(color: Colors.black38)
+                  border: Border.all(color: Theme.of(context).colorScheme.outline.withAlpha(200))
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.search, color: Colors.black38,),
+                    Icon(Icons.search, color: Theme.of(context).colorScheme.onSurface.withAlpha(200),),
                     SizedBox(width: 10,),
-                    Text('Find Users', style: TextStyle(color: Colors.black38),),
+                    Text('Find Users', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(200)),),
                   ],
                 ),
               ),
