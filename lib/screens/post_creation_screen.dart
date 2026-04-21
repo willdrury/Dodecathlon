@@ -183,6 +183,7 @@ class _PostCreationScreenState extends ConsumerState<PostCreationScreen> {
                 SizedBox(height: 20,),
                 Container(
                   decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: Theme.of(context).colorScheme.outline.withAlpha(100)),
                   ),

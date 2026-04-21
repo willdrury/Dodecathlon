@@ -1,7 +1,7 @@
 import 'package:dodecathlon/screens/account_management_screen.dart';
 import 'package:dodecathlon/screens/notification_management_screen.dart';
 import 'package:dodecathlon/screens/theme_selection_screen.dart';
-import 'package:dodecathlon/screens/user_stats_screen.dart';
+import 'package:dodecathlon/screens/milestones_screen.dart';
 import 'package:dodecathlon/widgets/profile_picture_input.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -133,12 +133,12 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
             children: [
               ListTile(
                 leading: Icon(Icons.calendar_today),
-                title: Text('Statistics'),
+                title: Text('Milestones'),
                 subtitle: Text('Joined: ${formatter.format(currentUser.createdDate)}'),
                 trailing: Icon(Icons.arrow_right),
                 onTap: () {
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx) => UserStatsScreen())
+                      MaterialPageRoute(builder: (ctx) => MilestonesScreen())
                   );
                 },
               ),

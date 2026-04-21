@@ -84,11 +84,12 @@ class EventProgressContainer extends ConsumerWidget {
           ),
           Column(
             children: [
-              SizedBox(height: 20,),
-              Align(
-                alignment: Alignment.center,
-                child: Text('Current Event Points', style: TextStyle(fontSize: 25,),)
-              ),
+              SizedBox(height: 130,),
+              // SizedBox(height: 20,),
+              // Align(
+              //   alignment: Alignment.center,
+              //   child: Text('Current Event Points', style: TextStyle(fontSize: 25,),)
+              // ),
               SizedBox(height: 20,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,

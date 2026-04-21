@@ -107,7 +107,7 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: ((startDay - offset) % 7) == DateTime.now().weekday
-                      ? Border.all(color: Theme.of(context).colorScheme.primary)
+                      ? Border.all(color: Theme.of(context).colorScheme.outline)
                       : null
               ),
               child: completedSubmissionMap[((startDay - offset) % 7)] != null
@@ -116,7 +116,7 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
                     : Icon(Icons.check, color: Colors.orange,)
                   : ((startDay - offset) % 7)  == DateTime.now().weekday
                     ? null
-                    : Icon(Icons.close, color: Colors.redAccent),
+                    : Icon(Icons.close, color: Theme.of(context).colorScheme.primary),
             ),
             Text(toWeekday(((startDay - offset) % 7) ), style: TextStyle(fontSize: 10),)
           ],
@@ -144,55 +144,65 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
       );
     }
 
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(
-              challenge: challenge,
-              isCompleted: false,
-              event: event,
-            ))
-        );
-      },
-      child: Container(
-        height: 85,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black12,
-                offset: Offset(0, 5),
-                spreadRadius: 1,
-                blurRadius: 5
-            )
-          ]
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('${challenge.name} Counter'),
-                Spacer(),
-                Text(
-                  'Current Streak: $currentStreak',
-                  style: TextStyle(fontSize: 10, color: Colors.grey),
-                )
-              ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(
+                  challenge: challenge,
+                  isCompleted: false,
+                  event: event,
+                ))
+            );
+          },
+          child: Container(
+            height: 90,
+            width: constraints.maxWidth * .8,
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            // margin: EdgeInsets.symmetric(vertical: 20),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    offset: Offset(0, 5),
+                    spreadRadius: 1,
+                    blurRadius: 5
+                  )
+                ]
             ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: streakIndicatorWidgets,
-            )
-          ],
-        ),
-      ),
+            child: IntrinsicWidth(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text('${challenge.name} Counter', style: Theme.of(context).textTheme.labelMedium,),
+                      SizedBox(width: 10,),
+                      Text(
+                        'Current Streak: $currentStreak',
+                        style: Theme.of(context).textTheme.labelSmall,
+                      )
+                    ],
+                  ),
+                  Spacer(),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: streakIndicatorWidgets,
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      }
     );
   }
 }

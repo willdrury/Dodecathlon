@@ -66,20 +66,47 @@ class MyApp extends ConsumerWidget {
          ).firstOrNull;
 
     final kColorScheme = ColorScheme.fromSeed(
-      seedColor: currentEvent == null ? Color(0xFF6A4C93) : currentEvent.themeColor,
-      dynamicSchemeVariant: DynamicSchemeVariant.tonalSpot
-    ).copyWith(surface: Colors.white);
+      seedColor: Colors.pinkAccent,
+      dynamicSchemeVariant: DynamicSchemeVariant.vibrant
+    ).copyWith(
+      surface: Colors.white,
+      surfaceDim: Color.lerp(Colors.white, Colors.black, .03),
+      primaryContainer: Colors.white,
+      outline: Colors.black26
+    );
 
     final kColorSchemeDark = ColorScheme.fromSeed(
-      seedColor: currentEvent == null ? Color(0xFF6A4C93) : currentEvent.themeColor,
+      seedColor: Colors.pinkAccent,
       brightness: Brightness.dark
+    ).copyWith(
+      surface: Color.lerp(Colors.white, Colors.black, .9),
+      surfaceDim: Color.lerp(Colors.black, Colors.pinkAccent, .1),
+      outline: Colors.black38,
+      primaryContainer: Color.lerp(Colors.white, Colors.black, .8),
+      secondaryContainer: Color.lerp(Colors.black, Colors.pinkAccent, .3)
     );
+
+    final kTextTheme = TextTheme(
+      labelSmall: TextStyle(fontSize: 10, color: Colors.grey),
+      labelMedium: TextStyle(color: Colors.grey),
+    );
+
+    // final kColorScheme = ColorScheme.fromSeed(
+    //   seedColor: currentEvent == null ? Color(0xFF6A4C93) : currentEvent.themeColor,
+    //   dynamicSchemeVariant: DynamicSchemeVariant.tonalSpot
+    // ).copyWith(surface: Colors.white);
+    //
+    // final kColorSchemeDark = ColorScheme.fromSeed(
+    //   seedColor: currentEvent == null ? Color(0xFF6A4C93) : currentEvent.themeColor,
+    //   brightness: Brightness.dark
+    // );
 
     return MaterialApp(
       title: 'Athlon',
       theme: ThemeData(
         brightness: Brightness.light,
         colorScheme: kColorScheme,
+        textTheme: kTextTheme,
         extensions: <ThemeExtension<dynamic>>[
           CustomColorsExtension(
             primaryDim: ColorUtility().lighten(kColorScheme.primary, .5),

@@ -62,7 +62,8 @@ class _CircularProgressContainerState extends State<CircularProgressContainer> w
   Widget build(BuildContext context) {
     List<BoxShadow> shadows = [
       BoxShadow(
-        color: Theme.of(context).colorScheme.primary.withAlpha(50),
+        color: widget.indicatorColor.withAlpha(50),
+        // color: Theme.of(context).colorScheme.primary.withAlpha(50),
         offset: Offset(0, 5),
         spreadRadius: 1,
         blurRadius: 5

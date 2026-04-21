@@ -48,7 +48,7 @@ class ChallengeCard extends StatelessWidget {
           width: double.infinity,
           height: 100,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: Theme.of(context).colorScheme.primaryContainer,
             boxShadow: [
               BoxShadow(
                 color: Colors.black87,

@@ -19,6 +19,7 @@ import '../providers/competition_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/users_provider.dart';
 import '../providers/events_provider.dart';
+import '../widgets/home_screen_details.dart';
 import '../widgets/home_screen_main_challenge_snapshot.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -41,39 +42,28 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
   @override
   void initState() {
     _animationController = AnimationController(
-      vsync: this, duration: Duration(milliseconds: 4999));
+      vsync: this, duration: Duration(milliseconds: 4999)
+    );
+    _animationController.repeat(reverse: true);
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final Color primaryColor = Theme.of(context).colorScheme.primary.withAlpha(100);
-    final Color secondaryColor = Theme.of(context).colorScheme.primary.withAlpha(200);
+    final Color primaryColor = Theme.of(context).colorScheme.primary;
+    final Color secondaryColor = Theme.of(context).colorScheme.secondary;
 
     _colorTween = ColorTween(
       begin: primaryColor,
       end: secondaryColor,
     ).animate(_animationController);
-    changeColors();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
-  }
-
-  Future changeColors() async {
-    while (mounted) {
-      await Future.delayed(const Duration(seconds: 5), () {
-        if (_animationController.status == AnimationStatus.completed && mounted) {
-          _animationController.reverse();
-        } else if (mounted) {
-          _animationController.forward();
-        }
-      });
-    }
   }
 
   void _showNewEventSelectDialog(BuildContext context, Event currentEvent) {
@@ -109,6 +99,8 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+
+    print('animation status: ${_animationController.value}');
 
     AsyncValue<User?> userStream = ref.watch(userProvider);
     if (!userStream.hasValue) {
@@ -176,55 +168,61 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
       });
     }
 
-    return Stack(
-      children: [
-        // Background dodecahedron image
-        AnimatedBuilder(
-          animation: _colorTween,
-          builder: (context, child) => SvgPicture.asset(
-            'assets/images/AppBackground.svg',
-            colorFilter: ColorFilter.mode(_colorTween.value, BlendMode.srcIn),
-            height: double.infinity,
-            alignment: Alignment.bottomCenter,
-          ),
-        ),
-
-        // Main home page content
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Welcome back ${user.userName}!', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
-                  ],
-                ),
-              ),
-            ),
-            if (!showDifficultySelectionButton)
-              EventProgressContainer(onPageChange: widget.onPageChange,),
-            if (showDifficultySelectionButton)
-              Container(
-                height: 100,
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                margin: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white70,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: BoxShadows.cardShadow,
-                ),
-                child: Text('Select a difficulty'),
-              ),
-            Spacer(),
-            if (!showDifficultySelectionButton && mainChallenge != null)
-              HomeScreenMainChallengeSnapshot(challenge: mainChallenge, user: user, event: currentEvent,)
-          ],
-        ),
-      ],
+    return HomeScreenDetails(
+      challenge: mainChallenge!,
+      user: user,
+      event: currentEvent,
     );
+
+    // return Stack(
+    //   children: [
+    //     // Background dodecahedron image
+    //     AnimatedBuilder(
+    //       animation: _colorTween,
+    //       builder: (context, child) => SvgPicture.asset(
+    //         'assets/images/AppBackground.svg',
+    //         colorFilter: ColorFilter.mode(_colorTween.value, BlendMode.srcIn),
+    //         height: double.infinity,
+    //         alignment: Alignment.bottomCenter,
+    //       ),
+    //     ),
+    //
+    //     // Main home page content
+    //     Column(
+    //       children: [
+    //         Padding(
+    //           padding: const EdgeInsets.symmetric(horizontal: 20),
+    //           child: Align(
+    //             alignment: Alignment.centerLeft,
+    //             child: Column(
+    //               crossAxisAlignment: CrossAxisAlignment.start,
+    //               children: [
+    //                 // Text('Welcome back ${user.userName}!', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //         if (!showDifficultySelectionButton)
+    //           EventProgressContainer(onPageChange: widget.onPageChange,),
+    //         if (showDifficultySelectionButton)
+    //           Container(
+    //             height: 100,
+    //             width: double.infinity,
+    //             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+    //             margin: EdgeInsets.all(20),
+    //             decoration: BoxDecoration(
+    //               color: Colors.white70,
+    //               borderRadius: BorderRadius.circular(10),
+    //               boxShadow: BoxShadows.cardShadow,
+    //             ),
+    //             child: Text('Select a difficulty'),
+    //           ),
+    //         Spacer(),
+    //         if (!showDifficultySelectionButton && mainChallenge != null)
+    //           HomeScreenMainChallengeSnapshot(challenge: mainChallenge, user: user, event: currentEvent,)
+    //       ],
+    //     ),
+    //   ],
+    // );
   }
 }

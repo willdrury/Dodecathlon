@@ -179,7 +179,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                               height: 120,
                               width: 120,
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.primaryContainer,
                                 borderRadius: BorderRadius.circular(100),
                                 boxShadow: [
                                   BoxShadow(

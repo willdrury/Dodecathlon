@@ -88,7 +88,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
       margin: EdgeInsets.symmetric(vertical: 10),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: Theme.of(context).colorScheme.outline.withAlpha(100)
@@ -269,7 +269,7 @@ class _PostContainerState extends ConsumerState<PostContainer> {
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(5),
-                color: Theme.of(context).colorScheme.primaryContainer,
+                color: Theme.of(context).colorScheme.secondaryContainer,
                 child: Text(
                   'Requires Approval',
                   textAlign: TextAlign.center,

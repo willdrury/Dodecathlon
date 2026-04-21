@@ -79,6 +79,7 @@ flutter:
     - assets/images/DodecathlonLogoOutline.png
     - assets/images/HomeBackground.png
     - assets/images/AppBackground.svg
+    - assets/images/DodecathlonLogo_Outline_Pink.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

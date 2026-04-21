@@ -9,6 +9,8 @@ import 'package:dodecathlon/screens/loading_screen.dart';
 import 'package:dodecathlon/screens/post_creation_screen.dart';
 import 'package:dodecathlon/widgets/default_app_bar.dart';
 import 'package:dodecathlon/widgets/default_drawer.dart';
+import 'package:dodecathlon/widgets/home_screen_background.dart';
+import 'package:dodecathlon/widgets/home_screen_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dodecathlon/screens/submission_selection_screen.dart';
@@ -326,36 +328,45 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
       backgroundColor: scaffoldBackgroundColor,
       endDrawer: DefaultDrawer(),
       floatingActionButton: _floatingActionButton,
-      body: SafeArea(
-        child: NestedScrollView(
-          controller: _scrollController,
-          physics: _scrollPhysics,
-          floatHeaderSlivers: true,
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              if (_showAppBar)
-                DefaultAppBar(
-                  label: _appBarLabel,
-                  useShadow: _useAppBarShadow,
-                  backgroundColor: appBarColor,
-                  textColor: _appBarTextColor,
-                  hasUnread: numUnreadNotifications > 0,
-                ),
-            ];
-          },
-          body: _currentScreen
-        ),
+      body: Stack(
+        children: [
+          if (_currentPageIndex == 0)
+            HomeScreenBackground(),
+          SafeArea(
+            child: NestedScrollView(
+              controller: _scrollController,
+              physics: _scrollPhysics,
+              floatHeaderSlivers: true,
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  if (_showAppBar)
+                    DefaultAppBar(
+                      label: _appBarLabel,
+                      useShadow: _useAppBarShadow,
+                      backgroundColor: appBarColor,
+                      textColor: _appBarTextColor,
+                      hasUnread: numUnreadNotifications > 0,
+                    ),
+                ];
+              },
+              body: _currentScreen
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Container(
+        height: 90,
         decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
               color: Colors.black12,
-              blurRadius: 10
+              blurRadius: 3
             ),
           ]
         ),
         child: NavigationBar(
+          labelPadding: EdgeInsets.all(0),
           onDestinationSelected: (int index) {
             onDestinationSelected(index, context);
           },
