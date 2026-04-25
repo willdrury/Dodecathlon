@@ -1,26 +1,20 @@
-import 'package:dodecathlon/constants/box_shadows.dart';
 import 'package:dodecathlon/models/challenge.dart';
-import 'package:dodecathlon/providers/notification_provider.dart';
-import 'package:dodecathlon/providers/posts_provider.dart';
 import 'package:dodecathlon/providers/user_provider.dart';
 import 'package:dodecathlon/screens/difficulty_selection_screen.dart';
-import 'package:dodecathlon/widgets/event_progress_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../models/competition.dart';
-import '../models/post.dart';
 import '../models/user.dart';
 import '../models/event.dart';
-import '../models/notification.dart' as dd;
 import '../providers/challenges_provider.dart';
 import '../providers/competition_provider.dart';
 import '../providers/settings_provider.dart';
-import '../providers/users_provider.dart';
+import '../providers/user_competition_rankings_provider.dart';
+import '../providers/user_data_providers.dart';
 import '../providers/events_provider.dart';
+import '../providers/user_event_rankings_provider.dart';
 import '../widgets/home_screen_details.dart';
-import '../widgets/home_screen_main_challenge_snapshot.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key, required this.onPageChange});
@@ -100,8 +94,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
 
-    print('animation status: ${_animationController.value}');
-
+    // Provider Data
     AsyncValue<User?> userStream = ref.watch(userProvider);
     if (!userStream.hasValue) {
       return const Center(child: CircularProgressIndicator(),);
@@ -109,11 +102,19 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
 
     User user = userStream.value!;
     Map<dynamic, dynamic> settings = ref.watch(settingsProvider);
-    AsyncValue<List<User>> users = ref.watch(usersProvider);
     AsyncValue<List<Event>> eventStream = ref.watch(eventProvider);
     AsyncValue<List<Competition>> competitions = ref.watch(competitionProvider);
+    AsyncValue<(int, int)?> eventPointsStream = ref.watch(userEventPointProvider);
+    AsyncValue<List<(String, int)>> userEventRankingsStream = ref.watch(userEventRankingsProvider);
+    AsyncValue<List<(String, int)>> userCompetitionRankingsStream = ref.watch(userCompetitionRankingsProvider);
 
-    if (!competitions.hasValue || !eventStream.hasValue || settings['current_competition'] == null) {
+    if (!competitions.hasValue ||
+        !eventStream.hasValue ||
+        settings['current_competition'] == null ||
+        !eventPointsStream.hasValue || eventPointsStream.value == null ||
+        !userEventRankingsStream.hasValue || userEventRankingsStream.value == null ||
+        !userCompetitionRankingsStream.hasValue || userCompetitionRankingsStream.value == null
+    ) {
       return Center(child: CircularProgressIndicator(),);
     }
 
@@ -137,25 +138,15 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
       return Center(child: Text('Looks like there are no current events'),);
     }
 
+    List<String> userEventRankingsById = userEventRankingsStream.value!.map((e) => e.$1).toList();
+    List<String> userCompetitionRankingsById = userCompetitionRankingsStream.value!.map((e) => e.$1).toList();
+    int eventRank = userEventRankingsById.indexOf(user.id!) + 1;
+    int competitionRank = userCompetitionRankingsById.indexOf(user.id!) + 1;
+
     AsyncValue<List<Challenge>> challenges = ref.watch(challengesProvider);
     Challenge? mainChallenge;
     if (currentEvent.mainChallengeId != null && currentEvent.mainChallengeId!.isNotEmpty && challenges.hasValue) {
       mainChallenge = challenges.value!.firstWhere((c) => c.id == currentEvent.mainChallengeId!);
-    }
-
-    // Only show posts within the last week that have been highlighted
-    AsyncValue<List<Post>> posts = ref.watch(postsProvider);
-    List<Post> postHighlights = [];
-    if (posts.hasValue) {
-      postHighlights = posts.value!.where((p) =>
-        p.highlighted == true && p.createdAt.isAfter(DateTime.now().add(Duration(days: -7)))
-      ).toList();
-    }
-
-    if (users.hasValue) {
-      for (Post p in postHighlights) {
-        p.user = users.value!.where((u) => u.id == p.userId).first;
-      }
     }
 
     bool showDifficultySelectionButton =
@@ -172,6 +163,11 @@ class _MyHomePageState extends ConsumerState<HomeScreen> with SingleTickerProvid
       challenge: mainChallenge!,
       user: user,
       event: currentEvent,
+      mainPoints: eventPointsStream.value!.$1,
+      bonusPoints: eventPointsStream.value!.$2,
+      eventRank: eventRank,
+      competitionRank: competitionRank,
+      onPageChange: widget.onPageChange,
     );
 
     // return Stack(

@@ -139,7 +139,7 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
     ).firstOrNull;
 
     return Scaffold(
-      backgroundColor: Color.lerp(Colors.white, Theme.of(context).colorScheme.primaryContainer, 0.1),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         title: Text('Submission Details'),
         backgroundColor: Colors.transparent,
@@ -164,14 +164,14 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
                 clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.black12),
-                  color: Colors.white,
+                  border: Border.all(color: Theme.of(context).colorScheme.outline),
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, 5),
-                        spreadRadius: 1,
-                        blurRadius: 5
+                      color: Colors.black12,
+                      offset: Offset(0, 5),
+                      spreadRadius: 1,
+                      blurRadius: 5
                     )
                   ]
                 ),
@@ -182,7 +182,7 @@ class _SubmissionDetailsScreenState extends ConsumerState<SubmissionDetailsScree
                       Align(
                         alignment: Alignment.center,
                         child: Container(
-                          color: Colors.black12,
+                          color: Colors.grey,
                           width: double.infinity,
                           constraints: BoxConstraints(
                             maxHeight: 500,

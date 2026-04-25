@@ -82,24 +82,24 @@ class StreakCalendar extends StatelessWidget {
                   completedSubmissionMap.containsKey(i + startDay - 6) &&
                   !completedSubmissionMap[i + startDay - 6]!.isApproved;
               child =  GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (ctx) => SubmissionDetailsScreen(submission: completedSubmissionMap[i + startDay - 7]!))
-                    );
-                  },
-                  child: Container(
-                      height: 30,
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.horizontal(
-                            left: extendLeft ? Radius.circular(0) : Radius.circular(15),
-                            right: extendRight ? Radius.circular(0) : Radius.circular(15)
-                        ),
-                      ),
-                      child: Text((i + startDay - 7).toString(), style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),)
-                  )
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => SubmissionDetailsScreen(submission: completedSubmissionMap[i + startDay - 7]!))
+                  );
+                },
+                child: Container(
+                  height: 30,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondary,
+                    borderRadius: BorderRadius.horizontal(
+                      left: extendLeft ? Radius.circular(0) : Radius.circular(15),
+                      right: extendRight ? Radius.circular(0) : Radius.circular(15)
+                    ),
+                  ),
+                  child: Text((i + startDay - 7).toString(), style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),)
+                )
               );
             }
 

@@ -10,7 +10,9 @@ import '../models/user.dart';
 import 'challenges_provider.dart';
 import 'events_provider.dart';
 
+// TODO: consider changing to streamProvider and moving to generic events provider along with competition rank provider
 class UserEventRankingsProvider extends AsyncNotifier<List<(String, int)>> {
+
   @override
   FutureOr<List<(String, int)>> build() async {
     AsyncValue<List<User>> users = ref.watch(usersProvider);

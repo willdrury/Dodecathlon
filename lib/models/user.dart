@@ -15,6 +15,7 @@ class User {
   List<int> currentCompetitionPoints;
   List<String> submissions;
   List<String> friends;
+  bool newUser;
   Difficulty? currentEventDifficulty;
   String? profileImageUrl;
   List<String> competitions;
@@ -32,6 +33,7 @@ class User {
     required this.currentCompetitionPoints,
     required this.submissions,
     required this.friends,
+    required this.newUser,
     required this.likedPostIds,
     required this.createdDate,
     required this.competitions,
@@ -48,6 +50,7 @@ class User {
     'currentEventRank': currentEventRank,
     'currentCompetitionPoints': currentCompetitionPoints,
     'friends': friends,
+    'newUser': newUser,
     'currentEventDifficulty': currentEventDifficulty?.name,
     'profileImageUrl': profileImageUrl,
     'submissions': submissions,
@@ -68,6 +71,7 @@ class User {
         currentEventRank: List<int>.from(data['currentEventRank'] as List<dynamic>),
         currentCompetitionPoints: List<int>.from(data['currentCompetitionPoints'] as List<dynamic>),
         friends: List<String>.from(data['friends'] as List<dynamic>),
+        newUser: data['newUser'],
         currentEventDifficulty: getDifficultyFromString(data['currentEventDifficulty']),
         profileImageUrl: data['profileImageUrl'],
         submissions: List<String>.from(data['submissions'] as List<dynamic>),

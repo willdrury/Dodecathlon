@@ -51,6 +51,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           currentEventRank: [0],
           currentCompetitionPoints: [0],
           friends: [],
+          newUser: true,
           id: userCredentials!.user!.uid,
           profileImageUrl: null,
           submissions: [],
