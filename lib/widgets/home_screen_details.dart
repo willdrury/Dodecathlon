@@ -52,14 +52,16 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-
+            // Competition, Milestone, and Featured challenge containers
             Stack(
               alignment: Alignment.topCenter,
               children: [
+                // Competition and Milestone Containers
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // Competition Container
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
@@ -69,45 +71,46 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
                       child: Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.horizontal(right: Radius.circular(30)),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  offset: Offset(0, 5),
-                                  spreadRadius: 1,
-                                  blurRadius: 5
-                              )
-                            ]
+                          color: Theme.of(context).colorScheme.secondaryContainer,
+                          borderRadius: BorderRadius.horizontal(right: Radius.circular(30)),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black12,
+                                offset: Offset(0, 5),
+                                spreadRadius: 1,
+                                blurRadius: 5
+                            )
+                          ]
                         ),
                         child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Curent Competition ', style: Theme.of(context).textTheme.labelSmall,),
-                                  Text('Dodecathlon', style: Theme.of(context).textTheme.labelMedium,), // TODO: Dynamic
-                                ],
-                              ),
-                              SizedBox(width: 15,),
-                              CircleAvatar(
-                                backgroundColor: widget.event.themeColor.withAlpha(50),
-                                backgroundImage: Image.network(
-                                    widget.challenge.imageUrl!, // TODO: Change to competition image
-                                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                      if (loadingProgress == null) {
-                                        return child;
-                                      }
-                                      return Container(color: widget.event.themeColor,);
-                                    }
-                                ).image,
-                              ),
-                            ]
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Current Competition ', style: Theme.of(context).textTheme.labelSmall,),
+                                Text('Dodecathlon', style: Theme.of(context).textTheme.labelMedium,), // TODO: Dynamic
+                              ],
+                            ),
+                            SizedBox(width: 15,),
+                            CircleAvatar(
+                              backgroundColor: widget.event.themeColor.withAlpha(50),
+                              backgroundImage: Image.network(
+                                widget.challenge.imageUrl!, // TODO: Change to competition image
+                                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return Container(color: widget.event.themeColor,);
+                                }
+                              ).image,
+                            ),
+                          ]
                         ),
                       ),
                     ),
+                    // Milestone Container
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
@@ -125,7 +128,7 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
                               padding: EdgeInsets.all(10),
                               margin: EdgeInsets.only(bottom: 5),
                               decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.secondaryContainer,
+                                  color: Theme.of(context).colorScheme.tertiaryContainer,
                                   borderRadius: BorderRadius.circular(50),
                                   boxShadow: [
                                     BoxShadow(
@@ -169,6 +172,8 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
                     ),
                   ],
                 ),
+
+                // Featured Challenge / Fallback container
                 if (!hasFeaturedChallenge)
                   Container(
                     margin: EdgeInsets.all(20),
@@ -182,71 +187,79 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
-                          MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(
-                              challenge: widget.challenge,
-                              isCompleted: false,  // TODO: set appropriately
-                              event: widget.event
-                          ))
+                        MaterialPageRoute(builder: (ctx) => ChallengeDetailsScreen(
+                          challenge: widget.challenge,
+                          isCompleted: false,  // TODO: set appropriately
+                          event: widget.event
+                        ))
                       );
                     },
-                    child: Container(
-                      height: 250,
-                      width: 250,
-                      margin: EdgeInsets.only(top: 90),
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(150),
-                          border: Border.all(color: Theme.of(context).colorScheme.primaryContainer, width: 10),
-                          color: Theme.of(context).colorScheme.surface,
-                          boxShadow: [
-                            BoxShadow(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          height: 250,
+                          width: 250,
+                          margin: EdgeInsets.only(top: 90),
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(150),
+                            // border: Border.all(color: Theme.of(context).colorScheme.primaryContainer, width: 5),
+                            color: Theme.of(context).colorScheme.surface,
+                            boxShadow: [
+                              BoxShadow(
+                                // color: Theme.of(context).colorScheme.secondaryContainer.withAlpha(100),
                                 color: Colors.black12,
-                                offset: Offset(0, 5),
+                                offset: Offset(0, 10),
                                 spreadRadius: 1,
-                                blurRadius: 5
-                            )
-                          ]
-                      ),
-                      child: Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: widget.event.themeColor.withAlpha(50),
-                            backgroundImage: Image.network(
-                                widget.challenge.imageUrl!, // Make sure this is always set
-                                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return Container(color: widget.event.themeColor,);
-                                }
-                            ).image,
-                            maxRadius: 150,
+                                blurRadius: 10
+                              ),
+                            ]
                           ),
-                          Container(
-                            color: Theme.of(context).colorScheme.primaryContainer,
-                            height: 50,
-                            width: 400,
-                            padding: EdgeInsets.only(top: 5),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Featured Challenge',
-                                  style: Theme.of(context).textTheme.labelMedium,
+                          child: Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: widget.event.themeColor.withAlpha(50),
+                                backgroundImage: Image.network(
+                                    widget.challenge.imageUrl!, // Make sure this is always set
+                                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      }
+                                      return Container(color: widget.event.themeColor,);
+                                    }
+                                ).image,
+                                maxRadius: 150,
+                              ),
+                              Container(
+                                color: Theme.of(context).colorScheme.primaryContainer,
+                                height: 70,
+                                width: 400,
+                                padding: EdgeInsets.only(top: 5),
+                                child: Column(
+                                  children: [
+                                    Text(widget.challenge.name, style: Theme.of(context).textTheme.bodyLarge,),
+                                    Text(
+                                      'Featured Challenge',
+                                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                                        color: Theme.of(context).colorScheme.onPrimaryContainer.withAlpha(100)
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                Text(widget.challenge.name, style: Theme.of(context).textTheme.labelLarge,)
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
               ],
             ),
             Spacer(),
             Container(
-              width: constraints.maxWidth * .8,
+              width: constraints.maxWidth * .85,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -269,7 +282,7 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
 
             // Main Snapshot
             Container(
-              width: constraints.maxWidth * .8,
+              width: constraints.maxWidth * .9,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Theme.of(context).colorScheme.outline),
@@ -298,7 +311,7 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
                         children: [
                           Expanded(
                             child: Container(
-                              padding: EdgeInsets.all(5),
+                              padding: EdgeInsets.only(left: 10, top: 5),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -316,7 +329,7 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
                           VerticalDivider(width: 1, color: Theme.of(context).colorScheme.outline,),
                           Expanded(
                             child: Container(
-                              padding: EdgeInsets.all(5),
+                              padding: EdgeInsets.only(left: 10, top: 5),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -361,7 +374,7 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
                                         height: 10,
                                         width: 10,
                                         decoration: BoxDecoration(
-                                          color: Colors.pinkAccent,
+                                          color: Theme.of(context).colorScheme.secondary,
                                           borderRadius: BorderRadius.circular(20)
                                         ),
                                       ),
@@ -393,16 +406,17 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
                               ),
                             ],
                           ),
+                          // Progress bar
                           Expanded(
                             child: Align(
                               alignment: Alignment.center,
                               child: Container(
-                                height: 20,
+                                height: 30,
                                 width: double.infinity,
                                 margin: EdgeInsets.symmetric(horizontal: 10),
                                 alignment: Alignment.centerLeft,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(20),
                                   color: Colors.black12
                                 ),
                                 child: Stack(
@@ -415,7 +429,7 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
                                         padding: EdgeInsets.only(right: 5),
                                         alignment: Alignment.centerRight,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(20),
                                           gradient: LinearGradient(
                                               begin: Alignment.topCenter,
                                               end: Alignment.bottomCenter,
@@ -436,14 +450,17 @@ class HomeScreenDetailsState extends State<HomeScreenDetails> with SingleTickerP
                                         padding: EdgeInsets.only(right: 5),
                                         alignment: Alignment.centerRight,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(20),
                                           gradient: LinearGradient(
                                             begin: Alignment.topCenter,
                                             end: Alignment.bottomCenter,
                                             colors: [
-                                              Color.lerp(Colors.pinkAccent, Colors.white, .15)!,
-                                              Colors.pinkAccent,
-                                              Color.lerp(Colors.pinkAccent, Colors.black, .1)!
+                                              Color.lerp(Theme.of(context).colorScheme.secondary, Colors.white, .2)!,
+                                              Theme.of(context).colorScheme.secondary,
+                                              Color.lerp(Theme.of(context).colorScheme.secondary, Colors.black, .2)!
+                                              // Color.lerp(Colors.pinkAccent, Colors.white, .15)!,
+                                              // Colors.pinkAccent,
+                                              // Color.lerp(Colors.pinkAccent, Colors.black, .1)!
                                             ]
                                           ),
                                         ),

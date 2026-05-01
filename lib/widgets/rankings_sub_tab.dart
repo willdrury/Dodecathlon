@@ -77,12 +77,12 @@ class _RankingsSubTabState extends ConsumerState<RankingsSubTab> with SingleTick
       children: <Widget>[
         Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer.withAlpha(50),
+            color: Theme.of(context).colorScheme.tertiaryContainer.withAlpha(50),
           ),
           child: TabBar.secondary(
-            indicatorColor: Theme.of(context).colorScheme.tertiary,
-            labelColor: Theme.of(context).colorScheme.tertiary,
-            unselectedLabelColor: Theme.of(context).colorScheme.tertiary.withAlpha(100),
+            indicatorColor: Theme.of(context).colorScheme.onTertiaryContainer,
+            labelColor: Theme.of(context).colorScheme.onTertiaryContainer,
+            unselectedLabelColor: Theme.of(context).colorScheme.onTertiaryContainer.withAlpha(100),
             controller: _tabController,
             tabs: const <Widget>[
               Tab(text: 'Overall'),

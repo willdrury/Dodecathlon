@@ -14,12 +14,12 @@ class RankingsScreen extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
+                color: Theme.of(context).colorScheme.tertiaryContainer,
               ),
               child: TabBar(
-                indicatorColor: Theme.of(context).colorScheme.tertiary,
-                labelColor: Theme.of(context).colorScheme.tertiary,
-                unselectedLabelColor: Theme.of(context).colorScheme.tertiary.withAlpha(100),
+                indicatorColor: Theme.of(context).colorScheme.onTertiaryContainer,
+                labelColor: Theme.of(context).colorScheme.onTertiaryContainer,
+                unselectedLabelColor: Theme.of(context).colorScheme.onTertiaryContainer.withAlpha(100),
                 tabs: <Widget>[
                   Tab(
                     text: 'Global',

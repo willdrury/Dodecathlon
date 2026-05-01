@@ -228,7 +228,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           _showAppBar = true;
           _useAppBarShadow = false;
           _appBarLabel = 'Leaderboard';
-          _appBarTextColor = Theme.of(context).colorScheme.tertiary;
+          _appBarTextColor = Theme.of(context).colorScheme.onTertiaryContainer;
           _floatingActionButton = null;
           _scrollPhysics = ScrollPhysics();
       }
@@ -261,12 +261,10 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
     AsyncValue<List<dd.Notification>> notificationsStream = ref.watch(notificationProvider);
 
     if (!competitions.hasValue || !eventStream.hasValue) {
-      print('loading competitions');
       return Center(child: CircularProgressIndicator(),);
     }
 
     if (_userSettings == null) {
-      print('loading settings');
       return Center(child: CircularProgressIndicator(),);
     }
 
@@ -370,8 +368,8 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           onDestinationSelected: (int index) {
             onDestinationSelected(index, context);
           },
-          indicatorColor: Theme.of(context).colorScheme.primaryContainer,
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          indicatorColor: Theme.of(context).colorScheme.surfaceContainer,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           // indicatorColor: Theme.of(context).colorScheme.primaryContainer,
           // backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
           shadowColor: Colors.black,

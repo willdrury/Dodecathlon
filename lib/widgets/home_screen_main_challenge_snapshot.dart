@@ -158,7 +158,7 @@ class HomeScreenMainChallengeSnapshot extends ConsumerWidget {
           },
           child: Container(
             height: 90,
-            width: constraints.maxWidth * .8,
+            width: constraints.maxWidth * .9,
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             // margin: EdgeInsets.symmetric(vertical: 20),
             decoration: BoxDecoration(

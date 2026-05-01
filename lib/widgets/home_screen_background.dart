@@ -139,8 +139,17 @@ class HomeScreenBackgroundState extends State<HomeScreenBackground> with SingleT
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Color(0xFFFF6665).withAlpha(10),
+                // color: Color(0xFFFF6665).withAlpha(10),
                 // color: Theme.of(context).colorScheme.primary.withAlpha(10)
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0, .7],
+                  colors: [
+                    Color.lerp(Theme.of(context).colorScheme.surface, Theme.of(context).colorScheme.inverseSurface, .5)!,
+                    Theme.of(context).colorScheme.surface,
+                  ]
+                )
                 // gradient: LinearGradient(
                 //   begin: Alignment.topCenter,
                 //   end: Alignment.bottomCenter,

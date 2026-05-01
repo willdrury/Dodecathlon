@@ -82,7 +82,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Colors.white,
-      backgroundColor: const Color(0xFF2E2E2E),
+      // backgroundColor: const Color(0xFF2E2E2E),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -93,7 +94,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 child: Image.asset('assets/images/DodecathlonLogoOutline.png'),
               ),
               Card(
-                color: ColorUtility().lighten(Colors.deepOrange, .4),
+                // color: ColorUtility().lighten(Colors.deepOrange, .4),
+                color: Theme.of(context).colorScheme.primaryContainer,
                 margin: const EdgeInsets.only(top: 30, bottom: 20, left: 20, right: 20),
                 child: SingleChildScrollView(
                   child: Padding(
@@ -160,13 +162,16 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                             if (!_isAuthenticating)
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor: Theme.of(context).colorScheme.primaryContainer
+                                    backgroundColor: Theme.of(context).colorScheme.tertiaryContainer
                                     // backgroundColor: ColorUtility().lighten(Colors.orange, .3),
                                 ),
                                 onPressed: () {
                                   _submit();
                                 },
-                                child: Text(_isLogin ? 'Login' : 'Signup'),
+                                child: Text(
+                                  _isLogin ? 'Login' : 'Signup',
+                                  style: TextStyle(color: Theme.of(context).colorScheme.onTertiaryContainer),
+                                ),
                               ),
                             if (!_isAuthenticating)
                               TextButton(

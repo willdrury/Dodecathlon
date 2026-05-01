@@ -72,7 +72,9 @@ class MyApp extends ConsumerWidget {
       surface: Colors.white,
       surfaceDim: Color.lerp(Colors.white, Colors.black, .03),
       primaryContainer: Colors.white,
-      outline: Colors.black26
+      secondaryContainer: Color.lerp(Colors.pinkAccent, Colors.white, .8),
+      tertiaryContainer: Color.lerp(Colors.pinkAccent, Colors.white, .9),
+      outline: Colors.black12
     );
 
     final kColorSchemeDark = ColorScheme.fromSeed(
@@ -83,7 +85,8 @@ class MyApp extends ConsumerWidget {
       surfaceDim: Color.lerp(Colors.black, Colors.pinkAccent, .1),
       outline: Colors.black38,
       primaryContainer: Color.lerp(Colors.white, Colors.black, .8),
-      secondaryContainer: Color.lerp(Colors.black, Colors.pinkAccent, .3)
+      secondaryContainer: Color.lerp(Colors.black, Colors.pinkAccent, .8),
+      tertiaryContainer: Color.lerp(Colors.black, Colors.pinkAccent, .5),
     );
 
     final kTextTheme = TextTheme(
